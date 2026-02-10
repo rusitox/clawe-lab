@@ -2,40 +2,35 @@
 
 Source: https://github.com/rusitox/clawe-lab/issues/1
 
-## Hypotheses
-- La unidad principal es la **familia** (grupo) con varios miembros.
-- Vista primaria de valor: **semana** (agenda semanal).
+## Decisions (from Rusitox)
+- Home/Vista principal: **Agenda semanal familiar unificada** (Option A).
+- Roles/permisos: **padres administran permisos por miembro**.
+  - Ej: adolescentes pueden crear eventos; niños pequeños solo visualización; algunos miembros (niños pequeños) pueden no usar la app.
+- Auth MVP: **Google Sign-In (Gmail)**.
+- Sync day-one: **backend requerido** (multi-dispositivo desde el día 1).
+- Notificaciones: **configurables**.
+- Integraciones: por ahora **Calendar**.
 
 ## Key objects
+- Family
 - Member
+- Role/Permission set (per member)
 - Event (one-off)
 - Routine (recurring)
 - Notification rule
-- Integration source (future)
+- Calendar connection (Google Calendar; iOS calendar as future/bridge)
 
-## Open questions for Rusitox (to unblock UX)
-1) Roles/permisos: ¿niños editan o solo ven?
-2) ¿Login o modo local en MVP?
-3) Sincronización multi-dispositivo: ¿backend requerido en MVP?
-4) Notificaciones: presets (10m/1h/1d) y quiet hours.
-5) Integraciones: prioridad (Google/iCloud) vs “apps del colegio” (depende de API oficial).
+## Proposed IA (chosen direction)
+### Option A — Family week agenda (chosen)
+- Home: semana con agenda unificada + colores por miembro + chips de filtro.
+- Día seleccionado muestra timeline de items.
 
-## Proposed information architecture (3 options)
-### Option A — Week view by member (default)
-- Home: semana, columnas por miembro, filas por día.
-- Pros: claridad por persona.
-- Cons: se satura con muchos items.
+## UX deliverables (iteration loop)
+- Wireframes low-fi (Home, Create event, Create routine, Member permissions, Notification settings, Calendar connect)
+- Luego: UI kit (colors/typography/components) + prototipo click-through
 
-### Option B — Unified week + filters
-- Home: lista/agenda semanal unificada + filtro por miembro.
-- Pros: simple, escalable.
-- Cons: menos “family-centric” visual.
+## Open questions (still)
+- ¿Requerimos "Family invite" en MVP (invitar a otro padre con link/código) o solo 1 cuenta por ahora?
+- ¿Eventos/rutinas se asignan a 1 miembro o a múltiples?
+- ¿Zona horaria por familia? (recomendado sí)
 
-### Option C — Member-first
-- Home: cards por miembro → entrando a su semana.
-- Pros: reduce ruido.
-- Cons: más taps.
-
-## Next UX deliverables
-- Wireframes low-fi (Home, Create event, Create routine, Notifications settings)
-- Copy/labels básicos
