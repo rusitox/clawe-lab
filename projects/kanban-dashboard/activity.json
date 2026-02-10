@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "ts": 1760431200000,
+      "agent": "Clawe",
+      "type": "info",
+      "text": "Activity feed habilitado (placeholder)."
+    },
+    {
+      "ts": 1770732181839,
+      "agent": "SE-Lead",
+      "type": "info",
+      "text": "Setup: activity feed online"
+    }
+  ]
+}

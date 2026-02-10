@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "t-dashboard-v1",
+      "title": "Kanban web v1 (UI + drag & drop + editar/borrar)",
+      "desc": "Tablero Backlog/To-do/In progress/Done con tarjetas, export/import.",
+      "col": "done",
+      "prio": "P1",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760430000000
+    },
+    {
+      "id": "t-server-persist",
+      "title": "Persistencia server-side (tasks.json) para multi-dispositivo",
+      "desc": "API GET/PUT /api/tasks + token. Esto permite que compu y celu vean lo mismo.",
+      "col": "done",
+      "prio": "P1",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760430000000
+    },
+    {
+      "id": "t-access-link",
+      "title": "URL final (Tailscale) para abrir desde compu/celu",
+      "desc": "http://vinc-rusitox.tail2ffb04.ts.net:8787",
+      "col": "done",
+      "prio": "P0",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760430900000
+    },
+    {
+      "id": "t-dashboard-activity",
+      "title": "Dashboard: panel de Actividad + filtros (equipo/agente)",
+      "desc": "Filtros aplican al feed y al Kanban. Al elegir equipo, el combo de agentes se restringe a ese equipo.",
+      "col": "done",
+      "prio": "P2",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760436000000,
+      "updatedAt": 1770734000000
+    },
+    {
+      "id": "t-github-repo",
+      "title": "Crear repo GitHub público + bootstrap (README, estructura, CI, PR workflow)",
+      "desc": "Creado: https://github.com/rusitox/clawe-lab (main). Templates + label 'requirement' + branch protection (PR required).",
+      "col": "done",
+      "prio": "P1",
+      "team": "Engineering",
+      "agent": "SE-Lead",
+      "createdAt": 1760431740000,
+      "updatedAt": 1760435280000
+    },
+    {
+      "id": "t-requirements-contract",
+      "title": "Contrato: requerimientos solo vienen de Rusitox",
+      "desc": "ADR + Issue Template 'Requirement (from Rusitox)' + label 'requirement'.",
+      "col": "done",
+      "prio": "P1",
+      "team": "Engineering",
+      "agent": "SE-Lead",
+      "createdAt": 1760434500000,
+      "updatedAt": 1760435280000
+    },
+    {
+      "id": "t-team-memory",
+      "title": "Memoria del equipo en repo (Decision/UX/Tech logs) + UX pack REQ#1",
+      "desc": "PR abierto: https://github.com/rusitox/clawe-lab/pull/2",
+      "col": "inprogress",
+      "prio": "P1",
+      "team": "Engineering",
+      "agent": "Review-Docs",
+      "createdAt": 1760436660000,
+      "updatedAt": 1770732857762
+    },
+    {
+      "id": "t-run-stable",
+      "title": "Dejar el servidor del Kanban corriendo estable",
+      "desc": "Corre en tmux. Próximo paso: systemd/daemon (opcional).",
+      "col": "todo",
+      "prio": "P2",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760434500000
+    },
+    {
+      "id": "t-requirement-1",
+      "title": "REQ#1: Family organization tracker (mobile app)",
+      "desc": "Issue: https://github.com/rusitox/clawe-lab/issues/1",
+      "col": "inprogress",
+      "prio": "P2",
+      "team": "Engineering",
+      "agent": "SE-Lead",
+      "createdAt": 1760436000000,
+      "updatedAt": 1770732857762
+    },
+    {
+      "id": "t-team-agent",
+      "title": "Orquestación por equipos (General/Engineering y sub-equipos)",
+      "desc": "Sesiones por equipo + trazas en activity feed + artefactos en repo.",
+      "col": "backlog",
+      "prio": "P2",
+      "team": "Engineering",
+      "agent": "SE-Lead",
+      "createdAt": 1770733000000,
+      "updatedAt": 1770733000000
+    },
+    {
+      "id": "t-security",
+      "title": "Hardening mínimo de acceso",
+      "desc": "Con Tailscale OK. Opcional: systemd + token rotatorio + limitar exposición.",
+      "col": "backlog",
+      "prio": "P3",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760430900000
+    }
+  ]
+}

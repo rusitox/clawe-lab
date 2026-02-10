@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clawe — Dashboard de Tareas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Dashboard de Tareas</h1>
+      <p class="subtitle">Backlog → To‑do → In progress → Done</p>
+    </div>
+    <div class="topbar__actions">
+      <button id="btnAdd" class="btn">+ Nueva tarea</button>
+      <button id="btnToken" class="btn btn--ghost">Token</button>
+      <button id="btnExport" class="btn btn--ghost">Exportar JSON</button>
+      <button id="btnImport" class="btn btn--ghost">Importar JSON</button>
+      <input id="fileImport" type="file" accept="application/json" hidden />
+      <button id="btnReset" class="btn btn--danger">Reset</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="activity">
+      <div class="activity__head">
+        <div>
+          <h2>Actividad</h2>
+          <div class="activity__filters">
+            <select id="filterTeam" title="Filtrar por equipo">
+              <option value="">Equipo: Todos</option>
+            </select>
+            <select id="filterAgent" title="Filtrar por agente">
+              <option value="">Agente: Todos</option>
+            </select>
+          </div>
+        </div>
+        <span class="pill" id="count-activity">0</span>
+      </div>
+      <div class="activity__body">
+        <div class="teamcfg">
+          <div class="teamcfg__title">Colores de equipos</div>
+          <div class="teamcfg__row">
+            <span class="teamcfg__label">General</span>
+            <input id="colorGeneral" type="color" value="#00d1ff" />
+          </div>
+          <div class="teamcfg__row">
+            <span class="teamcfg__label">Engineering</span>
+            <input id="colorEngineering" type="color" value="#7c5cff" />
+          </div>
+        </div>
+        <div id="activityFeed"></div>
+      </div>
+    </aside>
+
+    <section class="board" id="board">
+    <section class="col" data-col="backlog">
+      <div class="col__head">
+        <h2>Backlog</h2>
+        <span class="pill" id="count-backlog">0</span>
+      </div>
+      <div class="col__body" data-dropzone="backlog"></div>
+    </section>
+
+    <section class="col" data-col="todo">
+      <div class="col__head">
+        <h2>To‑do</h2>
+        <span class="pill" id="count-todo">0</span>
+      </div>
+      <div class="col__body" data-dropzone="todo"></div>
+    </section>
+
+    <section class="col" data-col="inprogress">
+      <div class="col__head">
+        <h2>In progress</h2>
+        <span class="pill" id="count-inprogress">0</span>
+      </div>
+      <div class="col__body" data-dropzone="inprogress"></div>
+    </section>
+
+    <section class="col" data-col="done">
+      <div class="col__head">
+        <h2>Done</h2>
+        <span class="pill" id="count-done">0</span>
+      </div>
+      <div class="col__body" data-dropzone="done"></div>
+    </section>
+    </section>
+  </main>
+
+  <dialog id="dlg" class="dialog">
+    <form method="dialog" id="formTask" class="dialog__form">
+      <h3 id="dlgTitle">Nueva tarea</h3>
+
+      <label>
+        Título
+        <input id="taskTitle" type="text" required maxlength="140" placeholder="Ej: Preparar roadmap Q1" />
+      </label>
+
+      <label>
+        Descripción (opcional)
+        <textarea id="taskDesc" rows="4" maxlength="2000" placeholder="Contexto, links, notas..."></textarea>
+      </label>
+
+      <div class="row">
+        <label>
+          Columna
+          <select id="taskCol">
+            <option value="backlog">Backlog</option>
+            <option value="todo">To‑do</option>
+            <option value="inprogress">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+
+        <label>
+          Prioridad
+          <select id="taskPrio">
+            <option value="P3">P3</option>
+            <option value="P2">P2</option>
+            <option value="P1">P1</option>
+            <option value="P0">P0</option>
+          </select>
+        </label>
+      </div>
+
+      <menu class="dialog__menu">
+        <button value="cancel" class="btn btn--ghost">Cancelar</button>
+        <button id="btnSave" value="default" class="btn">Guardar</button>
+      </menu>
+
+      <input id="taskId" type="hidden" />
+    </form>
+  </dialog>
+
+  <template id="tplCard">
+    <article class="card" draggable="true">
+      <div class="card__top">
+        <div class="badge" data-prio></div>
+        <div class="card__actions">
+          <button class="iconbtn" data-action="edit" title="Editar">✎</button>
+          <button class="iconbtn" data-action="delete" title="Borrar">🗑</button>
+        </div>
+      </div>
+      <h3 class="card__title"></h3>
+      <p class="card__desc"></p>
+      <div class="card__meta">
+        <span class="meta" data-created></span>
+        <span class="meta" data-updated></span>
+      </div>
+    </article>
+  </template>
+
+  <footer class="footer">
+    <span>Persistencia local (localStorage). Exportá/Importá si querés moverlo a otra máquina/navegador.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

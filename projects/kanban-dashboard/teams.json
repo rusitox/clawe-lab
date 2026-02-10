@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "teams": {
+    "General": {
+      "color": "#00d1ff"
+    },
+    "Engineering": {
+      "color": "#77bb41"
+    }
+  }
+}
