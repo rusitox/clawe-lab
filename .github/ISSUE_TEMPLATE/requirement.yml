@@ -1,0 +1,33 @@
+name: Requirement (from Rusitox)
+description: New software requirement. Use this as the source of truth.
+title: "[REQ] "
+labels: ["requirement"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be achieved?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is in-scope and out-of-scope?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How do we validate it works?
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / Links
+      description: Optional context.
+    validations:
+      required: false
