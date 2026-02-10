@@ -10,3 +10,10 @@ Formato recomendado:
   - Decision:
   - Rationale:
   - Links: Issue/PR
+
+- 2026-02-10 — **REQ-0001: initial direction locked**
+  - Decision: Home = family week agenda (Option A).
+  - Auth: Google Sign-In. Sync: backend day-one.
+  - Permissions: parent-managed per member.
+  - Deliverable: wireframes v0 (md).
+  - Links: Issue #1
