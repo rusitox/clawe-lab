@@ -47,3 +47,8 @@ The bot analyzes messages (e.g., invitations, schedule changes) and **proposes**
 - Platform constraints: WhatsApp official API vs other integrations.
 - Buttons/interactive UX available in WhatsApp channel (quick replies).
 - Multi-admin: who can confirm, and per-family permissions.
+
+## Confirmation model (decision)
+- Any **adult** (parent/mother/tutor) can confirm.
+- Minimal confirmation message in the group: `ok clawe`.
+- The bot must verify that the sender is mapped to an authorized adult in Family Hub before writing.
