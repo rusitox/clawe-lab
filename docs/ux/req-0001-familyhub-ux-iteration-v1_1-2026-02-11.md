@@ -73,6 +73,10 @@ Preferencias recomendadas:
 Regla base (v1):
 - Conflicto si: `demanda > capacidad`
 
+Decisión v1: `demanda` se computa con un flag manual por actividad de hijo/a: `Requiere adulto` (`requiresAdult`).
+- UI: checkbox en crear/editar.
+- IA/chat: debe preguntar explícitamente “¿requiere adulto?” antes de guardar.
+
 Donde:
 - `capacidad` = #padres/tutores sin eventos en esa franja (disponibilidad implícita)
 - `demanda` = #hijos con actividades simultáneas que requieren acompañamiento (definir flag “requiere adulto”)
