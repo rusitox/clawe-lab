@@ -1,5 +1,5 @@
-import React from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -7,6 +7,7 @@ import { WeekScreen } from '../screens/WeekScreen';
 import { CalendarScreen } from '../screens/CalendarScreen';
 import { FamilyScreen } from '../screens/FamilyScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { NewBottomSheet, type NewAction } from '../components/NewBottomSheet';
 import { theme } from '../theme';
 
 export type MainTabParamList = {
@@ -23,29 +24,55 @@ function NewPlaceholder() {
   return <View style={{ flex: 1, backgroundColor: theme.colors.bg }} />;
 }
 
+function notifySelected(action: NewAction) {
+  const msg =
+    action === 'event'
+      ? 'Crear Evento'
+      : action === 'task'
+        ? 'Crear Tarea'
+        : 'Crear Actividad';
+
+  // Happy-path placeholder until create flows/screens exist.
+  if (Platform.OS === 'web') {
+    // eslint-disable-next-line no-alert
+    (globalThis as any).alert?.(msg);
+    return;
+  }
+
+  Alert.alert(msg);
+}
+
 export function MainTabs() {
+  const [newOpen, setNewOpen] = useState(false);
+
+  const onSelectNew = useCallback((action: NewAction) => {
+    setNewOpen(false);
+    notifySelected(action);
+  }, []);
+
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarShowLabel: true,
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.textSecondary,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
-          marginTop: 2,
-        },
-        tabBarStyle: {
-          backgroundColor: theme.colors.card,
-          borderTopColor: theme.colors.border,
-          height: 74,
-          paddingBottom: Platform.OS === 'web' ? 12 : 10,
-          paddingTop: 8,
-        },
-        tabBarIcon: ({ color, size, focused }) => {
-          if (route.name === 'New') return null;
-          const icon =
+    <>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarActiveTintColor: theme.colors.primary,
+          tabBarInactiveTintColor: theme.colors.textSecondary,
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '600',
+            marginTop: 2,
+          },
+          tabBarStyle: {
+            backgroundColor: theme.colors.card,
+            borderTopColor: theme.colors.border,
+            height: 74,
+            paddingBottom: Platform.OS === 'web' ? 12 : 10,
+            paddingTop: 8,
+          },
+          tabBarIcon: ({ color, size, focused }) => {
+            if (route.name === 'New') return null;
+            const icon =
             route.name === 'Week'
               ? focused
                 ? 'calendar'
@@ -84,18 +111,23 @@ export function MainTabs() {
             </Pressable>
           ),
         }}
-        listeners={({ navigation }) => ({
+        listeners={() => ({
           tabPress: (e) => {
             e.preventDefault();
-            // TODO: open "Nuevo" bottom sheet (v0)
-            // For now, route to Week.
-            navigation.navigate('Week');
+            setNewOpen(true);
           },
         })}
       />
       <Tab.Screen name="Family" component={FamilyScreen} options={{ title: 'Familia' }} />
       <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: 'Ajustes' }} />
-    </Tab.Navigator>
+      </Tab.Navigator>
+
+      <NewBottomSheet
+        open={newOpen}
+        onClose={() => setNewOpen(false)}
+        onSelect={onSelectNew}
+      />
+    </>
   );
 }
 
