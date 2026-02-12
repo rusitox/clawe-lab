@@ -2,13 +2,15 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as Linking from 'expo-linking';
 
 import type { RootStackParamList } from './src/types/navigation';
-import { WelcomeScreen } from './src/screens/WelcomeScreen';
-import { OnboardingScreen } from './src/screens/OnboardingScreen';
-import { HomeScreen } from './src/screens/HomeScreen';
 import { InviteScreen } from './src/screens/InviteScreen';
+import { OnboardingStep1 } from './src/screens/OnboardingStep1';
+import { OnboardingStep2 } from './src/screens/OnboardingStep2';
+import { OnboardingStep3 } from './src/screens/OnboardingStep3';
+import { OnboardingStep4 } from './src/screens/OnboardingStep4';
+import { MainTabs } from './src/navigation/MainTabs';
+import { theme } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -17,37 +19,33 @@ const linking = {
   config: {
     screens: {
       Invite: 'invite/:code',
-      Welcome: 'welcome',
-      Onboarding: 'onboarding',
-      Home: 'home',
+      Onboarding1: 'onboarding/1',
+      Onboarding2: 'onboarding/2',
+      Onboarding3: 'onboarding/3',
+      Onboarding4: 'onboarding/4',
+      MainTabs: 'home',
     },
   },
 } as const;
 
 export default function App() {
   return (
-    <NavigationContainer
-      linking={linking}
-      fallback={null}
-      onReady={() => {
-        // For debugging in dev: where would an invite URL route?
-        // eslint-disable-next-line no-console
-        // console.log('Initial URL:', Linking.getInitialURL());
-      }}
-    >
+    <NavigationContainer linking={linking} fallback={null}>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="Onboarding1"
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#0B0E14' },
+          contentStyle: { backgroundColor: theme.colors.bg },
         }}
       >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Onboarding1" component={OnboardingStep1} />
+        <Stack.Screen name="Onboarding2" component={OnboardingStep2} />
+        <Stack.Screen name="Onboarding3" component={OnboardingStep3} />
+        <Stack.Screen name="Onboarding4" component={OnboardingStep4} />
+        <Stack.Screen name="MainTabs" component={MainTabs} />
         <Stack.Screen name="Invite" component={InviteScreen} />
       </Stack.Navigator>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </NavigationContainer>
   );
 }

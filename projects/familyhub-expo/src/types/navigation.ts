@@ -1,6 +1,8 @@
 export type RootStackParamList = {
-  Welcome: undefined;
-  Onboarding: undefined;
-  Home: undefined;
+  Onboarding1: undefined;
+  Onboarding2: undefined;
+  Onboarding3: undefined;
+  Onboarding4: undefined;
+  MainTabs: undefined;
   Invite: { code: string };
 };
