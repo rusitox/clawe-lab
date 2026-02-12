@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
+import { DayTimeline, DayTimelineItem } from '../components/DayTimeline';
 
 type Mode = 'Semana' | 'Mes' | 'Día';
 
@@ -46,6 +47,41 @@ export function WeekScreen() {
         type: 'Tarea',
         accent: theme.colors.primary,
         people: ['Ana'],
+      },
+    ],
+    []
+  );
+
+  const dayItems: DayTimelineItem[] = useMemo(
+    () => [
+      {
+        id: 'd1',
+        title: 'Reunión padres de familia',
+        start: '09:00',
+        end: '10:00',
+        type: 'Evento',
+        accent: '#3B82F6',
+        location: 'Colegio',
+        people: ['Carlos', 'Ana'],
+      },
+      {
+        id: 'd2',
+        title: 'Comprar material escolar',
+        start: '12:30',
+        end: '13:00',
+        type: 'Tarea',
+        accent: theme.colors.primary,
+        people: ['Ana'],
+      },
+      {
+        id: 'd3',
+        title: 'Natación (Mateo)',
+        start: '17:00',
+        end: '18:00',
+        type: 'Evento',
+        accent: '#F59E0B',
+        location: 'Club',
+        people: ['Mateo'],
       },
     ],
     []
@@ -105,46 +141,64 @@ export function WeekScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.dayRow}>
-          <View style={styles.dayPill}>
-            <Text style={styles.dayPillText}>9</Text>
+        {mode === 'Día' ? (
+          <DayTimeline datePill="9" dayName="Lunes" items={dayItems} />
+        ) : mode === 'Mes' ? (
+          <View style={styles.monthPlaceholder}>
+            <Ionicons name="grid-outline" size={20} color={theme.colors.textSecondary} />
+            <Text style={styles.monthPlaceholderTitle}>Vista mensual</Text>
+            <Text style={styles.monthPlaceholderText}>
+              Por ahora la vista “Mes” está en la pestaña Calendario.
+            </Text>
           </View>
-          <Text style={styles.dayText}>Lunes</Text>
-        </View>
+        ) : (
+          <>
+            <View style={styles.dayRow}>
+              <View style={styles.dayPill}>
+                <Text style={styles.dayPillText}>9</Text>
+              </View>
+              <Text style={styles.dayText}>Lunes</Text>
+            </View>
 
-        {items.map((it) => (
-          <View key={it.id} style={styles.card}>
-            <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
+            {items.map((it) => (
+              <View key={it.id} style={styles.card}>
+                <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
 
-            <View style={styles.cardBody}>
-              <View style={styles.cardTitleRow}>
-                <Ionicons name="calendar-outline" size={18} color={theme.colors.textSecondary} />
-                <Text style={styles.cardTitle}>{it.title}</Text>
-                <View style={styles.typePill}>
-                  <Text style={styles.typePillText}>{it.type}</Text>
+                <View style={styles.cardBody}>
+                  <View style={styles.cardTitleRow}>
+                    <Ionicons
+                      name={it.type === 'Evento' ? 'calendar-outline' : 'checkmark-circle-outline'}
+                      size={18}
+                      color={theme.colors.textSecondary}
+                    />
+                    <Text style={styles.cardTitle}>{it.title}</Text>
+                    <View style={styles.typePill}>
+                      <Text style={styles.typePillText}>{it.type}</Text>
+                    </View>
+                  </View>
+
+                  {it.time && (
+                    <View style={styles.metaRow}>
+                      <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
+                      <Text style={styles.metaText}>{it.time}</Text>
+                    </View>
+                  )}
+
+                  {!!it.people?.length && (
+                    <View style={styles.peopleRow}>
+                      {it.people.slice(0, 2).map((p) => (
+                        <View key={p} style={styles.avatar}>
+                          <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
+                        </View>
+                      ))}
+                      <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
+                    </View>
+                  )}
                 </View>
               </View>
-
-              {it.time && (
-                <View style={styles.metaRow}>
-                  <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
-                  <Text style={styles.metaText}>{it.time}</Text>
-                </View>
-              )}
-
-              {!!it.people?.length && (
-                <View style={styles.peopleRow}>
-                  {it.people.slice(0, 2).map((p) => (
-                    <View key={p} style={styles.avatar}>
-                      <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                    </View>
-                  ))}
-                  <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
-                </View>
-              )}
-            </View>
-          </View>
-        ))}
+            ))}
+          </>
+        )}
 
         <View style={{ height: 120 }} />
       </ScrollView>
@@ -271,6 +325,26 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: 16,
     fontWeight: '800',
+  },
+
+  monthPlaceholder: {
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.xl,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: 18,
+    gap: 8,
+  },
+  monthPlaceholderTitle: {
+    color: theme.colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  monthPlaceholderText: {
+    color: theme.colors.textSecondary,
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 18,
   },
 
   card: {
