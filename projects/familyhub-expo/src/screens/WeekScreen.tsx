@@ -10,10 +10,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
 import { DayTimeline, DayTimelineItem } from '../components/DayTimeline';
+import { ItemCard, type ItemType } from '../components/ItemCard';
 
 type Mode = 'Semana' | 'Mes' | 'Día';
-
-type ItemType = 'Evento' | 'Tarea';
 
 type WeekItem = {
   id: string;
@@ -47,6 +46,15 @@ export function WeekScreen() {
         type: 'Tarea',
         accent: theme.colors.primary,
         people: ['Ana'],
+      },
+      {
+        id: '3',
+        day: '9  Lunes',
+        title: 'Fútbol - Entrenamiento',
+        time: '16:00 - 17:30',
+        type: 'Actividad',
+        accent: '#F59E0B',
+        people: ['Lucas'],
       },
     ],
     []
@@ -161,41 +169,21 @@ export function WeekScreen() {
             </View>
 
             {items.map((it) => (
-              <View key={it.id} style={styles.card}>
-                <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
-
-                <View style={styles.cardBody}>
-                  <View style={styles.cardTitleRow}>
-                    <Ionicons
-                      name={it.type === 'Evento' ? 'calendar-outline' : 'checkmark-circle-outline'}
-                      size={18}
-                      color={theme.colors.textSecondary}
-                    />
-                    <Text style={styles.cardTitle}>{it.title}</Text>
-                    <View style={styles.typePill}>
-                      <Text style={styles.typePillText}>{it.type}</Text>
-                    </View>
-                  </View>
-
-                  {it.time && (
-                    <View style={styles.metaRow}>
-                      <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
-                      <Text style={styles.metaText}>{it.time}</Text>
-                    </View>
-                  )}
-
-                  {!!it.people?.length && (
-                    <View style={styles.peopleRow}>
-                      {it.people.slice(0, 2).map((p) => (
-                        <View key={p} style={styles.avatar}>
-                          <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                        </View>
-                      ))}
-                      <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
+              <ItemCard
+                key={it.id}
+                accent={it.accent}
+                title={it.title}
+                type={it.type}
+                time={it.time}
+                people={it.people}
+                leadingIcon={
+                  it.type === 'Evento'
+                    ? 'calendar-outline'
+                    : it.type === 'Tarea'
+                      ? 'checkmark-circle-outline'
+                      : 'barbell-outline'
+                }
+              />
             ))}
           </>
         )}
