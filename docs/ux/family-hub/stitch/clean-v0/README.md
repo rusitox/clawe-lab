@@ -45,3 +45,10 @@ Carpeta: `family-settings/`
 - Screen: **Family Hub: Configuración familiar**
 - `screenId`: `5edbf91bc81c48a99df7e862ab032cd0`
 - File: `01-config-familiar.png`
+
+## Ajustes — Integraciones (placeholders)
+Carpeta: `settings-integrations/`
+
+- Screen: **Family Hub: Settings & Integrations**
+- `screenId`: `58f9a090a2734964af0e4ec7518a96d2`
+- File: `01-ajustes-integraciones.png`
