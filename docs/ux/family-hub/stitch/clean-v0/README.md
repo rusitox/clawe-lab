@@ -38,3 +38,10 @@ Las próximas pantallas/flows a diseñar (todavía **no** están en este set v0)
 - Alertas de conflicto de calendario
 - Login/Signup + teléfono/WhatsApp (si lo definimos)
 - Agente IA (chat) + ingest WhatsApp + onboarding para invitar bot
+
+## Configuración familiar (new)
+Carpeta: `family-settings/`
+
+- Screen: **Family Hub: Configuración familiar**
+- `screenId`: `5edbf91bc81c48a99df7e862ab032cd0`
+- File: `01-config-familiar.png`
