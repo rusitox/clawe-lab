@@ -52,3 +52,10 @@ Carpeta: `settings-integrations/`
 - Screen: **Family Hub: Settings & Integrations**
 - `screenId`: `58f9a090a2734964af0e4ec7518a96d2`
 - File: `01-ajustes-integraciones.png`
+
+## Onboarding — Roles de miembros (adulto vs hijo/a)
+Carpeta: `onboarding-member-roles/`
+
+- Screen: **Onboarding: Add Family Roles**
+- `screenId`: `6dc4afbc63d141a4a6f706f305d338af`
+- File: `01-onboarding-roles.png`
