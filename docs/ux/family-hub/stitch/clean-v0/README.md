@@ -66,3 +66,10 @@ Carpeta: `ai-assistant/`
 - Screen: **Family Hub: Asistente IA**
 - `screenId`: `1705d2707bb54160a7526717ca78e5c9`
 - File: `01-asistente-ia.png`
+
+## WhatsApp (Beta)
+Carpeta: `whatsapp-integration/`
+
+- Screen: **Family Hub: WhatsApp (Beta) Integration**
+- `screenId`: `2226a6bb98364fed943b42c06352551b`
+- File: `01-whatsapp-beta.png`
