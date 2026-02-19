@@ -59,3 +59,10 @@ Carpeta: `onboarding-member-roles/`
 - Screen: **Onboarding: Add Family Roles**
 - `screenId`: `6dc4afbc63d141a4a6f706f305d338af`
 - File: `01-onboarding-roles.png`
+
+## Asistente IA (chat)
+Carpeta: `ai-assistant/`
+
+- Screen: **Family Hub: Asistente IA**
+- `screenId`: `1705d2707bb54160a7526717ca78e5c9`
+- File: `01-asistente-ia.png`
