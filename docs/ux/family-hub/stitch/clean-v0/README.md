@@ -80,3 +80,10 @@ Carpeta: `conflict-alert/`
 - Screen: **Family Hub: Conflict Resolution**
 - `screenId`: `dff79c74986e453586e36ae7af83fe86`
 - File: `01-conflicto-detectado.png`
+
+## Perfil — Teléfono (WhatsApp mapping)
+Carpeta: `user-profile-phone/`
+
+- Screen: **User Profile & WhatsApp Link**
+- `screenId`: `d1ec042ee5ca4c0baedec04e1243038c`
+- File: `01-perfil-telefono.png`
