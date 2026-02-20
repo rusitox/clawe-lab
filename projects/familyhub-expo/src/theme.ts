@@ -29,6 +29,7 @@ export const theme = {
     // surfaces
     controlBg: 'rgba(255, 255, 255, 0.70)',
     controlBorder: 'rgba(15, 23, 42, 0.08)',
+    muted: 'rgba(15, 23, 42, 0.06)',
 
     // chips
     chipDarkBg: '#0F172A',
