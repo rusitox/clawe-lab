@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
     fontSize: 12,
     fontWeight: '600',
+    backgroundColor: theme.colors.bg,
   },
   hourLine: {
     flex: 1,
