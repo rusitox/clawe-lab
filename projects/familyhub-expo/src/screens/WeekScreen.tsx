@@ -219,15 +219,14 @@ const styles = StyleSheet.create({
   segmented: {
     flexDirection: 'row',
     backgroundColor: theme.colors.card,
-    borderRadius: 18,
-    padding: 4,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderRadius: 22,
+    padding: 6,
+    ...theme.shadow.card,
   },
   segmentBtn: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 18,
   },
   segmentBtnActive: {
     backgroundColor: theme.colors.primary,
