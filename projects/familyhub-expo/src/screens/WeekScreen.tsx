@@ -290,16 +290,19 @@ const styles = StyleSheet.create({
   dayRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 12,
+    gap: 12,
+    marginBottom: 16,
   },
   dayPill: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(17,24,39,0.08)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.colors.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
+    ...theme.shadow.card,
   },
   dayPillText: {
     color: theme.colors.textPrimary,
@@ -308,7 +311,7 @@ const styles = StyleSheet.create({
   },
   dayText: {
     color: theme.colors.textPrimary,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
   },
 
