@@ -112,8 +112,23 @@ export function CalendarScreen() {
   );
 
   const dotMap = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const it of items) map.set(it.dateISO, (map.get(it.dateISO) ?? 0) + 1);
+    const personColor = (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('ana') || n.includes('mama')) return stitchTokens.colors.memberMama;
+      if (n.includes('carlos') || n.includes('papa')) return stitchTokens.colors.memberPapa;
+      if (n.includes('sofi')) return stitchTokens.colors.memberSofia;
+      if (n.includes('lucas') || n.includes('mateo')) return stitchTokens.colors.memberMateo;
+      return stitchTokens.colors.memberBlue;
+    };
+
+    const map = new Map<string, string[]>();
+    for (const it of items) {
+      const colors = map.get(it.dateISO) ?? [];
+      const people = it.people?.length ? it.people : ['Familia'];
+      // push at most one dot per item, prefer first person color
+      colors.push(personColor(people[0]));
+      map.set(it.dateISO, colors);
+    }
     return map;
   }, [items]);
 
@@ -246,7 +261,7 @@ export function CalendarScreen() {
                       return <View key={cIdx} style={styles.dayCell} />;
                     }
                     const isSelected = cell.iso === selectedISO;
-                    const dots = dotMap.get(cell.iso) ?? 0;
+                    const dots = dotMap.get(cell.iso) ?? [];
                     const isToday = cell.iso === isoDate(today);
 
                     return (
@@ -269,13 +284,13 @@ export function CalendarScreen() {
                           {cell.day}
                         </Text>
 
-                        {dots > 0 && (
+                        {dots.length > 0 && (
                           <View style={styles.dotsRow}>
-                            {Array.from({ length: Math.min(dots, 3) }).map((_, i) => (
+                            {dots.slice(0, 4).map((c, i) => (
                               <View
                                 // eslint-disable-next-line react/no-array-index-key
                                 key={i}
-                                style={[styles.dot, isSelected && styles.dotSelected]}
+                                style={[styles.dot, { backgroundColor: c }, isSelected && styles.dotSelected]}
                               />
                             ))}
                           </View>
