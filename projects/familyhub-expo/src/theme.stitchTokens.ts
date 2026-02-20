@@ -48,4 +48,41 @@ export const stitchTokens = {
     xxl: remToPx('2rem') ?? 32,
     full: 9999,
   },
+  spacing: {
+    // Inferred from Tailwind utility usage across Stitch exports (Semana/Mes/Día)
+    // Most common: 8, 12, 16, 4, 2, 6, 20, 24
+    xxs: 2,
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 20,
+    xxl: 24,
+  },
+  typography: {
+    // Inferred from text-* and font-* utilities
+    // Common sizes: 12(xs), 14(sm), 18(lg), 16(base), 24(2xl)
+    h1: { fontSize: 30, fontWeight: 700 },
+    h2: { fontSize: 24, fontWeight: 700 },
+    title: { fontSize: 18, fontWeight: 700 },
+    body: { fontSize: 14, fontWeight: 500 },
+    small: { fontSize: 12, fontWeight: 500 },
+  },
+  shadow: {
+    // Tailwind shadows used: shadow-sm (most), shadow-md, shadow-lg
+    card: {
+      shadowColor: '#000000',
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 4 },
+      elevation: 1,
+    },
+    floating: {
+      shadowColor: '#000000',
+      shadowOpacity: 0.12,
+      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 10 },
+      elevation: 6,
+    },
+  },
 } as const;
