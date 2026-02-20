@@ -73,3 +73,10 @@ Carpeta: `whatsapp-integration/`
 - Screen: **Family Hub: WhatsApp (Beta) Integration**
 - `screenId`: `2226a6bb98364fed943b42c06352551b`
 - File: `01-whatsapp-beta.png`
+
+## Conflicto detectado
+Carpeta: `conflict-alert/`
+
+- Screen: **Family Hub: Conflict Resolution**
+- `screenId`: `dff79c74986e453586e36ae7af83fe86`
+- File: `01-conflicto-detectado.png`
