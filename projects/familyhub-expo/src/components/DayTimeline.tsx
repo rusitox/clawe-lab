@@ -91,14 +91,25 @@ export function DayTimeline({
                 ]}
               >
                 <View style={styles.itemTitleRow}>
-                  <Ionicons
-                    name={it.type === 'Evento' ? 'calendar-outline' : 'checkmark-circle-outline'}
-                    size={16}
-                    color={theme.colors.textSecondary}
-                  />
-                  <Text numberOfLines={1} style={styles.itemTitle}>
-                    {it.title}
-                  </Text>
+                  <View style={[styles.iconBox, { backgroundColor: 'rgba(15, 23, 42, 0.06)' }]}>
+                    <Ionicons
+                      name={it.type === 'Evento' ? 'calendar-outline' : 'checkmark-circle-outline'}
+                      size={18}
+                      color={theme.colors.textSecondary}
+                    />
+                  </View>
+
+                  <View style={styles.titleCol}>
+                    {!!it.people?.length && (
+                      <Text style={[styles.memberLabel, { color: it.accent }]} numberOfLines={1}>
+                        {it.people[0]}
+                      </Text>
+                    )}
+                    <Text numberOfLines={1} style={styles.itemTitle}>
+                      {it.title}
+                    </Text>
+                  </View>
+
                   <View
                     style={[
                       styles.typePill,
@@ -272,12 +283,28 @@ const styles = StyleSheet.create({
   },
   itemTitleRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 8,
     marginBottom: 6,
   },
-  itemTitle: {
+  iconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleCol: {
     flex: 1,
+    gap: 1,
+  },
+  memberLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  itemTitle: {
     color: theme.colors.textPrimary,
     fontSize: 14,
     fontWeight: '800',
