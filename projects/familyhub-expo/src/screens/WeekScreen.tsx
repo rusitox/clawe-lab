@@ -125,7 +125,7 @@ export function WeekScreen() {
               <Ionicons
                 name={filterOpen ? 'chevron-up' : 'chevron-down'}
                 size={18}
-                color={theme.colors.textSecondary}
+                color={theme.colors.chipDarkText}
               />
             </Pressable>
 
@@ -244,16 +244,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: theme.colors.card,
-    borderRadius: 22,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.chipDarkBg,
+    borderRadius: 999,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     ...theme.shadow.card,
   },
   filterText: {
-    color: theme.colors.textPrimary,
+    color: theme.colors.chipDarkText,
     fontSize: 14,
     fontWeight: '700',
   },
