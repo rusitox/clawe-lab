@@ -94,3 +94,10 @@ Carpeta: `auth/`
 - Login — **Family Hub: Login Screen** — `screenId`: `8752f35db8314d1fb016af152546d939` — `01-login.png`
 - Selector de familia — **Tu familia** — `screenId`: `bbfd3e8644a643e18f9401038e8e86fb` — `02-family-picker.png`
 - Unirme por invitación — **Unirme a una familia** — `screenId`: `54ad0b9fdf944abcad78df164eec6548` — `03-join-invite.png`
+
+## Auth — opción WhatsApp (Beta)
+Carpeta: `auth-whatsapp-option/`
+
+- Screen: **Access Methods & WhatsApp Link**
+- `screenId`: `4f5cb0cec9204614978bc75eb235198c`
+- File: `01-metodos-acceso.png`
