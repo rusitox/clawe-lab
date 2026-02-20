@@ -73,12 +73,14 @@ const styles = StyleSheet.create({
     ...theme.shadow.card,
   },
   cardAccent: {
-    width: 6,
+    width: 10,
+    borderTopLeftRadius: theme.radius.xl,
+    borderBottomLeftRadius: theme.radius.xl,
   },
   cardBody: {
     flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
   },
   titleRow: {
     flexDirection: 'row',
@@ -89,8 +91,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     color: theme.colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: theme.typography.title.fontSize,
+    fontWeight: theme.typography.title.fontWeight,
   },
   pill: {
     paddingHorizontal: 10,
