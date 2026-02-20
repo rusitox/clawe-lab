@@ -71,7 +71,12 @@ export function DayTimeline({
               );
             })}
 
-            <View style={styles.nowLine} />
+            <View style={styles.nowLine}>
+              <Text style={styles.nowLabel}>14:45</Text>
+              <View style={styles.nowLineBar}>
+                <View style={styles.nowDot} />
+              </View>
+            </View>
 
             {laidOut.map((it) => (
               <View
@@ -207,22 +212,50 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: theme.colors.textSecondary,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   hourLine: {
     flex: 1,
     marginTop: 16,
-    borderTopColor: 'rgba(0,0,0,0.07)',
+    borderTopColor: 'rgba(15, 23, 42, 0.06)',
     borderTopWidth: 1,
   },
 
   nowLine: {
     position: 'absolute',
-    left: TIME_COL_W,
+    left: 0,
     right: 0,
-    top: 0,
-    height: 0,
+    top: HOUR_HEIGHT * 4.5, // demo position
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 10,
   },
+  nowLabel: {
+    width: TIME_COL_W,
+    paddingRight: 10,
+    textAlign: 'right',
+    color: theme.colors.primary,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  nowLineBar: {
+    flex: 1,
+    height: 2,
+    backgroundColor: theme.colors.primary,
+    position: 'relative',
+  },
+  nowDot: {
+    position: 'absolute',
+    left: -5,
+    top: -4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: theme.colors.primary,
+    borderWidth: 2,
+    borderColor: theme.colors.bg,
+  },
+
 
   item: {
     position: 'absolute',
