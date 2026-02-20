@@ -236,27 +236,27 @@ const styles = StyleSheet.create({
   },
   segmented: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.card,
-    borderRadius: 22,
-    padding: 6,
-    ...theme.shadow.card,
+    backgroundColor: 'rgba(15, 23, 42, 0.06)',
+    borderRadius: 18,
+    padding: 4,
   },
   segmentBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 14,
   },
   segmentBtnActive: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.card,
     ...theme.shadow.card,
   },
   segmentText: {
     color: theme.colors.textSecondary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   segmentTextActive: {
-    color: theme.colors.primaryText,
+    color: theme.colors.primary,
+    fontWeight: '700',
   },
   filterBtn: {
     flexDirection: 'row',
