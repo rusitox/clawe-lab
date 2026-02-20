@@ -23,40 +23,41 @@ function pillColors(type: ItemType) {
 
 export function ItemCard({ accent, title, type, time, people, leadingIcon = 'calendar-outline' }: ItemCardProps) {
   const pill = pillColors(type);
+  const startTime = time ? time.split('-')[0].trim() : undefined;
 
   return (
     <View style={styles.card}>
       <View style={[styles.cardAccent, { backgroundColor: accent }]} />
+
       <View style={styles.cardBody}>
-        <View style={styles.titleRow}>
-          <Ionicons name={leadingIcon as any} size={18} color={theme.colors.textSecondary} />
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text>
-          <View style={[styles.pill, { backgroundColor: pill.bg }]}>
-            <Text style={[styles.pillText, { color: pill.text }]}>{type}</Text>
-          </View>
+        <View style={styles.leftCol}>
+          {startTime ? <Text style={styles.timeText}>{startTime}</Text> : <View style={{ height: 16 }} />}
+          <Ionicons name={leadingIcon as any} size={20} color={theme.colors.textSecondary} />
         </View>
 
-        {time ? (
-          <View style={styles.metaRow}>
-            <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
-            <Text style={styles.metaText}>{time}</Text>
-          </View>
-        ) : null}
-
-        {!!people?.length ? (
-          <View style={styles.peopleRow}>
-            {people.slice(0, 2).map((p) => (
-              <View key={p} style={styles.avatar}>
-                <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-              </View>
-            ))}
-            <Text style={styles.peopleText} numberOfLines={1}>
-              {people.join(', ')}
+        <View style={styles.contentCol}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
             </Text>
+            <View style={[styles.pill, { backgroundColor: pill.bg }]}>
+              <Text style={[styles.pillText, { color: pill.text }]}>{type}</Text>
+            </View>
           </View>
-        ) : null}
+
+          {!!people?.length ? (
+            <View style={styles.peopleRow}>
+              {people.slice(0, 2).map((p) => (
+                <View key={p} style={styles.avatar}>
+                  <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
+                </View>
+              ))}
+              <Text style={styles.peopleText} numberOfLines={1}>
+                {people.join(', ')}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       </View>
     </View>
   );
@@ -80,12 +81,28 @@ const styles = StyleSheet.create({
   },
   cardBody: {
     flex: 1,
+    flexDirection: 'row',
     paddingVertical: 18,
     paddingHorizontal: 16,
+    gap: 14,
+  },
+  leftCol: {
+    width: 46,
+    alignItems: 'center',
+    paddingTop: 2,
+    gap: 6,
+  },
+  timeText: {
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  contentCol: {
+    flex: 1,
   },
   titleRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 10,
     marginBottom: 8,
   },
