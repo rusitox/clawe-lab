@@ -1,15 +1,17 @@
+import { stitchTokens } from './theme.stitchTokens';
+
 export const theme = {
   colors: {
-    // v0 parity targets (tuned iteratively by eyeballing v0 preview)
-    bg: '#F5F1EA',
-    card: '#FFFFFF',
+    // Source of truth: Stitch tokens (Family Hub (Clean))
+    bg: stitchTokens.colors.backgroundLight,
+    card: stitchTokens.colors.surfaceLight,
     border: 'rgba(15, 23, 42, 0.08)',
 
-    textPrimary: '#0F172A',
-    textSecondary: 'rgba(15, 23, 42, 0.55)',
+    textPrimary: stitchTokens.colors.textMain,
+    textSecondary: stitchTokens.colors.textMuted,
 
-    primary: '#2FAF86',
-    primaryText: '#FFFFFF',
+    primary: stitchTokens.colors.primary,
+    primaryText: stitchTokens.colors.primaryContent,
 
     pillBlueBg: 'rgba(59, 130, 246, 0.14)',
     pillBlueText: '#2563EB',
@@ -23,10 +25,10 @@ export const theme = {
     controlBorder: 'rgba(15, 23, 42, 0.08)',
   },
   radius: {
-    xl: 24,
-    lg: 18,
-    md: 16,
-    sm: 14,
+    xl: stitchTokens.radius.xl,
+    lg: stitchTokens.radius.lg,
+    md: stitchTokens.radius.default,
+    sm: stitchTokens.radius.default,
   },
   spacing: {
     xs: 8,
