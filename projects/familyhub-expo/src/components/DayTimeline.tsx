@@ -94,8 +94,20 @@ export function DayTimeline({
                   <Text numberOfLines={1} style={styles.itemTitle}>
                     {it.title}
                   </Text>
-                  <View style={styles.typePill}>
-                    <Text style={styles.typePillText}>{it.type}</Text>
+                  <View
+                    style={[
+                      styles.typePill,
+                      it.type === 'Tarea' ? styles.typePillTask : styles.typePillEvent,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.typePillText,
+                        it.type === 'Tarea' ? styles.typePillTextTask : styles.typePillTextEvent,
+                      ]}
+                    >
+                      {it.type}
+                    </Text>
                   </View>
                 </View>
 
@@ -117,15 +129,9 @@ export function DayTimeline({
 
                 {!!it.people?.length && (
                   <View style={styles.peopleRow}>
-                    <View style={styles.avatars}>
-                      {it.people.slice(0, 3).map((p) => (
-                        <View key={p} style={styles.avatar}>
-                          <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                        </View>
-                      ))}
-                    </View>
+                    <View style={[styles.dot, { backgroundColor: it.accent }]} />
                     <Text numberOfLines={1} style={styles.peopleText}>
-                      {it.people.join(', ')}
+                      {it.people.length === 1 ? it.people[0] : `${it.people[0]} +${it.people.length - 1}`}
                     </Text>
                   </View>
                 )}
@@ -244,17 +250,27 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   typePill: {
-    backgroundColor: theme.colors.pillPurpleBg,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 999,
   },
+  typePillEvent: {
+    backgroundColor: theme.colors.pillPurpleBg,
+  },
+  typePillTask: {
+    backgroundColor: theme.colors.pillBlueBg,
+  },
   typePillText: {
-    color: theme.colors.pillPurpleText,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.4,
     textTransform: 'uppercase',
+  },
+  typePillTextEvent: {
+    color: theme.colors.pillPurpleText,
+  },
+  typePillTextTask: {
+    color: theme.colors.pillBlueText,
   },
 
   metaRow: {
@@ -275,23 +291,10 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 4,
   },
-  avatars: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  avatar: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '900',
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   peopleText: {
     flex: 1,
