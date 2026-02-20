@@ -230,11 +230,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   segmentBtnActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: theme.colors.primary,
+    ...theme.shadow.card,
   },
   segmentText: {
     color: theme.colors.textSecondary,
@@ -242,7 +239,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   segmentTextActive: {
-    color: theme.colors.textPrimary,
+    color: theme.colors.primaryText,
   },
   filterBtn: {
     flexDirection: 'row',
