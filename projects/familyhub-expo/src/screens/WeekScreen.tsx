@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
+import { stitchTokens } from '../theme.stitchTokens';
 import { DayTimeline, DayTimelineItem } from '../components/DayTimeline';
 import { ItemCard, type ItemType } from '../components/ItemCard';
 
@@ -117,17 +118,34 @@ export function WeekScreen() {
           </View>
 
           <View style={{ position: 'relative' }}>
-            <Pressable
-              onPress={() => setFilterOpen((v) => !v)}
-              style={styles.filterBtn}
-            >
-              <Text style={styles.filterText}>Todos</Text>
-              <Ionicons
-                name={filterOpen ? 'chevron-up' : 'chevron-down'}
-                size={18}
-                color={theme.colors.chipDarkText}
-              />
-            </Pressable>
+            <View style={styles.filterRow}>
+              <Pressable
+                onPress={() => setFilterOpen((v) => !v)}
+                style={styles.filterBtn}
+              >
+                <Ionicons name="people" size={18} color={theme.colors.chipDarkText} />
+                <Text style={styles.filterText}>Todos</Text>
+                <Ionicons
+                  name={filterOpen ? 'chevron-up' : 'chevron-down'}
+                  size={18}
+                  color={theme.colors.chipDarkText}
+                />
+              </Pressable>
+
+              <View style={styles.avatarsRow}>
+                {[
+                  { label: 'M', bg: stitchTokens.colors.memberMama, fg: '#FFFFFF' },
+                  { label: 'P', bg: stitchTokens.colors.memberPapa, fg: theme.colors.textPrimary },
+                  { label: 'S', bg: stitchTokens.colors.memberSofia, fg: theme.colors.textPrimary },
+                  { label: 'M', bg: stitchTokens.colors.memberMateo, fg: theme.colors.textPrimary },
+                ].map((a, idx) => (
+                  <View key={idx} style={[styles.avatarChip, { backgroundColor: a.bg }]}
+                    >
+                    <Text style={[styles.avatarChipText, { color: a.fg }]}>{a.label}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
 
             {filterOpen && (
               <View style={styles.dropdown}>
@@ -249,6 +267,30 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     ...theme.shadow.card,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  avatarsRow: {
+    flexDirection: 'row',
+    marginLeft: 2,
+  },
+  avatarChip: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: theme.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -8,
+    ...theme.shadow.card,
+  },
+  avatarChipText: {
+    fontSize: 10,
+    fontWeight: '800',
   },
   filterText: {
     color: theme.colors.chipDarkText,
