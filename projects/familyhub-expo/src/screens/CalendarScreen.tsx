@@ -521,19 +521,20 @@ const styles = StyleSheet.create({
     flex: 1,
     aspectRatio: 1,
     borderRadius: 16,
-    backgroundColor: 'rgba(17,24,39,0.05)',
+    backgroundColor: theme.colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(17,24,39,0.06)',
+    borderColor: 'rgba(15, 23, 42, 0.06)',
+    ...theme.shadow.card,
   },
   dayCellSelected: {
     backgroundColor: theme.colors.primary,
     borderColor: theme.colors.primary,
   },
   dayCellToday: {
-    borderColor: 'rgba(59,130,246,0.45)',
-    backgroundColor: 'rgba(59,130,246,0.06)',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.card,
   },
   dayText: {
     color: theme.colors.textPrimary,
@@ -555,7 +556,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 999,
-    backgroundColor: 'rgba(17,24,39,0.35)',
+    backgroundColor: 'rgba(15, 23, 42, 0.35)',
   },
   dotSelected: {
     backgroundColor: 'rgba(255,255,255,0.9)',
