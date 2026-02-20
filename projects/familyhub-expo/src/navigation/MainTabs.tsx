@@ -59,39 +59,41 @@ export function MainTabs() {
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: theme.colors.textSecondary,
           tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: '600',
-            marginTop: 2,
+            fontSize: theme.typography.small.fontSize,
+            fontWeight: theme.typography.small.fontWeight,
+            marginTop: 4,
           },
           tabBarStyle: {
             backgroundColor: theme.colors.card,
             borderTopColor: theme.colors.border,
-            height: 74,
-            paddingBottom: Platform.OS === 'web' ? 12 : 10,
-            paddingTop: 8,
+            height: 86,
+            paddingBottom: Platform.OS === 'web' ? 14 : 12,
+            paddingTop: 12,
+            borderTopLeftRadius: theme.radius.xl,
+            borderTopRightRadius: theme.radius.xl,
           },
-          tabBarIcon: ({ color, size, focused }) => {
+          tabBarIcon: ({ color, focused }) => {
             if (route.name === 'New') return null;
             const icon =
-            route.name === 'Week'
-              ? focused
-                ? 'calendar'
-                : 'calendar-outline'
-              : route.name === 'Calendar'
+              route.name === 'Week'
                 ? focused
-                  ? 'grid'
-                  : 'grid-outline'
-                : route.name === 'Family'
+                  ? 'calendar'
+                  : 'calendar-outline'
+                : route.name === 'Calendar'
                   ? focused
-                    ? 'people'
-                    : 'people-outline'
-                  : focused
-                    ? 'settings'
-                    : 'settings-outline';
-          return <Ionicons name={icon as any} size={22} color={color} />;
-        },
-      })}
-    >
+                    ? 'grid'
+                    : 'grid-outline'
+                  : route.name === 'Family'
+                    ? focused
+                      ? 'people'
+                      : 'people-outline'
+                    : focused
+                      ? 'settings'
+                      : 'settings-outline';
+            return <Ionicons name={icon as any} size={22} color={color} />;
+          },
+        })}
+      >
       <Tab.Screen name="Week" component={WeekScreen} options={{ title: 'Semana' }} />
       <Tab.Screen name="Calendar" component={CalendarScreen} options={{ title: 'Calendario' }} />
       <Tab.Screen
@@ -135,19 +137,15 @@ const styles = StyleSheet.create({
   fabWrap: {
     alignItems: 'center',
     justifyContent: 'center',
-    top: -18,
+    top: -30,
   },
   fab: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
+    ...theme.shadow.floating,
   },
 });
