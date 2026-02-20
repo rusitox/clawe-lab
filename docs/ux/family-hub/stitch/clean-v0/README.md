@@ -101,3 +101,10 @@ Carpeta: `auth-whatsapp-option/`
 - Screen: **Access Methods & WhatsApp Link**
 - `screenId`: `4f5cb0cec9204614978bc75eb235198c`
 - File: `01-metodos-acceso.png`
+
+## Onboarding — WhatsApp bot (opcional)
+Carpeta: `onboarding-whatsapp-bot/`
+
+- Screen: **Onboarding: Optional WhatsApp Bot**
+- `screenId`: `78d0141154d34e9bbd0ac4efc2d8ea53`
+- File: `01-onboarding-whatsapp-bot.png`
