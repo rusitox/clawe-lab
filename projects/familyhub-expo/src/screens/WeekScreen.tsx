@@ -243,13 +243,14 @@ const styles = StyleSheet.create({
   filterBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
     backgroundColor: theme.colors.card,
-    borderRadius: 18,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    borderRadius: 22,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
     borderWidth: 1,
     borderColor: theme.colors.border,
+    ...theme.shadow.card,
   },
   filterText: {
     color: theme.colors.textPrimary,
