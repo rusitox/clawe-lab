@@ -13,12 +13,18 @@ export const theme = {
     primary: stitchTokens.colors.primary,
     primaryText: stitchTokens.colors.primaryContent,
 
-    pillBlueBg: 'rgba(59, 130, 246, 0.14)',
+    // Pills (match Stitch tailwind: bg-*-100 + text-*-600)
+    pillBlueBg: '#DBEAFE',
     pillBlueText: '#2563EB',
-    pillGreenBg: 'rgba(16, 185, 129, 0.14)',
+
+    pillPurpleBg: '#EDE9FE',
+    pillPurpleText: '#7C3AED',
+
+    pillGreenBg: '#D1FAE5',
     pillGreenText: '#059669',
-    pillOrangeBg: 'rgba(245, 158, 11, 0.18)',
-    pillOrangeText: '#B45309',
+
+    pillOrangeBg: '#FFEDD5',
+    pillOrangeText: '#EA580C',
 
     // surfaces
     controlBg: 'rgba(255, 255, 255, 0.70)',

@@ -15,9 +15,10 @@ export type ItemCardProps = {
 };
 
 function pillColors(type: ItemType) {
-  if (type === 'Tarea') return { bg: theme.colors.pillGreenBg, text: theme.colors.pillGreenText };
+  if (type === 'Tarea') return { bg: theme.colors.pillBlueBg, text: theme.colors.pillBlueText };
   if (type === 'Actividad') return { bg: theme.colors.pillOrangeBg, text: theme.colors.pillOrangeText };
-  return { bg: theme.colors.pillBlueBg, text: theme.colors.pillBlueText };
+  // Evento (Stitch uses purple)
+  return { bg: theme.colors.pillPurpleBg, text: theme.colors.pillPurpleText };
 }
 
 export function ItemCard({ accent, title, type, time, people, leadingIcon = 'calendar-outline' }: ItemCardProps) {
@@ -95,13 +96,15 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.title.fontWeight,
   },
   pill: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     borderRadius: 999,
   },
   pillText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '800',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
   },
   metaRow: {
     flexDirection: 'row',
