@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 import { theme } from '../theme';
+import { stitchTokens } from '../theme.stitchTokens';
 
 type Mode = 'Semana' | 'Mes' | 'Día';
 
@@ -142,7 +143,14 @@ export function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          Platform.OS === 'web'
+            ? ({ position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(12px)' } as any)
+            : null,
+        ]}
+      >
         <Text style={styles.headerTitle}>Family Hub</Text>
 
         <View style={styles.controlsRow}>
@@ -176,7 +184,7 @@ export function CalendarScreen() {
               <Ionicons
                 name={filterOpen ? 'chevron-up' : 'chevron-down'}
                 size={18}
-                color={theme.colors.textSecondary}
+                color={theme.colors.chipDarkText}
               />
             </Pressable>
 
@@ -349,14 +357,17 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: theme.spacing.lg,
-    paddingTop: Platform.OS === 'web' ? 18 : 12,
-    paddingBottom: 12,
+    paddingTop: Platform.OS === 'web' ? 24 : 18,
+    paddingBottom: 14,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(15, 23, 42, 0.06)',
   },
   headerTitle: {
     color: theme.colors.textPrimary,
-    fontSize: 26,
+    fontSize: 32,
     fontWeight: '900',
-    marginBottom: 10,
+    marginBottom: 14,
   },
   controlsRow: {
     flexDirection: 'row',
@@ -366,11 +377,9 @@ const styles = StyleSheet.create({
   },
   segmented: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.card,
+    backgroundColor: 'rgba(15, 23, 42, 0.06)',
     borderRadius: 18,
     padding: 4,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   segmentBtn: {
     paddingVertical: 8,
@@ -378,34 +387,31 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   segmentBtnActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: theme.colors.card,
+    ...theme.shadow.card,
   },
   segmentText: {
     color: theme.colors.textSecondary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   segmentTextActive: {
-    color: theme.colors.textPrimary,
+    color: theme.colors.primary,
+    fontWeight: '700',
   },
 
   filterBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: theme.colors.card,
-    borderRadius: 18,
+    gap: 8,
+    backgroundColor: theme.colors.chipDarkBg,
+    borderRadius: 999,
     paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    paddingHorizontal: 16,
+    ...theme.shadow.card,
   },
   filterText: {
-    color: theme.colors.textPrimary,
+    color: theme.colors.chipDarkText,
     fontSize: 14,
     fontWeight: '700',
   },
@@ -415,14 +421,11 @@ const styles = StyleSheet.create({
     top: 46,
     width: 160,
     backgroundColor: theme.colors.card,
-    borderRadius: 16,
-    borderColor: theme.colors.border,
+    borderRadius: theme.radius.xl,
+    borderColor: 'rgba(15, 23, 42, 0.06)',
     borderWidth: 1,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.10,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 8 },
+    ...theme.shadow.card,
     zIndex: 20,
   },
   dropdownItem: {
