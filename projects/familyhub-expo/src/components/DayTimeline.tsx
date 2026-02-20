@@ -21,7 +21,7 @@ function timeToMinutes(t: string) {
 
 const START_HOUR = 7;
 const END_HOUR = 22;
-const HOUR_HEIGHT = 72; // px-ish
+const HOUR_HEIGHT = 80; // Stitch export uses h-20 (80px)
 
 export function DayTimeline({
   datePill = '9',
