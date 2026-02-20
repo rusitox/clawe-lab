@@ -221,14 +221,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.lg,
     paddingTop: Platform.OS === 'web' ? 24 : 18,
     paddingBottom: 14,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(15, 23, 42, 0.06)',
   },
   headerWeb: {
     position: 'sticky',
     top: 0,
     zIndex: 20,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(15, 23, 42, 0.06)',
     // web-only
     backdropFilter: 'blur(12px)',
   },
