@@ -24,6 +24,7 @@ function pillColors(type: ItemType) {
 export function ItemCard({ accent, title, type, time, people, leadingIcon = 'calendar-outline' }: ItemCardProps) {
   const pill = pillColors(type);
   const startTime = time ? time.split('-')[0].trim() : undefined;
+  const peopleLabel = people?.length ? (people.length === 1 ? people[0] : `${people[0]} +${people.length - 1}`) : undefined;
 
   return (
     <View style={styles.card}>
@@ -45,15 +46,11 @@ export function ItemCard({ accent, title, type, time, people, leadingIcon = 'cal
             </View>
           </View>
 
-          {!!people?.length ? (
+          {peopleLabel ? (
             <View style={styles.peopleRow}>
-              {people.slice(0, 2).map((p) => (
-                <View key={p} style={styles.avatar}>
-                  <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                </View>
-              ))}
+              <View style={[styles.dot, { backgroundColor: accent }]} />
               <Text style={styles.peopleText} numberOfLines={1}>
-                {people.join(', ')}
+                {peopleLabel}
               </Text>
             </View>
           ) : null}
@@ -139,22 +136,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  avatar: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '800',
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   peopleText: {
     color: theme.colors.textSecondary,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
   },
 });
