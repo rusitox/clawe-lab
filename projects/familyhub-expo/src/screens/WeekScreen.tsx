@@ -201,14 +201,14 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: theme.spacing.lg,
-    paddingTop: Platform.OS === 'web' ? 18 : 12,
-    paddingBottom: 12,
+    paddingTop: Platform.OS === 'web' ? 24 : 18,
+    paddingBottom: 14,
   },
   headerTitle: {
     color: theme.colors.textPrimary,
-    fontSize: 26,
+    fontSize: 32,
     fontWeight: '900',
-    marginBottom: 10,
+    marginBottom: 14,
   },
   controlsRow: {
     flexDirection: 'row',
