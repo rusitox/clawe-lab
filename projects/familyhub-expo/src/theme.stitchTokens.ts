@@ -72,9 +72,9 @@ export const stitchTokens = {
     // Tailwind shadows used: shadow-sm (most), shadow-md, shadow-lg
     card: {
       shadowColor: '#000000',
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 3 },
       elevation: 1,
     },
     floating: {

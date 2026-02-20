@@ -5,7 +5,7 @@ export const theme = {
     // Source of truth: Stitch tokens (Family Hub (Clean))
     bg: stitchTokens.colors.backgroundLight,
     card: stitchTokens.colors.surfaceLight,
-    border: 'rgba(15, 23, 42, 0.08)',
+    border: 'rgba(15, 23, 42, 0.06)',
 
     textPrimary: stitchTokens.colors.textMain,
     textSecondary: stitchTokens.colors.textMuted,
