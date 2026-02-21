@@ -193,7 +193,7 @@ export function CalendarScreen() {
             })}
           </View>
 
-          <View style={{ position: 'relative' }}>
+          <View style={[styles.filterBarDay, { position: 'relative' }]}>
             <Pressable
               onPress={() => setFilterOpen((v) => !v)}
               style={[styles.filterBtn, mode === 'Día' && styles.filterBtnDay]}
@@ -217,6 +217,10 @@ export function CalendarScreen() {
                 color={mode === 'Día' ? theme.colors.textSecondary : theme.colors.chipDarkText}
               />
             </Pressable>
+
+            {mode === 'Día' ? (
+              <Text style={styles.quickDateText}>Hoy, 24 Oct</Text>
+            ) : null}
 
             {filterOpen && (
               <View style={styles.dropdown}>
@@ -479,6 +483,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     ...theme.shadow.card,
   },
+  filterBarDay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
+    marginLeft: 8,
+  },
   filterBtnDay: {
     backgroundColor: 'rgba(15, 23, 42, 0.06)',
     paddingVertical: 6,
@@ -487,6 +498,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15, 23, 42, 0.06)',
     ...theme.shadow.card,
+  },
+  quickDateText: {
+    color: theme.colors.textSecondary,
+    fontSize: 13,
+    fontWeight: '600',
   },
   filterAvatars: {
     flexDirection: 'row',
