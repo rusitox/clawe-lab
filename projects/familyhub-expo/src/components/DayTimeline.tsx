@@ -71,7 +71,15 @@ export function DayTimeline({
               );
             })}
 
-            <View style={styles.nowLine}>
+            <View
+              style={[
+                styles.nowLine,
+                {
+                  top:
+                    ((14 * 60 + 45 - START_HOUR * 60) / 60) * HOUR_HEIGHT,
+                },
+              ]}
+            >
               <Text style={styles.nowLabel}>14:45</Text>
               <View style={styles.nowLineBar}>
                 <View style={styles.nowDot} />
@@ -237,7 +245,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: HOUR_HEIGHT * 4.5, // demo position
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
