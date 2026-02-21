@@ -311,7 +311,7 @@ export function CalendarScreen() {
 
           <View style={[styles.panel, styles.agendaPanel]}>
             <View style={styles.panelHeader}>
-              <Text style={styles.panelTitle}>Agenda</Text>
+              <Text style={styles.panelTitle}>{mode === 'Día' ? 'Mi Día' : 'Agenda'}</Text>
               <Text style={styles.panelSubtitle}>{selectedISO}</Text>
             </View>
 
