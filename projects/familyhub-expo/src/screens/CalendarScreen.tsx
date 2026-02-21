@@ -219,7 +219,11 @@ export function CalendarScreen() {
             </Pressable>
 
             {mode === 'Día' ? (
-              <Text style={styles.quickDateText}>Hoy, 24 Oct</Text>
+              <Text style={styles.quickDateText}>
+                {selectedISO === isoDate(today)
+                  ? `Hoy, ${today.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`
+                  : new Date(selectedISO).toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' })}
+              </Text>
             ) : null}
 
             {filterOpen && (
