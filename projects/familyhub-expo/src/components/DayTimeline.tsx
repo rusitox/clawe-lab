@@ -32,6 +32,14 @@ export function DayTimeline({
   dayName?: string;
   items: DayTimelineItem[];
 }) {
+  const now = new Date();
+  const nowLabel = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const minMinutes = START_HOUR * 60;
+  const maxMinutes = END_HOUR * 60;
+  const nowClamped = Math.max(minMinutes, Math.min(maxMinutes, nowMinutes));
+  const nowTop = ((nowClamped - minMinutes) / 60) * HOUR_HEIGHT;
+
   const laidOut = useMemo(() => {
     const startMin = START_HOUR * 60;
     return items
@@ -71,16 +79,8 @@ export function DayTimeline({
               );
             })}
 
-            <View
-              style={[
-                styles.nowLine,
-                {
-                  top:
-                    ((14 * 60 + 45 - START_HOUR * 60) / 60) * HOUR_HEIGHT,
-                },
-              ]}
-            >
-              <Text style={styles.nowLabel}>14:45</Text>
+            <View style={[styles.nowLine, { top: nowTop }]}>
+              <Text style={styles.nowLabel}>{nowLabel}</Text>
               <View style={styles.nowLineBar}>
                 <View style={styles.nowDot} />
               </View>
