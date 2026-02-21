@@ -196,13 +196,25 @@ export function CalendarScreen() {
           <View style={{ position: 'relative' }}>
             <Pressable
               onPress={() => setFilterOpen((v) => !v)}
-              style={styles.filterBtn}
+              style={[styles.filterBtn, mode === 'Día' && styles.filterBtnDay]}
             >
-              <Text style={styles.filterText}>Todos</Text>
+              {mode === 'Día' ? (
+                <View style={styles.filterAvatars}>
+                  {[stitchTokens.colors.memberPurple, stitchTokens.colors.memberBlue, stitchTokens.colors.memberPink, stitchTokens.colors.memberTeal].map((c, idx) => (
+                    <View
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={idx}
+                      style={[styles.filterAvatarDot, { backgroundColor: c }]}
+                    />
+                  ))}
+                </View>
+              ) : null}
+
+              <Text style={[styles.filterText, mode === 'Día' && styles.filterTextDay]}>Todos</Text>
               <Ionicons
                 name={filterOpen ? 'chevron-up' : 'chevron-down'}
                 size={18}
-                color={theme.colors.chipDarkText}
+                color={mode === 'Día' ? theme.colors.textSecondary : theme.colors.chipDarkText}
               />
             </Pressable>
 
@@ -466,6 +478,32 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     ...theme.shadow.card,
+  },
+  filterBtnDay: {
+    backgroundColor: 'rgba(15, 23, 42, 0.06)',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(15, 23, 42, 0.06)',
+    ...theme.shadow.card,
+  },
+  filterAvatars: {
+    flexDirection: 'row',
+    marginRight: 2,
+  },
+  filterAvatarDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: theme.colors.card,
+    marginLeft: -6,
+  },
+  filterTextDay: {
+    color: theme.colors.textPrimary,
+    fontSize: 14,
+    fontWeight: '700',
   },
   filterText: {
     color: theme.colors.chipDarkText,
