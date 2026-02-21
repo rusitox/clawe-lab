@@ -57,7 +57,7 @@ function weekdayIndexMonFirst(d: Date) {
 }
 
 function monthLabelEs(d: Date) {
-  return d.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+  return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
 }
 
 export function CalendarScreen() {
@@ -221,8 +221,8 @@ export function CalendarScreen() {
             {mode === 'Día' ? (
               <Text style={styles.quickDateText}>
                 {selectedISO === isoDate(today)
-                  ? `Hoy, ${today.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`
-                  : new Date(selectedISO).toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' })}
+                  ? `Hoy, ${today.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}`
+                  : new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short' })}
               </Text>
             ) : null}
 
@@ -338,7 +338,7 @@ export function CalendarScreen() {
             {mode === 'Día' ? (
               <DayTimeline
                 datePill={String(Number(selectedISO.slice(-2)))}
-                dayName={new Date(selectedISO).toLocaleDateString('es-ES', { weekday: 'long' })}
+                dayName={new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'long' })}
                 items={agendaForDay.map((it, idx) => {
                   const parseRange = (t?: string) => {
                     if (!t) return undefined;
