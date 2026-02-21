@@ -319,22 +319,37 @@ export function CalendarScreen() {
               <DayTimeline
                 datePill={String(Number(selectedISO.slice(-2)))}
                 dayName={new Date(selectedISO).toLocaleDateString('es-ES', { weekday: 'long' })}
-                items={agendaForDay
-                  .filter((it) => !!it.time)
-                  .map((it) => {
-                    const [start] = (it.time ?? '').split('-').map((s) => s.trim());
-                    const end = it.time?.includes('-') ? it.time.split('-')[1].trim() : undefined;
-                    const safeEnd = end ?? `${start}`;
-                    return {
-                      id: it.id,
-                      title: it.title,
-                      start,
-                      end: safeEnd,
-                      type: it.type,
-                      accent: it.accent,
-                      people: it.people,
-                    } satisfies DayTimelineItem;
-                  })}
+                items={agendaForDay.map((it, idx) => {
+                  const parseRange = (t?: string) => {
+                    if (!t) return undefined;
+                    const parts = t.split('-').map((s) => s.trim());
+                    const start = parts[0];
+                    const end = parts[1] ?? parts[0];
+                    return { start, end };
+                  };
+
+                  // Default slots (if missing time) so tasks/events don't disappear from the timeline
+                  const fallback = () => {
+                    // stagger by index (simple + deterministic)
+                    const base = it.type === 'Tarea' ? 13 * 60 : 9 * 60;
+                    const startMin = base + idx * 30;
+                    const endMin = startMin + 30;
+                    const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+                    return { start: fmt(startMin), end: fmt(endMin) };
+                  };
+
+                  const r = parseRange(it.time) ?? fallback();
+
+                  return {
+                    id: it.id,
+                    title: it.title,
+                    start: r.start,
+                    end: r.end,
+                    type: it.type,
+                    accent: it.accent,
+                    people: it.people,
+                  } satisfies DayTimelineItem;
+                })}
               />
             ) : agendaForDay.length === 0 ? (
               <View style={styles.empty}>
