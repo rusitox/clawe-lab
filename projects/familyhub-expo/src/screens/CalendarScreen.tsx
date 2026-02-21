@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { theme } from '../theme';
 import { stitchTokens } from '../theme.stitchTokens';
+import { DayTimeline, type DayTimelineItem } from '../components/DayTimeline';
 
 type Mode = 'Semana' | 'Mes' | 'Día';
 
@@ -179,6 +180,7 @@ export function CalendarScreen() {
                     setMode(m);
                     if (m === 'Semana') navigation.navigate('Week');
                     if (m === 'Mes') navigation.navigate('Calendar');
+                    // Día stays inside this screen (timeline)
                   }}
                   style={[styles.segmentBtn, active && styles.segmentBtnActive]}
                 >
@@ -267,7 +269,10 @@ export function CalendarScreen() {
                     return (
                       <Pressable
                         key={cIdx}
-                        onPress={() => setSelectedISO(cell.iso)}
+                        onPress={() => {
+                          setSelectedISO(cell.iso);
+                          setMode('Día');
+                        }}
                         style={[
                           styles.dayCell,
                           isSelected && styles.dayCellSelected,
@@ -309,7 +314,28 @@ export function CalendarScreen() {
               <Text style={styles.panelSubtitle}>{selectedISO}</Text>
             </View>
 
-            {agendaForDay.length === 0 ? (
+            {mode === 'Día' ? (
+              <DayTimeline
+                datePill={String(Number(selectedISO.slice(-2)))}
+                dayName={new Date(selectedISO).toLocaleDateString('es-ES', { weekday: 'long' })}
+                items={agendaForDay
+                  .filter((it) => !!it.time)
+                  .map((it) => {
+                    const [start] = (it.time ?? '').split('-').map((s) => s.trim());
+                    const end = it.time?.includes('-') ? it.time.split('-')[1].trim() : undefined;
+                    const safeEnd = end ?? `${start}`;
+                    return {
+                      id: it.id,
+                      title: it.title,
+                      start,
+                      end: safeEnd,
+                      type: it.type,
+                      accent: it.accent,
+                      people: it.people,
+                    } satisfies DayTimelineItem;
+                  })}
+              />
+            ) : agendaForDay.length === 0 ? (
               <View style={styles.empty}>
                 <Text style={styles.emptyTitle}>Sin items</Text>
                 <Text style={styles.emptyText}>No hay eventos ni tareas para este día.</Text>
