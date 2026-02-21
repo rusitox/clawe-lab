@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
@@ -32,7 +32,13 @@ export function DayTimeline({
   dayName?: string;
   items: DayTimelineItem[];
 }) {
-  const now = new Date();
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const now = useMemo(() => new Date(), [tick]);
   const nowLabel = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
   const minMinutes = START_HOUR * 60;
