@@ -86,6 +86,7 @@ export function CalendarScreen() {
         id: '2',
         dateISO: selectedISO,
         title: 'Comprar material escolar',
+        time: '13:00 - 13:30',
         type: 'Tarea',
         accent: theme.colors.primary,
         people: ['Ana'],
