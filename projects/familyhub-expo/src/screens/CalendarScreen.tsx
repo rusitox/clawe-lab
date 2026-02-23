@@ -221,8 +221,8 @@ export function CalendarScreen() {
             {mode === 'Día' ? (
               <Text style={styles.quickDateText}>
                 {selectedISO === isoDate(today)
-                  ? `Hoy, ${today.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}`
-                  : new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short' })}
+                  ? `Hoy, ${toTitleCase(today.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }))}`
+                  : toTitleCase(new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short' }))}
               </Text>
             ) : null}
 
@@ -338,7 +338,7 @@ export function CalendarScreen() {
             {mode === 'Día' ? (
               <DayTimeline
                 datePill={String(Number(selectedISO.slice(-2)))}
-                dayName={new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'long' })}
+                dayName={toTitleCase(new Date(selectedISO).toLocaleDateString('es-AR', { weekday: 'long' }))}
                 items={agendaForDay.map((it, idx) => {
                   const parseRange = (t?: string) => {
                     if (!t) return undefined;
