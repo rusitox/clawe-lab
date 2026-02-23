@@ -717,8 +717,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     flex: 1,
     color: theme.colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: theme.typography.title.fontSize,
+    fontWeight: theme.typography.title.fontWeight,
   },
   typePill: {
     backgroundColor: 'rgba(59,130,246,0.12)',
