@@ -60,6 +60,13 @@ function monthLabelEs(d: Date) {
   return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
 }
 
+function getPillColors(type: ItemType) {
+  if (type === 'Tarea') {
+    return { bg: theme.colors.pillPurpleBg, text: theme.colors.pillPurpleText };
+  }
+  return { bg: theme.colors.pillBlueBg, text: theme.colors.pillBlueText };
+}
+
 export function CalendarScreen() {
   const navigation = useNavigation<any>();
   const { width } = useWindowDimensions();
@@ -378,43 +385,46 @@ export function CalendarScreen() {
               </View>
             ) : (
               <View style={{ gap: 12 }}>
-                {agendaForDay.map((it) => (
-                  <View key={it.id} style={styles.card}>
-                    <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
+                {agendaForDay.map((it) => {
+                  const pillColors = getPillColors(it.type);
+                  return (
+                    <View key={it.id} style={styles.card}>
+                      <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
 
-                    <View style={styles.cardBody}>
-                      <View style={styles.cardTitleRow}>
-                        <Ionicons
-                          name={it.type === 'Evento' ? 'calendar-outline' : 'checkbox-outline'}
-                          size={18}
-                          color={theme.colors.textSecondary}
-                        />
-                        <Text style={styles.cardTitle}>{it.title}</Text>
-                        <View style={styles.typePill}>
-                          <Text style={styles.typePillText}>{it.type}</Text>
+                      <View style={styles.cardBody}>
+                        <View style={styles.cardTitleRow}>
+                          <Ionicons
+                            name={it.type === 'Evento' ? 'calendar-outline' : 'checkbox-outline'}
+                            size={18}
+                            color={theme.colors.textSecondary}
+                          />
+                          <Text style={styles.cardTitle}>{it.title}</Text>
+                          <View style={[styles.typePill, { backgroundColor: pillColors.bg }]}>
+                            <Text style={[styles.typePillText, { color: pillColors.text }]}>{it.type}</Text>
+                          </View>
                         </View>
+
+                        {it.time && (
+                          <View style={styles.metaRow}>
+                            <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
+                            <Text style={styles.metaText}>{it.time}</Text>
+                          </View>
+                        )}
+
+                        {!!it.people?.length && (
+                          <View style={styles.peopleRow}>
+                            {it.people.slice(0, 2).map((p) => (
+                              <View key={p} style={styles.avatar}>
+                                <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
+                              </View>
+                            ))}
+                            <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
+                          </View>
+                        )}
                       </View>
-
-                      {it.time && (
-                        <View style={styles.metaRow}>
-                          <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
-                          <Text style={styles.metaText}>{it.time}</Text>
-                        </View>
-                      )}
-
-                      {!!it.people?.length && (
-                        <View style={styles.peopleRow}>
-                          {it.people.slice(0, 2).map((p) => (
-                            <View key={p} style={styles.avatar}>
-                              <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                            </View>
-                          ))}
-                          <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
-                        </View>
-                      )}
                     </View>
-                  </View>
-                ))}
+                  );
+                })}
               </View>
             )}
           </View>
@@ -721,15 +731,15 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.title.fontWeight,
   },
   typePill: {
-    backgroundColor: 'rgba(59,130,246,0.12)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     borderRadius: 999,
   },
   typePillText: {
-    color: '#2563EB',
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '800',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
   },
   metaRow: {
     flexDirection: 'row',
