@@ -6,6 +6,7 @@ import type { RootStackParamList } from '../types/navigation';
 import { theme } from '../theme';
 import { SvgXmlAsset } from '../components/SvgXmlAsset';
 import { loginSvgXml_1 as googleLogoSvgXml } from '../assets/stitch/loginInlineSvgs';
+import { appMarkSvgXml } from '../assets/stitch/appMarkSvg';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -18,8 +19,7 @@ export function LoginScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.heroIconWrap}>
-        {/* Placeholder: Stitch shows a rounded square badge with an app mark */}
-        <View style={styles.heroIconBadge} />
+        <SvgXmlAsset xml={appMarkSvgXml} width={64} height={64} />
       </View>
 
       <Text style={styles.title}>Family Hub</Text>
