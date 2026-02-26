@@ -1,11 +1,6 @@
-// App mark placeholder (SVG) for Login.
-// Stitch Login uses Material Symbols glyph: `home_app_logo`.
-// Until we extract an exact match, we use this simple house mark in the same color family.
+// Extracted from Google Material Symbols (as used by Stitch exports)
+// Glyph: `home_app_logo`
+// Source: https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/home_app_logo/default/48px.svg
+// Note: This is the outlined symbol; Stitch sets FILL=1 in some screens. We can swap variants later if needed.
 
-export const appMarkSvgXml = `
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="64" height="64" rx="18" fill="#FCEBDD"/>
-  <path d="M18 30.2L32 19L46 30.2V46C46 47.1046 45.1046 48 44 48H20C18.8954 48 18 47.1046 18 46V30.2Z" fill="#EE8C2B"/>
-  <path d="M27.5 48V36.5C27.5 35.3954 28.3954 34.5 29.5 34.5H34.5C35.6046 34.5 36.5 35.3954 36.5 36.5V48" fill="#F8F7F6"/>
-</svg>
-`;
+export const appMarkSvgXml = `<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"><path d="M480-430ZM233-120q-47.08 0-80.04-32.96Q120-185.92 120-233v-247q0-22.59 8.49-43.29Q136.97-544 153-560l248-247q17-17 37.51-25 20.52-8 41.49-8 21.65 0 42.35 8.01Q543.06-823.97 560-807l247 247q16.03 16 24.51 36.71Q840-502.59 840-480v247q0 47.08-32.67 80.04Q774.67-120 728-120H233Zm0-60h495q22.1 0 37.05-15.5Q780-211 780-233v-247q0-10.91-3.5-20.45Q773-510 765-518L599-684l-76 76 152 153v170H285v-170l271-271-39.06-38.57q-10.41-10.29-20.18-12.86Q487-780 480.5-780q-6.5 0-17 2.5T443-765L196-518q-8 8.14-12 17.64T180-480v247q0 22 15.5 37.5T233-180Zm112-165h270v-85L480-565 345-430v85Z"/></svg>`;
