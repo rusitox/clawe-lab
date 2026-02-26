@@ -22,12 +22,11 @@ export function LoginScreen({ navigation }: Props) {
         <SvgXmlAsset xml={appMarkSvgXml} width={64} height={64} />
       </View>
 
-      <Text style={styles.title}>Family Hub</Text>
-      <Text style={styles.subtitle}>Organizá la actividad de tu familia{`\n`}en un solo lugar</Text>
+      <Text style={styles.kicker}>Family Hub</Text>
 
-      {/* Illustration placeholder (Stitch uses a big centered illustration/card) */}
-      <View style={styles.illustrationCard}>
-        <View style={styles.illustrationInner} />
+      <View style={styles.welcome}>
+        <Text style={styles.h1}>Bienvenido a Family Hub</Text>
+        <Text style={styles.subtitle}>Organizá la semana de tu familia en un solo lugar.</Text>
       </View>
 
       <Pressable style={styles.googleBtn} onPress={onGoogle}>
@@ -52,52 +51,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.bg,
-    paddingHorizontal: 22,
-    paddingTop: 26,
+    paddingHorizontal: 24,
+    paddingTop: 80, // ~pt-20
     paddingBottom: 18,
     alignItems: 'center',
   },
   heroIconWrap: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 24,
   },
-  heroIconBadge: {
-    width: 74,
-    height: 74,
-    borderRadius: 22,
-    backgroundColor: 'rgba(238, 140, 43, 0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(238, 140, 43, 0.18)',
-  },
-  title: {
-    color: theme.colors.textPrimary,
-    fontSize: 34,
+  kicker: {
+    color: 'rgba(24, 20, 17, 0.85)',
+    fontSize: 12,
     fontWeight: '800',
-    marginTop: 6,
+    letterSpacing: 2.2,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  welcome: {
+    alignItems: 'center',
+    marginBottom: 48, // ~mb-12
+    paddingHorizontal: 16,
+  },
+  h1: {
+    color: theme.colors.textPrimary,
+    fontSize: 32,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 38,
+    marginBottom: 16,
   },
   subtitle: {
-    color: theme.colors.textSecondary,
-    fontSize: 15,
-    lineHeight: 22,
+    color: 'rgba(24, 20, 17, 0.55)',
+    fontSize: 18,
+    lineHeight: 26,
     textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 18,
-  },
-  illustrationCard: {
-    width: '100%',
-    maxWidth: 520,
-    borderRadius: theme.radius.xl,
-    backgroundColor: theme.colors.card,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: 18,
-    marginBottom: 18,
-    ...theme.shadow.card,
-  },
-  illustrationInner: {
-    height: 210,
-    borderRadius: theme.radius.lg,
-    backgroundColor: 'rgba(238, 140, 43, 0.10)',
   },
   googleBtn: {
     width: '100%',
@@ -106,32 +93,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    backgroundColor: theme.colors.card,
-    borderRadius: 999,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(15, 23, 42, 0.10)',
-    marginTop: 6,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.radius.xl,
+    paddingVertical: 16,
+    borderWidth: 0,
+    marginTop: 'auto',
   },
   googleBtnText: {
-    color: theme.colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '700',
+    color: theme.colors.primaryText,
+    fontSize: 16,
+    fontWeight: '800',
   },
   linkWrap: {
     paddingVertical: 16,
   },
   link: {
-    color: theme.colors.primary,
+    color: theme.colors.textSecondary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   legal: {
     color: 'rgba(24, 20, 17, 0.50)',
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 18,
-    marginTop: 'auto',
+    marginTop: 12,
   },
   legalLink: {
     textDecorationLine: 'underline',
