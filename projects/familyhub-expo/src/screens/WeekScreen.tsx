@@ -98,7 +98,14 @@ export function WeekScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, Platform.OS === 'web' && (styles.headerWeb as any)]}>
+      <View
+        style={[
+          styles.header,
+          Platform.OS === 'web'
+            ? ({ position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(12px)' } as any)
+            : null,
+        ]}
+      >
         <Text style={styles.headerTitle}>Family Hub</Text>
 
         <View style={styles.controlsRow}>
@@ -224,13 +231,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.95)',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(15, 23, 42, 0.06)',
-  },
-  headerWeb: {
-    position: 'sticky',
-    top: 0,
-    zIndex: 20,
-    // web-only
-    backdropFilter: 'blur(12px)',
   },
   headerTitle: {
     color: theme.colors.textPrimary,

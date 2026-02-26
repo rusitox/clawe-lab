@@ -14,10 +14,9 @@ import { useNavigation } from '@react-navigation/native';
 import { theme } from '../theme';
 import { stitchTokens } from '../theme.stitchTokens';
 import { DayTimeline, type DayTimelineItem } from '../components/DayTimeline';
+import { ItemCard, type ItemType } from '../components/ItemCard';
 
 type Mode = 'Semana' | 'Mes' | 'Día';
-
-type ItemType = 'Evento' | 'Tarea';
 
 type AgendaItem = {
   id: string;
@@ -60,13 +59,6 @@ function monthLabelEs(d: Date) {
   return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
 }
 
-function getPillColors(type: ItemType) {
-  if (type === 'Tarea') {
-    return { bg: theme.colors.pillPurpleBg, text: theme.colors.pillPurpleText };
-  }
-  return { bg: theme.colors.pillBlueBg, text: theme.colors.pillBlueText };
-}
-
 export function CalendarScreen() {
   const navigation = useNavigation<any>();
   const { width } = useWindowDimensions();
@@ -97,6 +89,15 @@ export function CalendarScreen() {
         type: 'Tarea',
         accent: theme.colors.primary,
         people: ['Ana'],
+      },
+      {
+        id: '4',
+        dateISO: selectedISO,
+        title: 'Clase de natación',
+        time: '17:00 - 18:00',
+        type: 'Actividad',
+        accent: '#F59E0B',
+        people: ['Sofia'],
       },
       {
         id: '3',
@@ -385,46 +386,17 @@ export function CalendarScreen() {
               </View>
             ) : (
               <View style={{ gap: 12 }}>
-                {agendaForDay.map((it) => {
-                  const pillColors = getPillColors(it.type);
-                  return (
-                    <View key={it.id} style={styles.card}>
-                      <View style={[styles.cardAccent, { backgroundColor: it.accent }]} />
-
-                      <View style={styles.cardBody}>
-                        <View style={styles.cardTitleRow}>
-                          <Ionicons
-                            name={it.type === 'Evento' ? 'calendar-outline' : 'checkbox-outline'}
-                            size={18}
-                            color={theme.colors.textSecondary}
-                          />
-                          <Text style={styles.cardTitle}>{it.title}</Text>
-                          <View style={[styles.typePill, { backgroundColor: pillColors.bg }]}>
-                            <Text style={[styles.typePillText, { color: pillColors.text }]}>{it.type}</Text>
-                          </View>
-                        </View>
-
-                        {it.time && (
-                          <View style={styles.metaRow}>
-                            <Ionicons name="time-outline" size={16} color={theme.colors.textSecondary} />
-                            <Text style={styles.metaText}>{it.time}</Text>
-                          </View>
-                        )}
-
-                        {!!it.people?.length && (
-                          <View style={styles.peopleRow}>
-                            {it.people.slice(0, 2).map((p) => (
-                              <View key={p} style={styles.avatar}>
-                                <Text style={styles.avatarText}>{p[0].toUpperCase()}</Text>
-                              </View>
-                            ))}
-                            <Text style={styles.peopleText}>{it.people.join(', ')}</Text>
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                  );
-                })}
+                {agendaForDay.map((it) => (
+                  <ItemCard
+                    key={it.id}
+                    accent={it.accent}
+                    title={it.title}
+                    type={it.type}
+                    time={it.time}
+                    people={it.people}
+                    leadingIcon={it.type === 'Evento' ? 'calendar-outline' : it.type === 'Tarea' ? 'checkmark-circle-outline' : 'barbell-outline'}
+                  />
+                ))}
               </View>
             )}
           </View>
