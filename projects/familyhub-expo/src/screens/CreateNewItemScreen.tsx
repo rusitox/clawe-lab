@@ -5,6 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 
 import type { RootStackParamList } from '../types/navigation';
 import { theme } from '../theme';
+import { SvgXmlAsset } from '../components/SvgXmlAsset';
+import {
+  material_calendar_month_svgXml,
+  material_check_circle_svgXml,
+  material_stadia_controller_svgXml,
+  material_chevron_right_svgXml,
+} from '../assets/material/materialSymbolsSvgs';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateNewItem'>;
 
@@ -41,39 +48,69 @@ export function CreateNewItemScreen({ navigation }: Props) {
         <Pressable style={styles.card} onPress={() => onSelect('event')}>
           <View style={styles.cardRow}>
             <View style={[styles.iconWrap, { backgroundColor: theme.colors.pillBlueBg }]}>
-              <Ionicons name="calendar" size={18} color={theme.colors.pillBlueText} />
+              <SvgXmlAsset
+                xml={material_calendar_month_svgXml}
+                width={18}
+                height={18}
+                color={theme.colors.pillBlueText}
+              />
             </View>
             <View style={styles.cardBody}>
               <Text style={styles.cardTitle}>Evento</Text>
               <Text style={styles.cardDesc}>Cumpleaños, médico, reunión escolar…</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={theme.colors.textSecondary} />
+            <SvgXmlAsset
+              xml={material_chevron_right_svgXml}
+              width={18}
+              height={18}
+              color={theme.colors.textSecondary}
+            />
           </View>
         </Pressable>
 
         <Pressable style={styles.card} onPress={() => onSelect('task')}>
           <View style={styles.cardRow}>
             <View style={[styles.iconWrap, { backgroundColor: theme.colors.pillOrangeBg }]}>
-              <Ionicons name="checkmark-circle" size={18} color={theme.colors.pillOrangeText} />
+              <SvgXmlAsset
+                xml={material_check_circle_svgXml}
+                width={18}
+                height={18}
+                color={theme.colors.pillOrangeText}
+              />
             </View>
             <View style={styles.cardBody}>
               <Text style={styles.cardTitle}>Tarea</Text>
               <Text style={styles.cardDesc}>Algo que alguien tiene que hacer.</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={theme.colors.textSecondary} />
+            <SvgXmlAsset
+              xml={material_chevron_right_svgXml}
+              width={18}
+              height={18}
+              color={theme.colors.textSecondary}
+            />
           </View>
         </Pressable>
 
         <Pressable style={styles.card} onPress={() => onSelect('activity')}>
           <View style={styles.cardRow}>
             <View style={[styles.iconWrap, { backgroundColor: theme.colors.pillGreenBg }]}>
-              <Ionicons name="sparkles" size={18} color={theme.colors.pillGreenText} />
+              <SvgXmlAsset
+                xml={material_stadia_controller_svgXml}
+                width={18}
+                height={18}
+                color={theme.colors.pillGreenText}
+              />
             </View>
             <View style={styles.cardBody}>
               <Text style={styles.cardTitle}>Actividad</Text>
               <Text style={styles.cardDesc}>Rutinas, planes, recordatorios.</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={theme.colors.textSecondary} />
+            <SvgXmlAsset
+              xml={material_chevron_right_svgXml}
+              width={18}
+              height={18}
+              color={theme.colors.textSecondary}
+            />
           </View>
         </Pressable>
       </View>
