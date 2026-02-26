@@ -5,5 +5,6 @@ export type RootStackParamList = {
   Onboarding4: undefined;
   MainTabs: undefined;
   CreateNewItem: undefined;
+  Login: undefined;
   Invite: { code: string };
 };
