@@ -20,7 +20,7 @@ import time
 import urllib.request
 
 
-def fetch(url: str, retries: int = 8, base_sleep: float = 2.0) -> str:
+def fetch(url: str, retries: int = 10, base_sleep: float = 2.0) -> str:
     last_err = None
     for i in range(retries):
         try:
@@ -40,10 +40,26 @@ def main():
     ap.add_argument("--prefix", required=True)
     args = ap.parse_args()
 
-    html = fetch(args.url)
-    svgs = re.findall(r"(<svg\\b[\\s\\S]*?</svg>)", html, flags=re.I)
+    # Stitch download URLs can intermittently rate-limit (HTTP 429) or serve an HTML interstitial.
+    # If we fetch successfully but no SVGs are present, retry a few times with backoff.
+    html = None
+    for i in range(6):
+        html = fetch(args.url)
+        svgs = re.findall(r"(<svg\b[\s\S]*?</svg>)", html, flags=re.I)
+        if svgs:
+            break
+        # Heuristic: detect rate-limit/interstitial content
+        low = (html or "").lower()
+        if "too many requests" in low or "429" in low or "captcha" in low:
+            time.sleep(2 * (i + 1))
+            continue
+        # Not rate limit, genuinely no SVG
+        break
+
+    svgs = re.findall(r"(<svg\b[\s\S]*?</svg>)", html or "", flags=re.I)
     if not svgs:
-        print("No inline SVG found.", file=sys.stderr)
+        preview = (html or "").strip().replace("\n", " ")[:220]
+        print(f"No inline SVG found. html preview: {preview}", file=sys.stderr)
         sys.exit(2)
 
     out_path = args.out
