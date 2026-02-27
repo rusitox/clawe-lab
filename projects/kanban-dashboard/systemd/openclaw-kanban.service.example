@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenClaw Kanban Dashboard (python)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ubuntu/.openclaw/workspace/kanban-dashboard
+ExecStart=/usr/bin/python3 /home/ubuntu/.openclaw/workspace/kanban-dashboard/server.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
