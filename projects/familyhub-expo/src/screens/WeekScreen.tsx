@@ -290,14 +290,14 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   avatarChip: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     borderWidth: 2,
     borderColor: theme.colors.card,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: -8,
+    marginLeft: -10,
     ...theme.shadow.card,
   },
   avatarChipText: {
