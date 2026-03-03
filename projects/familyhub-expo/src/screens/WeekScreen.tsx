@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   segmentText: {
     color: theme.colors.textSecondary,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
   },
   segmentTextActive: {
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: theme.colors.chipDarkText,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
   },
   dropdown: {
