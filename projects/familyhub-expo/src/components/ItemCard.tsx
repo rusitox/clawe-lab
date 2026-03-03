@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: theme.typography.title.fontSize,
     fontWeight: theme.typography.title.fontWeight,
+    lineHeight: 22,
   },
   pill: {
     paddingHorizontal: 8,
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.4,
     textTransform: 'uppercase',
+    lineHeight: 12,
   },
   metaRow: {
     flexDirection: 'row',
