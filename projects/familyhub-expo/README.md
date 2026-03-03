@@ -22,7 +22,18 @@ Then:
 
 ## Happy path navigation
 
-- Welcome → Onboarding → Home
+- Welcome → Onboarding → MainTabs (Semana/Mes/Día)
+
+## Stitch parity reference (Semana)
+
+Stitch export screenshot (source of truth):
+- `docs/ux/family-hub/stitch/clean-v0/app-first/01-semana.png`
+- Convenience copy (extracted from JSON): `docs/ux/family-hub/stitch/clean-v0/app-first/01-semana.extracted.png`
+
+How to validate:
+1) Run the app (`npx expo start`) and open the **Semana** tab
+2) Compare side-by-side against the Stitch screenshot
+3) Reply with **OK/NO** and what looks off (spacing/typography/cards/shadows)
 
 ## Deep link demo
 
