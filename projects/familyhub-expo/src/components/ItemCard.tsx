@@ -33,7 +33,7 @@ export function ItemCard({ accent, title, type, time, people, leadingIcon = 'cal
       <View style={styles.cardBody}>
         <View style={styles.leftCol}>
           {startTime ? <Text style={styles.timeText}>{startTime}</Text> : <View style={{ height: 16 }} />}
-          <Ionicons name={leadingIcon as any} size={20} color={theme.colors.textSecondary} />
+          <Ionicons name={leadingIcon as any} size={18} color={theme.colors.textSecondary} />
         </View>
 
         <View style={styles.contentCol}>
@@ -72,19 +72,19 @@ const styles = StyleSheet.create({
     ...theme.shadow.card,
   },
   cardAccent: {
-    width: 10,
+    width: 8,
     borderTopLeftRadius: theme.radius.xl,
     borderBottomLeftRadius: theme.radius.xl,
   },
   cardBody: {
     flex: 1,
     flexDirection: 'row',
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    gap: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    gap: 12,
   },
   leftCol: {
-    width: 46,
+    width: 44,
     alignItems: 'center',
     paddingTop: 2,
     gap: 6,
