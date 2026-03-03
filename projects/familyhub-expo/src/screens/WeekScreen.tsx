@@ -250,11 +250,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: theme.colors.muted,
     borderRadius: 18,
-    padding: 4,
+    padding: 3,
   },
   segmentBtn: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
     borderRadius: 14,
   },
   segmentBtnActive: {
@@ -276,8 +276,8 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: theme.colors.chipDarkBg,
     borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
     ...theme.shadow.card,
   },
   filterRow: {
