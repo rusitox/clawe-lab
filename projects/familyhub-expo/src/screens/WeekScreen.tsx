@@ -228,9 +228,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.lg,
     paddingTop: Platform.OS === 'web' ? 24 : 18,
     paddingBottom: 14,
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    // Match Stitch: header blends into the light background instead of a hard white bar
+    backgroundColor: theme.colors.bg,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(15, 23, 42, 0.06)',
+    borderBottomColor: theme.colors.border,
   },
   headerTitle: {
     color: theme.colors.textPrimary,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   },
   segmented: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(15, 23, 42, 0.06)',
+    backgroundColor: theme.colors.muted,
     borderRadius: 18,
     padding: 4,
   },
