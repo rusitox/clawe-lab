@@ -339,13 +339,13 @@ const styles = StyleSheet.create({
   dayRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: theme.spacing.lg,
   },
   dayPill: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: theme.colors.card,
     borderWidth: 1,
     borderColor: theme.colors.border,
