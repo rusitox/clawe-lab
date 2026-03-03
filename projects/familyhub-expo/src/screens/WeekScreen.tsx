@@ -235,9 +235,10 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: theme.colors.textPrimary,
-    fontSize: 32,
-    fontWeight: '900',
-    marginBottom: 14,
+    fontSize: theme.typography.h1.fontSize,
+    // Slightly less heavy than before; closer to Stitch exports
+    fontWeight: '800',
+    marginBottom: theme.spacing.md,
   },
   controlsRow: {
     flexDirection: 'row',
