@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
 
 import type { RootStackParamList } from '../types/navigation';
 import { theme } from '../theme';
@@ -17,9 +16,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CreateNewItem'>;
 
 type Kind = 'event' | 'task' | 'activity';
 
-function notify(kind: Kind){
-  const label = kind === 'event' ? 'Crear evento' : kind === 'task' ? 'Crear tarea' : 'Crear actividad';
-  if(Platform.OS === 'web'){
+function notify(kind: Kind) {
+  const label =
+    kind === 'event' ? 'Crear evento' : kind === 'task' ? 'Crear tarea' : 'Crear actividad';
+  if (Platform.OS === 'web') {
     // eslint-disable-next-line no-alert
     (globalThis as any).alert?.(label);
     return;
@@ -122,14 +122,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.bg,
-    padding: theme.spacing.lg,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 18,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 8,
-    marginBottom: 18,
+    marginBottom: 22,
   },
   backBtn: {
     backgroundColor: theme.colors.controlBg,
@@ -151,8 +153,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: theme.colors.textSecondary,
-    fontSize: theme.typography.body.fontSize,
-    marginBottom: 12,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 14,
   },
   list: {
     gap: 12,
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.radius.xl,
-    padding: 14,
+    padding: 16,
     borderWidth: 1,
     borderColor: theme.colors.border,
     ...theme.shadow.card,
@@ -171,9 +174,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   iconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -182,12 +185,13 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: theme.colors.textPrimary,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
     marginBottom: 4,
   },
   cardDesc: {
     color: theme.colors.textSecondary,
-    fontSize: theme.typography.body.fontSize,
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
