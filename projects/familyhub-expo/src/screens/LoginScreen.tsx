@@ -13,7 +13,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 export function LoginScreen({ navigation }: Props) {
   const onGoogle = useCallback(() => {
     // Flow mock: in real app this would auth then go to family picker.
-    navigation.replace('Onboarding1');
+    // For demo purposes we jump straight into the app.
+    navigation.replace('MainTabs');
   }, [navigation]);
 
   return (
