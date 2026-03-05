@@ -28,9 +28,18 @@ function notify(kind: Kind) {
 }
 
 export function CreateNewItemScreen({ navigation }: Props) {
-  const onSelect = useCallback((kind: Kind) => {
-    notify(kind);
-  }, []);
+  const onSelect = useCallback(
+    (kind: Kind) => {
+      notify(kind);
+      // Push a mock item into Calendar (end-to-end demo)
+      navigation.navigate('MainTabs', {
+        screen: 'Calendar',
+        params: { addItem: { kind } },
+      } as any);
+      navigation.goBack();
+    },
+    [navigation]
+  );
 
   return (
     <View style={styles.container}>

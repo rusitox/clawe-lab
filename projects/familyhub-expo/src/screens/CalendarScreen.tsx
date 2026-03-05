@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { theme } from '../theme';
 import { stitchTokens } from '../theme.stitchTokens';
@@ -66,6 +66,7 @@ function toTitleCase(s: string) {
 
 export function CalendarScreen() {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const { width } = useWindowDimensions();
 
   const [mode, setMode] = useState<Mode>('Mes');
@@ -75,7 +76,39 @@ export function CalendarScreen() {
   const [cursorMonth, setCursorMonth] = useState(() => startOfMonth(today));
   const [selectedISO, setSelectedISO] = useState(() => isoDate(today));
 
-  const items: AgendaItem[] = useMemo(
+  const [demoItems, setDemoItems] = useState<AgendaItem[]>([]);
+
+  useEffect(() => {
+    const addItem = route.params?.addItem as
+      | undefined
+      | { kind: 'event' | 'task' | 'activity'; title?: string };
+    if (!addItem) return;
+
+    const kindToType = (k: 'event' | 'task' | 'activity') =>
+      k === 'event' ? 'Evento' : k === 'task' ? 'Tarea' : 'Actividad';
+
+    const type = kindToType(addItem.kind);
+    const accent =
+      type === 'Evento' ? '#3B82F6' : type === 'Tarea' ? theme.colors.primary : '#10B981';
+
+    setDemoItems((prev) => [
+      ...prev,
+      {
+        id: `demo-${Date.now()}`,
+        dateISO: selectedISO,
+        title: addItem.title ?? (type === 'Evento' ? 'Evento demo' : type === 'Tarea' ? 'Tarea demo' : 'Actividad demo'),
+        time: '19:00 - 19:30',
+        type,
+        accent,
+        people: ['Ana'],
+      },
+    ]);
+
+    // clear param so it doesn't re-add on re-render
+    navigation.setParams({ addItem: undefined });
+  }, [navigation, route.params, selectedISO]);
+
+  const baseItems: AgendaItem[] = useMemo(
     () => [
       {
         id: '1',
@@ -120,6 +153,8 @@ export function CalendarScreen() {
     ],
     [selectedISO]
   );
+
+  const items: AgendaItem[] = useMemo(() => [...baseItems, ...demoItems], [baseItems, demoItems]);
 
   const agendaForDay = useMemo(
     () => items.filter((it) => it.dateISO === selectedISO),
