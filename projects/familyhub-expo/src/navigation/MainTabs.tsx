@@ -95,7 +95,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: Platform.OS === 'web' ? 22 : 18,
+    // Raise FAB so it visually sits above the tab bar (closer to Stitch)
+    bottom: Platform.OS === 'web' ? 32 : 44,
     alignItems: 'center',
     justifyContent: 'center',
     pointerEvents: 'box-none',
