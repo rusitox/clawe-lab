@@ -16,7 +16,8 @@ import { theme } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const linking = {
+// Keep linking config loosely typed to avoid TS variance issues across React Navigation versions.
+const linking: any = {
   prefixes: ['familyhub://', 'https://familyhub.app'],
   config: {
     screens: {
@@ -28,7 +29,7 @@ const linking = {
       MainTabs: 'home',
     },
   },
-} as const;
+};
 
 export default function App() {
   return (
