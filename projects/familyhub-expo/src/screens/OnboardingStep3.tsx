@@ -55,6 +55,7 @@ export function OnboardingStep3({ navigation }: Props) {
           Configurá qué acciones pueden hacer los niños y si requieren supervisión.
         </Text>
 
+        <Text style={styles.sectionLabel}>Acciones permitidas</Text>
         <View style={styles.section}>
           {PERMISSIONS.map((p) => (
             <View key={p.key} style={styles.row}>
@@ -70,6 +71,7 @@ export function OnboardingStep3({ navigation }: Props) {
           ))}
         </View>
 
+        <Text style={styles.sectionLabel}>Supervisión</Text>
         <View style={styles.section}>
           <View style={styles.row}>
             <View style={styles.rowBody}>
@@ -123,6 +125,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     maxWidth: 520,
     marginBottom: 18,
+  },
+  sectionLabel: {
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    marginBottom: 8,
   },
   section: {
     backgroundColor: theme.colors.card,
