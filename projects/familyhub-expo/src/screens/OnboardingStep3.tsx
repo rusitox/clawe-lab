@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { RootStackParamList } from '../types/navigation';
@@ -49,7 +49,7 @@ export function OnboardingStep3({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.top}>
+      <ScrollView contentContainerStyle={styles.top} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Permisos de Niños</Text>
         <Text style={styles.subtitle}>
           Configurá qué acciones pueden hacer los niños y si requieren supervisión.
@@ -89,7 +89,7 @@ export function OnboardingStep3({ navigation }: Props) {
             {parentApprovalRequired ? 'activa' : 'desactivada'}
           </Text>
         </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.bottom}>
         <Pressable style={styles.primaryBtn} onPress={() => navigation.navigate('Onboarding4')}>
