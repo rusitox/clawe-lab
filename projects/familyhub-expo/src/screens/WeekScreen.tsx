@@ -290,9 +290,9 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   avatarChip: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     borderWidth: 2,
     borderColor: theme.colors.card,
     alignItems: 'center',
@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
     ...theme.shadow.card,
   },
   avatarChipText: {
-    fontSize: 10,
-    fontWeight: '800',
+    fontSize: 11,
+    fontWeight: '900',
   },
   filterText: {
     color: theme.colors.chipDarkText,
