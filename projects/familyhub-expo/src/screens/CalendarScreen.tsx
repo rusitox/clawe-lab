@@ -59,6 +59,11 @@ function monthLabelEs(d: Date) {
   return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
 }
 
+function toTitleCase(s: string) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export function CalendarScreen() {
   const navigation = useNavigation<any>();
   const { width } = useWindowDimensions();
