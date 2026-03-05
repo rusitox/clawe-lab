@@ -1,28 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useCallback } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import type { RootStackParamList } from '../types/navigation';
 import { theme } from '../theme';
+import { SvgXmlAsset } from '../components/SvgXmlAsset';
+import { appMarkSvgXml } from '../assets/stitch/appMarkSvg';
+import { googleLogoSvgXml } from '../assets/stitch/googleLogoSvg';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding1'>;
 
 export function OnboardingStep1({ navigation }: Props) {
+  const onGoogle = useCallback(() => {
+    // Mock auth for now; keeps demo functional.
+    navigation.replace('MainTabs');
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.top}>
-        <Text style={styles.kicker}>Family Hub</Text>
-        <Text style={styles.title}>Bienvenidos</Text>
-        <Text style={styles.subtitle}>Organizá la semana familiar en un solo lugar.</Text>
+      <View style={styles.heroIconWrap}>
+        <SvgXmlAsset xml={appMarkSvgXml} width={64} height={64} />
       </View>
 
-      <View style={styles.bottom}>
-        <Pressable style={styles.primaryBtn} onPress={() => navigation.navigate('Onboarding2')}>
-          <Text style={styles.primaryBtnText}>Continuar</Text>
-        </Pressable>
-        <Pressable style={styles.secondaryBtn} onPress={() => navigation.replace('MainTabs')}>
-          <Text style={styles.secondaryBtnText}>Saltar</Text>
-        </Pressable>
+      <Text style={styles.kicker}>Family Hub</Text>
+
+      <View style={styles.welcome}>
+        <Text style={styles.h1}>Bienvenido a Family Hub</Text>
+        <Text style={styles.subtitle}>Organizá la semana de tu familia en un solo lugar.</Text>
       </View>
+
+      <Pressable style={styles.googleBtn} onPress={onGoogle}>
+        <SvgXmlAsset xml={googleLogoSvgXml} width={18} height={18} />
+        <Text style={styles.googleBtnText}>Continuar con Google</Text>
+      </Pressable>
+
+      <Pressable onPress={() => navigation.navigate('Login')} style={styles.linkWrap}>
+        <Text style={styles.link}>Ya tengo cuenta</Text>
+      </Pressable>
+
+      <Text style={styles.legal}>
+        Al continuar, aceptás nuestra{' '}
+        <Text style={styles.legalLink}>política de privacidad</Text> y{"\n"}nuestros{' '}
+        <Text style={styles.legalLink}>términos de servicio</Text>.
+      </Text>
     </View>
   );
 }
@@ -31,55 +51,77 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.bg,
-    padding: theme.spacing.lg,
-    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 80,
+    paddingBottom: 18,
+    alignItems: 'center',
   },
-  top: {
-    marginTop: 40,
+  heroIconWrap: {
+    marginBottom: 24,
   },
   kicker: {
+    color: 'rgba(24, 20, 17, 0.85)',
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 2.2,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  welcome: {
+    alignItems: 'center',
+    marginBottom: 48,
+    paddingHorizontal: 16,
+  },
+  h1: {
+    color: theme.colors.textPrimary,
+    fontSize: 32,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 38,
+    marginBottom: 16,
+  },
+  subtitle: {
+    color: 'rgba(24, 20, 17, 0.55)',
+    fontSize: 18,
+    lineHeight: 26,
+    textAlign: 'center',
+  },
+  googleBtn: {
+    width: '100%',
+    maxWidth: 520,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.radius.xl,
+    paddingVertical: 16,
+    borderWidth: 0,
+    marginTop: 'auto',
+  },
+  googleBtnText: {
+    color: theme.colors.primaryText,
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  linkWrap: {
+    paddingVertical: 16,
+  },
+  link: {
     color: theme.colors.textSecondary,
     fontSize: 14,
     fontWeight: '600',
-    letterSpacing: 0.2,
-    marginBottom: 10,
   },
-  title: {
-    color: theme.colors.textPrimary,
-    fontSize: 34,
-    fontWeight: '800',
-    marginBottom: 12,
+  legal: {
+    color: 'rgba(24, 20, 17, 0.50)',
+    fontSize: 12,
+    textAlign: 'center',
+    lineHeight: 18,
+    marginTop: 12,
   },
-  subtitle: {
-    color: theme.colors.textSecondary,
-    fontSize: 16,
-    lineHeight: 22,
-    maxWidth: 420,
-  },
-  bottom: {
-    paddingBottom: 10,
-  },
-  primaryBtn: {
-    backgroundColor: theme.colors.primary,
-    paddingVertical: 16,
-    borderRadius: theme.radius.lg,
-    alignItems: 'center',
-    marginBottom: theme.spacing.sm,
-  },
-  primaryBtnText: {
-    color: theme.colors.primaryText,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  secondaryBtn: {
-    backgroundColor: 'rgba(0,0,0,0.04)',
-    paddingVertical: 16,
-    borderRadius: theme.radius.lg,
-    alignItems: 'center',
-  },
-  secondaryBtnText: {
-    color: theme.colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '700',
+  legalLink: {
+    textDecorationLine: 'underline',
+    color: 'rgba(24, 20, 17, 0.70)',
+    fontWeight: '600',
   },
 });

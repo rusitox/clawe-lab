@@ -35,7 +35,7 @@ export default function App() {
   return (
     <NavigationContainer linking={linking} fallback={null}>
       <Stack.Navigator
-        initialRouteName="Onboarding1"
+        initialRouteName="Login"
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: theme.colors.bg },
