@@ -13,20 +13,28 @@ import { theme } from '../theme';
 export type MainTabParamList = {
   Week: undefined;
   Calendar: undefined;
-  New: undefined;
   Family: undefined;
   Settings: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-function NewPlaceholder() {
-  return <View style={{ flex: 1, backgroundColor: theme.colors.bg }} />;
+function FabCreateButton() {
+  const navigation = useNavigation<any>();
+  return (
+    <View pointerEvents="box-none" style={styles.fabOverlay}>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => navigation.navigate('CreateNewItem')}
+        style={styles.fab}
+      >
+        <Ionicons name="add" size={28} color="#FFFFFF" />
+      </Pressable>
+    </View>
+  );
 }
 
 export function MainTabs() {
-  const navigation = useNavigation<any>();
-
   return (
     <>
       <Tab.Navigator
@@ -50,7 +58,6 @@ export function MainTabs() {
             borderTopRightRadius: theme.radius.xl,
           },
           tabBarIcon: ({ color, focused }) => {
-            if (route.name === 'New') return null;
             const icon =
               route.name === 'Week'
                 ? focused
@@ -71,45 +78,27 @@ export function MainTabs() {
           },
         })}
       >
-      <Tab.Screen name="Week" component={WeekScreen} options={{ title: 'Semana' }} />
-      <Tab.Screen name="Calendar" component={CalendarScreen} options={{ title: 'Calendario' }} />
-      <Tab.Screen
-        name="New"
-        component={NewPlaceholder}
-        options={{
-          title: '',
-          tabBarButton: (props) => (
-            <Pressable
-              accessibilityRole="button"
-              onPress={props.onPress}
-              style={[styles.fabWrap, props.style as any]}
-            >
-              <View style={styles.fab}>
-                <Ionicons name="add" size={28} color="#FFFFFF" />
-              </View>
-            </Pressable>
-          ),
-        }}
-        listeners={() => ({
-          tabPress: (e) => {
-            // Match Stitch: dedicated screen "Create New Item Selection"
-            e.preventDefault();
-            navigation.navigate('CreateNewItem');
-          },
-        })}
-      />
-      <Tab.Screen name="Family" component={FamilyScreen} options={{ title: 'Familia' }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: 'Ajustes' }} />
+        <Tab.Screen name="Week" component={WeekScreen} options={{ title: 'Semana' }} />
+        <Tab.Screen name="Calendar" component={CalendarScreen} options={{ title: 'Calendario' }} />
+        <Tab.Screen name="Family" component={FamilyScreen} options={{ title: 'Familia' }} />
+        <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: 'Ajustes' }} />
       </Tab.Navigator>
+
+      {/* Match Stitch: no dedicated tab for "+"; use a floating action button */}
+      <FabCreateButton />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  fabWrap: {
+  fabOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: Platform.OS === 'web' ? 22 : 18,
     alignItems: 'center',
     justifyContent: 'center',
-    top: -30,
+    pointerEvents: 'box-none',
   },
   fab: {
     width: 64,
