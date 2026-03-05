@@ -25,9 +25,44 @@ type WeekItem = {
   people?: string[];
 };
 
+const WEEKDAYS_ES = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+function isoDate(d: Date) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function startOfMonth(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+function addMonths(d: Date, delta: number) {
+  return new Date(d.getFullYear(), d.getMonth() + delta, 1);
+}
+
+function daysInMonth(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+}
+
+// Monday-first index: 0=Mon ... 6=Sun
+function weekdayIndexMonFirst(d: Date) {
+  const js = d.getDay(); // 0=Sun..6=Sat
+  return (js + 6) % 7;
+}
+
+function monthLabelEs(d: Date) {
+  return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+}
+
 export function WeekScreen() {
   const [mode, setMode] = useState<Mode>('Semana');
   const [filterOpen, setFilterOpen] = useState(false);
+
+  const today = useMemo(() => new Date(), []);
+  const [cursorMonth, setCursorMonth] = useState(() => startOfMonth(today));
+  const [selectedISO, setSelectedISO] = useState(() => isoDate(today));
 
   const items: WeekItem[] = useMemo(
     () => [
@@ -60,6 +95,24 @@ export function WeekScreen() {
     ],
     []
   );
+
+  const monthGrid = useMemo(() => {
+    const first = startOfMonth(cursorMonth);
+    const leading = weekdayIndexMonFirst(first);
+    const totalDays = daysInMonth(cursorMonth);
+
+    const cells: Array<{ kind: 'empty' } | { kind: 'day'; day: number; iso: string }> = [];
+    for (let i = 0; i < leading; i++) cells.push({ kind: 'empty' });
+    for (let day = 1; day <= totalDays; day++) {
+      const d = new Date(cursorMonth.getFullYear(), cursorMonth.getMonth(), day);
+      cells.push({ kind: 'day', day, iso: isoDate(d) });
+    }
+    while (cells.length % 7 !== 0) cells.push({ kind: 'empty' });
+
+    const rows: typeof cells[] = [];
+    for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7));
+    return rows;
+  }, [cursorMonth]);
 
   const dayItems: DayTimelineItem[] = useMemo(
     () => [
@@ -177,12 +230,68 @@ export function WeekScreen() {
         {mode === 'Día' ? (
           <DayTimeline datePill="9" dayName="Lunes" items={dayItems} />
         ) : mode === 'Mes' ? (
-          <View style={styles.monthPlaceholder}>
-            <Ionicons name="grid-outline" size={20} color={theme.colors.textSecondary} />
-            <Text style={styles.monthPlaceholderTitle}>Vista mensual</Text>
-            <Text style={styles.monthPlaceholderText}>
-              Por ahora la vista “Mes” está en la pestaña Calendario.
-            </Text>
+          <View style={{ gap: 12 }}>
+            <View style={styles.monthHeaderRow}>
+              <Text style={styles.monthTitle}>{monthLabelEs(cursorMonth)}</Text>
+              <View style={styles.monthNav}>
+                <Pressable
+                  onPress={() => setCursorMonth((m) => addMonths(m, -1))}
+                  style={styles.iconBtn}
+                >
+                  <Ionicons name="chevron-back" size={18} color={theme.colors.textSecondary} />
+                </Pressable>
+                <Pressable
+                  onPress={() => setCursorMonth((m) => addMonths(m, 1))}
+                  style={styles.iconBtn}
+                >
+                  <Ionicons name="chevron-forward" size={18} color={theme.colors.textSecondary} />
+                </Pressable>
+              </View>
+            </View>
+
+            <View style={styles.weekHeaderRow}>
+              {WEEKDAYS_ES.map((d) => (
+                <Text key={d} style={styles.weekHeaderText}>
+                  {d}
+                </Text>
+              ))}
+            </View>
+
+            <View style={styles.grid}>
+              {monthGrid.map((row, rIdx) => (
+                <View key={rIdx} style={styles.gridRow}>
+                  {row.map((cell, cIdx) => {
+                    if (cell.kind === 'empty') return <View key={cIdx} style={{ flex: 1, aspectRatio: 1 }} />;
+                    const isSelected = cell.iso === selectedISO;
+                    const isToday = cell.iso === isoDate(today);
+                    return (
+                      <Pressable
+                        key={cIdx}
+                        onPress={() => {
+                          setSelectedISO(cell.iso);
+                          setMode('Día');
+                        }}
+                        style={[
+                          styles.dayCell,
+                          isSelected && styles.dayCellSelected,
+                          isToday && !isSelected && styles.dayCellToday,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.dayTextMonth,
+                            isSelected && styles.dayTextSelected,
+                            isToday && !isSelected && styles.dayTextToday,
+                          ]}
+                        >
+                          {cell.day}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
           </View>
         ) : (
           <>
@@ -362,6 +471,85 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     fontSize: 18,
     fontWeight: '800',
+  },
+
+  monthHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  monthTitle: {
+    color: theme.colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '900',
+    textTransform: 'capitalize',
+  },
+  monthNav: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  iconBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: '#FFFFFF',
+  },
+
+  weekHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    paddingHorizontal: 2,
+  },
+  weekHeaderText: {
+    width: '14.2857%' as any,
+    textAlign: 'center',
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+
+  grid: {
+    gap: 6,
+  },
+  gridRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  dayCell: {
+    flex: 1,
+    aspectRatio: 1,
+    borderRadius: 16,
+    backgroundColor: theme.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(15, 23, 42, 0.06)',
+    ...theme.shadow.card,
+  },
+  dayCellSelected: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  dayCellToday: {
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.card,
+  },
+  dayTextMonth: {
+    color: theme.colors.textPrimary,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  dayTextSelected: {
+    color: '#FFFFFF',
+  },
+  dayTextToday: {
+    color: '#2563EB',
   },
 
   monthPlaceholder: {
