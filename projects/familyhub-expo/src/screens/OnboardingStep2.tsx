@@ -13,7 +13,17 @@ type Member = {
   id: string;
   name: string;
   role: Role;
+  color: string;
 };
+
+const COLOR_PRESETS = [
+  '#F97316', // orange
+  '#3B82F6', // blue
+  '#22C55E', // green
+  '#A855F7', // purple
+  '#06B6D4', // cyan
+  '#EC4899', // pink
+];
 
 function uid() {
   return String(Date.now()) + '-' + Math.random().toString(16).slice(2);
@@ -25,9 +35,9 @@ function roleLabel(role: Role) {
 
 export function OnboardingStep2({ navigation }: Props) {
   const [members, setMembers] = useState<Member[]>(() => [
-    { id: uid(), name: 'Mamá', role: 'Adulto' },
-    { id: uid(), name: 'Papá', role: 'Adulto' },
-    { id: uid(), name: 'Sofi', role: 'Niño' },
+    { id: uid(), name: 'Mamá', role: 'Adulto', color: COLOR_PRESETS[0] },
+    { id: uid(), name: 'Papá', role: 'Adulto', color: COLOR_PRESETS[1] },
+    { id: uid(), name: 'Sofi', role: 'Niño', color: COLOR_PRESETS[5] },
   ]);
 
   const canContinue = useMemo(
@@ -36,7 +46,15 @@ export function OnboardingStep2({ navigation }: Props) {
   );
 
   const addMember = useCallback(() => {
-    setMembers((prev) => [...prev, { id: uid(), name: '', role: 'Niño' }]);
+    setMembers((prev) => [
+      ...prev,
+      {
+        id: uid(),
+        name: '',
+        role: 'Niño',
+        color: COLOR_PRESETS[prev.length % COLOR_PRESETS.length],
+      },
+    ]);
   }, []);
 
   const removeMember = useCallback((id: string) => {
@@ -49,6 +67,10 @@ export function OnboardingStep2({ navigation }: Props) {
 
   const setMemberRole = useCallback((id: string, role: Role) => {
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, role } : m)));
+  }, []);
+
+  const setMemberColor = useCallback((id: string, color: string) => {
+    setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, color } : m)));
   }, []);
 
   return (
@@ -92,6 +114,22 @@ export function OnboardingStep2({ navigation }: Props) {
                           {roleLabel(r)}
                         </Text>
                       </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <View style={styles.colorRow}>
+                <Text style={styles.roleLabel}>Color</Text>
+                <View style={styles.colorPalette}>
+                  {COLOR_PRESETS.map((c) => {
+                    const active = m.color === c;
+                    return (
+                      <Pressable
+                        key={c}
+                        onPress={() => setMemberColor(m.id, c)}
+                        style={[styles.colorDot, { backgroundColor: c }, active && styles.colorDotActive]}
+                      />
                     );
                   })}
                 </View>
@@ -215,6 +253,28 @@ const styles = StyleSheet.create({
   },
   roleBtnTextActive: {
     color: theme.colors.primary,
+  },
+  colorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  colorPalette: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  colorDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: theme.colors.card,
+    ...theme.shadow.card,
+  },
+  colorDotActive: {
+    borderColor: theme.colors.primary,
   },
   addBtn: {
     backgroundColor: 'rgba(0,0,0,0.04)',
