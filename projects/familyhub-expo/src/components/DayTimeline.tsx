@@ -8,7 +8,7 @@ export type DayTimelineItem = {
   title: string;
   start: string; // HH:MM
   end: string; // HH:MM
-  type: 'Evento' | 'Tarea';
+  type: 'Evento' | 'Tarea' | 'Actividad';
   accent: string;
   location?: string;
   people?: string[];
@@ -107,7 +107,13 @@ export function DayTimeline({
                 <View style={styles.itemTitleRow}>
                   <View style={[styles.iconBox, { backgroundColor: 'rgba(15, 23, 42, 0.06)' }]}>
                     <Ionicons
-                      name={it.type === 'Evento' ? 'calendar-outline' : 'checkmark-circle-outline'}
+                      name={
+                        it.type === 'Evento'
+                          ? 'calendar-outline'
+                          : it.type === 'Tarea'
+                            ? 'checkmark-circle-outline'
+                            : 'barbell-outline'
+                      }
                       size={18}
                       color={theme.colors.textSecondary}
                     />
