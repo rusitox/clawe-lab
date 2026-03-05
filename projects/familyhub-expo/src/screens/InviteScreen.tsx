@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Invite'>;
+// Legacy screen kept for deep-link testing. Keep types loose so it doesn't break builds.
+type Props = { route: any; navigation: any };
 
 export function InviteScreen({ route, navigation }: Props) {
-  const { code } = route.params;
+  const { code } = route.params ?? { code: '—' };
 
   return (
     <View style={styles.container}>
@@ -22,13 +21,13 @@ export function InviteScreen({ route, navigation }: Props) {
 
       <Pressable
         style={styles.primaryBtn}
-        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Onboarding' }] })}
+        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Login' }] })}
       >
         <Text style={styles.primaryBtnText}>Continuar</Text>
       </Pressable>
 
-      <Pressable style={styles.secondaryBtn} onPress={() => navigation.navigate('Welcome')}>
-        <Text style={styles.secondaryBtnText}>Ir a Welcome</Text>
+      <Pressable style={styles.secondaryBtn} onPress={() => navigation.navigate('MainTabs')}>
+        <Text style={styles.secondaryBtnText}>Ir a Home</Text>
       </Pressable>
     </View>
   );

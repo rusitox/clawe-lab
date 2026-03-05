@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
+// Legacy screen kept for reference. We keep types loose so it doesn't break builds.
+type Props = { navigation: any };
 
 export function WelcomeScreen({ navigation }: Props) {
   return (
@@ -11,11 +10,11 @@ export function WelcomeScreen({ navigation }: Props) {
       <Text style={styles.title}>Family Hub</Text>
       <Text style={styles.subtitle}>Organizá tu semana familiar.</Text>
 
-      <Pressable style={styles.primaryBtn} onPress={() => navigation.navigate('Onboarding')}>
+      <Pressable style={styles.primaryBtn} onPress={() => navigation.navigate('Onboarding1')}>
         <Text style={styles.primaryBtnText}>Empezar</Text>
       </Pressable>
 
-      <Pressable style={styles.secondaryBtn} onPress={() => navigation.navigate('Home')}>
+      <Pressable style={styles.secondaryBtn} onPress={() => navigation.navigate('MainTabs')}>
         <Text style={styles.secondaryBtnText}>Entrar (skip)</Text>
       </Pressable>
     </View>

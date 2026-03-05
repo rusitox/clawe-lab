@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding'>;
+// Legacy screen kept for reference. We keep types loose so it doesn't break builds.
+type Props = { navigation: any };
 
 export function OnboardingScreen({ navigation }: Props) {
   return (
@@ -13,7 +12,10 @@ export function OnboardingScreen({ navigation }: Props) {
         Placeholder de flujo (Gmail en el MVP). Acá después enchufamos login/registro real.
       </Text>
 
-      <Pressable style={styles.primaryBtn} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}>
+      <Pressable
+        style={styles.primaryBtn}
+        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] })}
+      >
         <Text style={styles.primaryBtnText}>Crear / entrar a mi familia</Text>
       </Pressable>
 
