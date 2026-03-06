@@ -56,7 +56,9 @@ function weekdayIndexMonFirst(d: Date) {
 }
 
 function monthLabelEs(d: Date) {
-  return d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+  const raw = d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+  // Ensure proper Spanish casing: "Marzo de 2026" (avoid "Marzo De")
+  return raw.replace(/\sDe\s/i, ' de ');
 }
 
 function toTitleCase(s: string) {
@@ -358,17 +360,16 @@ export function CalendarScreen() {
                           {cell.day}
                         </Text>
 
-                        {dots.length > 0 && (
-                          <View style={styles.dotsRow}>
-                            {dots.slice(0, 4).map((c, i) => (
-                              <View
-                                // eslint-disable-next-line react/no-array-index-key
-                                key={i}
-                                style={[styles.dot, { backgroundColor: c }, isSelected && styles.dotSelected]}
-                              />
-                            ))}
-                          </View>
-                        )}
+                        {dots.length > 0 ? (
+                          <View
+                            style={[
+                              styles.dayIndicator,
+                              {
+                                backgroundColor: dots[0],
+                              },
+                            ]}
+                          />
+                        ) : null}
                       </Pressable>
                     );
                   })}
@@ -380,7 +381,15 @@ export function CalendarScreen() {
           <View style={[styles.panel, styles.agendaPanel]}>
             <View style={styles.panelHeader}>
               <Text style={styles.panelTitle}>{mode === 'Día' ? 'Mi Día' : 'Agenda'}</Text>
-              <Text style={styles.panelSubtitle}>{selectedISO}</Text>
+              <Text style={styles.panelSubtitle}>
+                {toTitleCase(
+                  new Date(selectedISO).toLocaleDateString('es-AR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  })
+                )}
+              </Text>
             </View>
 
             {mode === 'Día' ? (
@@ -684,19 +693,12 @@ const styles = StyleSheet.create({
   dayTextToday: {
     color: '#2563EB',
   },
-  dotsRow: {
-    flexDirection: 'row',
-    gap: 4,
-    marginTop: 6,
-  },
-  dot: {
-    width: 5,
-    height: 5,
+  dayIndicator: {
+    width: 10,
+    height: 10,
     borderRadius: 999,
-    backgroundColor: 'rgba(15, 23, 42, 0.35)',
-  },
-  dotSelected: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    marginTop: 6,
+    opacity: 0.9,
   },
 
   empty: {
