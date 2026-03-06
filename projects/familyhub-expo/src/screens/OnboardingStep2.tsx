@@ -82,14 +82,21 @@ export function OnboardingStep2({ navigation }: Props) {
         </Text>
 
         <View style={styles.list}>
-          {members.map((m) => (
-            <View key={m.id} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Miembro</Text>
-                <Pressable onPress={() => removeMember(m.id)} hitSlop={10}>
-                  <Text style={styles.remove}>Quitar</Text>
-                </Pressable>
-              </View>
+          {members.map((m) => {
+            const canRemove = members.length > 2;
+            return (
+              <View key={m.id} style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardTitle}>Miembro</Text>
+                  <Pressable
+                    disabled={!canRemove}
+                    onPress={() => removeMember(m.id)}
+                    hitSlop={10}
+                    style={!canRemove ? { opacity: 0.35 } : undefined}
+                  >
+                    <Text style={styles.remove}>Quitar</Text>
+                  </Pressable>
+                </View>
 
               <TextInput
                 value={m.name}
@@ -135,7 +142,8 @@ export function OnboardingStep2({ navigation }: Props) {
                 </View>
               </View>
             </View>
-          ))}
+          );
+          })}
 
           <Pressable style={styles.addBtn} onPress={addMember}>
             <Text style={styles.addBtnText}>+ Agregar otro miembro</Text>
