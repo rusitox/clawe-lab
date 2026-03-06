@@ -319,9 +319,9 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   memberLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.2,
     textTransform: 'uppercase',
   },
   itemTitle: {
