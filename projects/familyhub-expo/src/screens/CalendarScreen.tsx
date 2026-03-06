@@ -66,6 +66,16 @@ function toTitleCase(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function hexToRgba(hex: string, alpha: number) {
+  const h = hex.replace('#', '').trim();
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export function CalendarScreen() {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
@@ -248,9 +258,14 @@ export function CalendarScreen() {
               onPress={() => setFilterOpen((v) => !v)}
               style={[styles.filterBtn, mode === 'Día' && styles.filterBtnDay]}
             >
-              {mode === 'Día' ? (
+              {mode === 'Día' || mode === 'Mes' ? (
                 <View style={styles.filterAvatars}>
-                  {[stitchTokens.colors.memberPurple, stitchTokens.colors.memberBlue, stitchTokens.colors.memberPink, stitchTokens.colors.memberTeal].map((c, idx) => (
+                  {[
+                    stitchTokens.colors.memberPurple,
+                    stitchTokens.colors.memberBlue,
+                    stitchTokens.colors.memberPink,
+                    stitchTokens.colors.memberTeal,
+                  ].map((c, idx) => (
                     <View
                       // eslint-disable-next-line react/no-array-index-key
                       key={idx}
@@ -346,6 +361,10 @@ export function CalendarScreen() {
                         }}
                         style={[
                           styles.dayCell,
+                          dots.length > 0 && !isSelected && {
+                            backgroundColor: hexToRgba(dots[0], 0.22),
+                            borderColor: hexToRgba(dots[0], 0.35),
+                          },
                           isSelected && styles.dayCellSelected,
                           isToday && !isSelected && styles.dayCellToday,
                         ]}
@@ -361,14 +380,7 @@ export function CalendarScreen() {
                         </Text>
 
                         {dots.length > 0 ? (
-                          <View
-                            style={[
-                              styles.dayIndicator,
-                              {
-                                backgroundColor: dots[0],
-                              },
-                            ]}
-                          />
+                          <View style={[styles.dayIndicator, { backgroundColor: dots[0] }]} />
                         ) : null}
                       </Pressable>
                     );
