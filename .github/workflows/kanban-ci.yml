@@ -1,12 +1,19 @@
-name: CI
+name: Kanban CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "projects/kanban-dashboard/**"
+      - "!projects/kanban-dashboard/specs/**"
+      - ".github/workflows/kanban-ci.yml"
+      - ".github/workflows/kanban-deploy.yml"
   pull_request:
     paths:
       - "projects/kanban-dashboard/**"
       - "!projects/kanban-dashboard/specs/**"
+      - ".github/workflows/kanban-ci.yml"
+      - ".github/workflows/kanban-deploy.yml"
 
 defaults:
   run:

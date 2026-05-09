@@ -1,11 +1,11 @@
-name: Deploy (Oracle VPS)
+name: Kanban Deploy (Oracle VPS)
 
 # Trigger model:
-#  - `workflow_run`: deploy automatically AFTER the CI workflow finishes green on `main`.
+#  - `workflow_run`: deploy automatically AFTER Kanban CI finishes green on `main`.
 #  - `workflow_dispatch`: manual deploy from any branch via the "Run workflow" button.
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["Kanban CI"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
