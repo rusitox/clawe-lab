@@ -5,12 +5,16 @@ from collections.abc import Iterator
 
 # IMPORTANT: set test-only env BEFORE any server module imports settings, since
 # get_settings() caches the Settings instance the first time it's called.
+#
+# We FORCE-override DATABASE_URL with DATABASE_URL_TEST (or the default) instead
+# of using setdefault — otherwise CI environments that set both DATABASE_URL
+# (for the live server, e.g. Playwright job) and DATABASE_URL_TEST will leave
+# the prod-style URL in place, server caches that into settings, and the test
+# fixture truncates a different DB than the server uses, leaking state across tests.
 DEFAULT_TEST_DB_URL = "postgresql+psycopg://kanban:kanban@127.0.0.1:5433/kanban_test"
 os.environ.setdefault("APP_ENV", "development")
 os.environ.setdefault("TEST_AUTH_BYPASS", "true")
-os.environ.setdefault(
-    "DATABASE_URL", os.environ.get("DATABASE_URL_TEST", DEFAULT_TEST_DB_URL)
-)
+os.environ["DATABASE_URL"] = os.environ.get("DATABASE_URL_TEST", DEFAULT_TEST_DB_URL)
 
 import pytest
 from fastapi.testclient import TestClient
