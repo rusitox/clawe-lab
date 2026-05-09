@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>New task — Clawe HQ</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban</span>
+    <span class="breadcrumb"><span class="sep">/</span> <a href="./board.html">Clawe HQ</a></span>
+    <span class="spacer"></span>
+    <span class="avatar avatar-sm">MO</span>
+  </header>
+
+  <main>
+    <div class="board" style="opacity:.35;" aria-hidden="true">
+      <section class="column"><header class="column-header"><span>Backlog</span><span class="column-count">4</span></header></section>
+      <section class="column"><header class="column-header"><span>Todo</span><span class="column-count">3</span></header></section>
+      <section class="column"></section>
+      <section class="column"></section>
+    </div>
+  </main>
+
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="modal-card">
+      <header class="modal-header">
+        <h2 id="modal-title">New</h2>
+        <span class="spacer" style="flex:1"></span>
+        <a class="btn btn-ghost" href="./board.html" aria-label="Close">✕</a>
+      </header>
+      <div class="modal-body">
+
+        <div class="kind-switcher" role="radiogroup" aria-label="Kind">
+          <input type="radio" id="k-task" name="kind" checked>
+          <label for="k-task"><span class="kind-badge kind-task">T</span> Task</label>
+          <input type="radio" id="k-bug" name="kind">
+          <label for="k-bug"><span class="kind-badge kind-bug">B</span> Bug</label>
+          <input type="radio" id="k-prop" name="kind">
+          <label for="k-prop"><span class="kind-badge kind-proposal">P</span> Proposal</label>
+        </div>
+
+        <div class="field">
+          <label for="t-title">Title</label>
+          <input id="t-title" class="input" type="text" placeholder="What needs to happen?" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="t-col">Column</label>
+            <select id="t-col" class="select">
+              <option>Backlog</option><option>Todo</option><option>In progress</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="t-prio">Priority</label>
+            <select id="t-prio" class="select">
+              <option>P2</option><option>P0</option><option>P1</option><option>P3</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="t-team">Team</label>
+            <select id="t-team" class="select">
+              <option>—</option><option>Auth</option><option>Frontend</option><option>Infra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Assignees</label>
+          <div style="display:flex; gap: var(--space-2); align-items:center;">
+            <span class="avatar avatar-sm">MO</span>
+            <button class="btn btn-sm">+ Add</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <label for="t-desc">Description (markdown)</label>
+            <div style="display:flex; gap: var(--space-1);">
+              <button class="btn btn-sm">Write</button>
+              <button class="btn btn-sm">Preview</button>
+            </div>
+          </div>
+          <textarea id="t-desc" class="textarea" placeholder="## Steps&#10;## Expected&#10;## Actual"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Attachments</label>
+          <div class="banner-error" style="background: var(--color-brand-50); color: var(--color-brand-700); border-color: var(--color-brand-500);">
+            ⤴ Drop files / images here, or click to browse. Up to 10 MB each.
+          </div>
+        </div>
+
+      </div>
+      <footer class="modal-footer">
+        <button class="btn">Cancel</button>
+        <button class="btn btn-primary">Create</button>
+      </footer>
+    </div>
+  </div>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

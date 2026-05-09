@@ -1,0 +1,143 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - "projects/kanban-dashboard/**"
+      - "!projects/kanban-dashboard/specs/**"
+
+defaults:
+  run:
+    working-directory: projects/kanban-dashboard
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "22"
+  DATABASE_URL: postgresql+psycopg://kanban:kanban@127.0.0.1:5432/kanban
+  DATABASE_URL_TEST: postgresql+psycopg://kanban:kanban@127.0.0.1:5432/kanban_test
+  TEST_AUTH_BYPASS: "true"
+  APP_ENV: development
+
+jobs:
+  lint-and-typecheck:
+    name: ruff + mypy + eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: projects/kanban-dashboard/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: projects/kanban-dashboard/package-lock.json
+      - run: npm ci || npm install
+      - run: ruff check .
+      - run: mypy server scripts
+      - run: npx eslint static/js
+
+  pytest:
+    name: pytest (Postgres 16)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kanban
+          POSTGRES_PASSWORD: kanban
+          POSTGRES_DB: kanban
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kanban"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: projects/kanban-dashboard/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: pytest -ra
+
+  playwright:
+    name: Playwright (e2e + visual)
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, pytest]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kanban
+          POSTGRES_PASSWORD: kanban
+          POSTGRES_DB: kanban
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kanban"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: projects/kanban-dashboard/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: alembic upgrade head
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: projects/kanban-dashboard/package-lock.json
+      - run: npm ci || npm install
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('projects/kanban-dashboard/package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --reporter=line
+      - name: Upload diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diffs
+          path: |
+            projects/kanban-dashboard/test-results/
+            projects/kanban-dashboard/playwright-report/
+          retention-days: 7
+
+  docker-build:
+    name: Validate Dockerfile builds
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, pytest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (no push) — caches GHA buildx layers
+        uses: docker/build-push-action@v6
+        with:
+          context: projects/kanban-dashboard
+          file: projects/kanban-dashboard/Dockerfile
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: openclaw-kanban-v2:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Smoke run the image
+        working-directory: projects/kanban-dashboard
+        run: |
+          docker run --rm openclaw-kanban-v2:ci python -c "from server.main import app; print('app import OK:', app.title)"

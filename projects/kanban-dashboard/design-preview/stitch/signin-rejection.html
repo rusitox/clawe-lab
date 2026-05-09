@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign In - Clawe 🐾</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: "#3b5bdb",
+              hover: "#2f49b8",
+              active: "#25399a",
+            },
+            surface: {
+              DEFAULT: "#ffffff",
+              page: "#f7f8fb",
+              border: "#e3e6ec",
+            },
+            text: {
+              primary: "#14171f",
+              muted: "#5b6477",
+            },
+            semantic: {
+              success: "#15803d",
+              warning: "#b45309",
+              danger: "#b91c1c",
+              info: "#0369a1",
+              warning_bg: "#fef3c7"
+            },
+            kind: {
+              task: "#5b6477",
+              bug: "#b91c1c",
+              proposal: "#0369a1"
+            }
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "sm": "0.25rem",
+            "md": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            headline: ["Inter", "sans-serif"],
+            display: ["Inter", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            label: ["Inter", "sans-serif"],
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-[#f7f8fb] dark:bg-slate-950 min-h-full flex flex-col">
+<header class="bg-[#f7f8fb] dark:bg-slate-950 fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-8 py-6">
+<div class="text-xl font-semibold text-[#14171f] dark:text-white tracking-tight font-['Inter']">
+        Clawe 🐾
+      </div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-6 items-center">
+<span class="text-[#5b6477] dark:text-slate-400 font-['Inter'] text-sm font-medium hover:text-[#2f49b8] transition-colors cursor-pointer active:opacity-80">Support</span>
+</nav>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center px-4 py-24">
+<div class="w-full max-w-[360px] bg-white dark:bg-slate-900 shadow-md rounded-xl p-8 flex flex-col gap-6">
+<div class="flex flex-col gap-2 items-center text-center">
+<div class="w-12 h-12 bg-brand/10 rounded-lg flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-brand" style="font-variation-settings: 'FILL' 1;">
+            shield_person
+          </span>
+</div>
+<h1 class="text-xl font-bold text-[#14171f] dark:text-white tracking-tight">Sign in to Clawe</h1>
+<p class="text-sm text-[#5b6477] dark:text-slate-400">Manage your kanban projects</p>
+</div>
+<div class="flex flex-col gap-4">
+<div class="bg-[#fef3c7] rounded-lg p-3 flex gap-3 items-start" role="alert">
+<span class="material-symbols-outlined text-[#b45309] text-[20px] shrink-0">
+            warning
+          </span>
+<p class="text-[13px] font-medium text-[#b45309] leading-tight">
+            This email isn't authorized for this deployment. Ask the admin to add you.
+          </p>
+</div>
+<button class="w-full h-11 bg-white dark:bg-slate-800 border border-[#e3e6ec] dark:border-slate-700 rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-[#14171f] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all cursor-pointer active:opacity-80">
+<img alt="" class="w-5 h-5" data-alt="Google company logo icon with four distinct colors in a minimalist flat style on a white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzGgQi6mCY2aQeA3D5vPksPGcd1eeCty7h6IYWqfG_pn_44ZcreJ57matGEm2CH1-PLLApYj67qc0vc3-wpFx7G2E2bwL3XzpYk17Kp7rG76oIEjFb6R62b0KjcGPMuZcpjyo7CWdcnb05Emr9iewuIBalvF5Tus8f7aqrX6Rai3BwfBFcUAnMHkvpduyiHjadVnKFGcc0sJd7Aq3QLLYssUukqVfZfpNnXW1pRGi49_nTvytO4mFTYfHQulzmhMTnxyc8huF6eoxm"/>
+          Continue with Google
+        </button>
+</div>
+<div class="relative py-2">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-[#e3e6ec] dark:border-slate-800"></div></div>
+<div class="relative flex justify-center text-[10px] uppercase tracking-widest font-bold text-[#5b6477] dark:text-slate-500">
+<span class="bg-white dark:bg-slate-900 px-2">Managed Instance</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[12px] text-[#5b6477] dark:text-slate-500">
+          Need help? <a class="text-brand hover:underline font-medium" href="#">open the issue tracker.</a>
+</p>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 w-full flex flex-col items-center pb-8 gap-4 bg-transparent pointer-events-none">
+<div class="flex gap-4 pointer-events-auto">
+<a class="font-['Inter'] text-[12px] font-normal text-[#5b6477] dark:text-slate-500 hover:underline hover:text-[#14171f] dark:hover:text-white transition-all duration-200" href="#">Privacy</a>
+<a class="font-['Inter'] text-[12px] font-normal text-[#5b6477] dark:text-slate-500 hover:underline hover:text-[#14171f] dark:hover:text-white transition-all duration-200" href="#">Terms</a>
+<a class="font-['Inter'] text-[12px] font-normal text-[#5b6477] dark:text-slate-500 hover:underline hover:text-[#14171f] dark:hover:text-white transition-all duration-200" href="#">Security</a>
+</div>
+<div class="font-['Inter'] text-[12px] font-normal text-[#5b6477] dark:text-slate-500 pointer-events-auto">
+      © 2024 OpenClaw. Built for focus.
+    </div>
+</footer>
+</body></html>

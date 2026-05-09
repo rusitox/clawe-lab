@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>API Tokens - Clawe Kanban v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: '#3b5bdb',
+                hover: '#2f49b8',
+                active: '#25399a',
+              },
+              surface: '#ffffff',
+              page: '#f7f8fb',
+              border: '#e3e6ec',
+              text: {
+                primary: '#14171f',
+                muted: '#5b6477',
+              },
+              success: '#15803d',
+              warning: '#b45309',
+              danger: '#b91c1c',
+              info: '#0369a1',
+            },
+            borderRadius: {
+              'DEFAULT': '0.25rem',
+              'sm': '4px',
+              'md': '8px',
+              'lg': '12px',
+              'full': '9999px',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            },
+            boxShadow: {
+              'sm': '0 1px 2px rgba(0,0,0,.04)',
+              'md': '0 2px 6px rgba(0,0,0,.06)',
+              'lg': '0 12px 32px rgba(0,0,0,.10)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        background-color: #f7f8fb;
+      }
+    </style>
+</head>
+<body class="h-full text-text-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-4 h-14">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                Clawe 🐾
+            </span>
+<div class="h-4 w-[1px] bg-slate-300 mx-2"></div>
+<nav class="flex items-center text-sm font-medium space-x-2">
+<span class="text-slate-500">Settings</span>
+<span class="text-slate-400">/</span>
+<span class="text-indigo-600 dark:text-indigo-400 font-semibold">API tokens</span>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-1.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-1.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-slate-200" data-alt="Professional headshot of a man with short hair and a clean background for user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr_pZy0NkkFJfra4OsEUYzuCDZ9UAxxVGEOnNQjSPyqWv0Gc7PYDsYMn2KokCfyMeN2NH40AS6cbR8QBLtphZz5LC4cjdiPKYYfPA-G_0oH49brey_9QpqBXii-1KKfcA3_HMcOw0JnANdwyRu44WnN-9pGtKplIUYHTneOfcFn6bJ8EQzWZxkogZcYXce9eBXySHZqwhYykJEZL1jpxgKnHEANZ1QDnTzKrAviTjbp8P3uXl8cHiwVqLtRqxFzTNZChTsGwOCrJW4"/>
+</div>
+</nav>
+<div class="pt-14 flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col gap-1 p-3">
+<div class="px-3 py-2 mb-2">
+<h2 class="text-sm font-bold text-slate-700 dark:text-slate-300">Settings</h2>
+<p class="text-[11px] text-slate-500">Personal Workspace</p>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-md transition-all hover:translate-x-1 duration-150 text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-lg">person</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-md transition-all hover:translate-x-1 duration-150 text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-lg">vpn_key</span>
+<span>API Tokens</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-md transition-all hover:translate-x-1 duration-150 text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-lg">notifications</span>
+<span>Notifications</span>
+</a>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 p-8 max-w-5xl">
+<!-- Header Row -->
+<div class="flex justify-between items-end mb-6">
+<div>
+<h1 class="text-2xl font-semibold text-text-primary">API tokens</h1>
+<p class="mt-2 text-text-muted text-sm leading-relaxed max-w-2xl">
+                        Personal tokens act on your behalf and inherit your role across every project. Treat them like passwords.
+                    </p>
+</div>
+<button class="px-4 py-2 bg-brand hover:bg-brand-hover text-white text-sm font-medium rounded-md shadow-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">add</span>
+                    New token
+                </button>
+</div>
+<!-- Token List -->
+<div class="space-y-3">
+<!-- Row 1 -->
+<div class="bg-surface border border-border rounded-md p-4 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-brand/10 text-brand rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">code</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">openclaw-prod</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_a1b2…</code>
+</div>
+<div class="flex items-center gap-3 mt-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> created 2 days ago</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">history</span> last used 4 min ago</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-transparent hover:border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-transparent hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="bg-surface border border-border rounded-md p-4 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-slate-100 text-slate-500 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">local-dev</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_c3d4…</code>
+</div>
+<div class="flex items-center gap-3 mt-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> created last week</span>
+<span class="flex items-center gap-1">never used</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-transparent hover:border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-transparent hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="bg-surface border border-border rounded-md p-4 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-slate-100 text-slate-500 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">precision_manufacturing</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">ci-runner</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_e5f6…</code>
+</div>
+<div class="flex items-center gap-3 mt-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> created 1 month ago</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">history</span> last used 3 hours ago</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-transparent hover:border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-transparent hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+<!-- Row 4 (Revoked) -->
+<div aria-disabled="true" class="bg-slate-50/50 border border-slate-200 rounded-md p-4 flex items-center justify-between opacity-50 grayscale">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-slate-200 text-slate-400 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">desktop_windows</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm line-through">old-laptop</span>
+<span class="text-xs text-text-muted">·</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded">kbn_g7h8…</code>
+<span class="text-xs text-text-muted">·</span>
+<span class="text-xs text-text-muted">revoked 1 month ago</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium text-slate-400 italic">
+                        No actions available
+                    </div>
+</div>
+</div>
+<!-- Reveal Modal (Positioned as focused card below) -->
+<div class="mt-12 mx-auto max-w-[520px] bg-white border border-border rounded-lg shadow-lg overflow-hidden">
+<div class="flex items-center justify-between px-6 py-4 border-b border-border">
+<div class="flex items-center gap-2 text-success">
+<span class="material-symbols-outlined">check_circle</span>
+<h2 class="font-semibold text-text-primary">Token created</h2>
+</div>
+<button class="text-text-muted hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6">
+<div class="flex items-start gap-3 p-3 bg-danger/5 border border-danger/20 rounded-md mb-4">
+<span class="material-symbols-outlined text-danger text-lg mt-0.5">warning</span>
+<p class="text-sm text-danger font-medium">Copy your token now — you won't see it again.</p>
+</div>
+<div class="relative group">
+<div class="w-full font-mono text-[13px] bg-slate-900 text-slate-50 p-4 rounded-md overflow-x-auto whitespace-nowrap select-all cursor-text mb-2">
+                            kbn_a1b2c3d4e5f6g7h8i9j0K1L2M3N4O5P6Q7R8S9T0u1v2w3x4y5z6
+                        </div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-text-muted">After this, only the prefix <code class="px-1 py-0.5 bg-slate-100 rounded">kbn_a1b2…</code> will be visible to identify the token.</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-border">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-success hover:bg-success/5 rounded-md transition-all">
+<span class="material-symbols-outlined text-lg">content_copy</span>
+                        Copy
+                    </button>
+<button class="px-6 py-2 bg-brand hover:bg-brand-hover text-white text-sm font-medium rounded-md shadow-sm transition-colors">
+                        Done
+                    </button>
+</div>
+</div>
+<!-- Empty state filler spacing -->
+<div class="h-24"></div>
+</main>
+</div>
+<!-- Background texture decoration -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-[0.03]" data-alt="subtle geometric cube pattern texture for professional UI background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjEYzJ1FxEZYrefWEEhEgNRTRXDmHH5IuRJJhKfGXtirkvXx9lrgeCiU6I8bCl5EJoZnHeQhp43bEAQyMZVE4a43YAO4H5oDNgIE_Jn0VyKvEOHuSTSrXuUyb-CZRIIbFCnrxMrzCbSUTdsDJcS_1sHsoMsnl-l7Im1lbeX4YHNEi2tE22aeu0B-DQDYimrNy8ANgutGqnvCEnJwv37laPVDoWIwldh8kZXnwnrAhtmakvX8kdAUZtpD1Sw1j6iQnNjy4MfcHi6wlb');"></div>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task detail — Clawe HQ</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban</span>
+    <span class="breadcrumb"><span class="sep">/</span> <a href="./projects.html">Projects</a> <span class="sep">/</span> <a href="./board.html">Clawe HQ</a></span>
+    <span class="spacer"></span>
+    <span class="avatar avatar-sm">MO</span>
+  </header>
+
+  <main>
+    <!-- The board renders behind the drawer; we only show a faded version -->
+    <div class="board" style="opacity:.35; pointer-events:none;" aria-hidden="true">
+      <section class="column">
+        <header class="column-header"><span>Backlog</span><span class="column-count">4</span></header>
+        <article class="task-card" style="--team-color:#3b82f6;"><div class="title">Refactor the global task store</div></article>
+        <article class="task-card" style="--team-color:#14b8a6;"><div class="title">Color-blind safe palette for kinds</div></article>
+      </section>
+      <section class="column">
+        <header class="column-header"><span>Todo</span><span class="column-count">3</span></header>
+        <article class="task-card" style="--team-color:#ef4444;"><div class="title">Login throws 500 on Safari 17</div></article>
+      </section>
+      <section class="column"></section>
+      <section class="column"></section>
+    </div>
+  </main>
+
+  <div class="scrim" aria-hidden="true"></div>
+
+  <aside class="drawer" role="dialog" aria-labelledby="drawer-title" aria-modal="true">
+    <div class="drawer-header">
+      <span class="kind-badge kind-bug">B</span>
+      <span class="priority priority-P0">P0</span>
+      <span class="muted" style="font-size:var(--font-xs);">CKB-23</span>
+      <span class="spacer" style="flex:1;"></span>
+      <a class="btn btn-ghost" href="./board.html" aria-label="Close">✕</a>
+    </div>
+    <div class="drawer-body">
+      <h2 id="drawer-title" style="margin-top:0;">Login throws 500 on Safari 17</h2>
+      <div class="row" style="display:flex; gap:var(--space-3); align-items:center; flex-wrap:wrap; margin-bottom: var(--space-6);">
+        <button class="btn btn-sm">Todo ▾</button>
+        <button class="btn btn-sm">Team: Auth ▾</button>
+        <span class="avatar-pile"><span class="avatar avatar-sm">MO</span></span>
+        <button class="btn btn-sm">+ Assignee</button>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Description</h3>
+        <p>When I sign in on Safari 17 (macOS 14), the OAuth callback returns <code>500</code>. Chrome and Firefox work fine. Likely cookie SameSite handling difference.</p>
+        <p><strong>Repro</strong></p>
+        <ol>
+          <li>Open Safari 17 in private mode.</li>
+          <li>Visit <code>http://127.0.0.1:8787/login</code>.</li>
+          <li>Click <em>Continue with Google</em>.</li>
+        </ol>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Attachments (2)</h3>
+        <div class="list">
+          <div class="list-row"><span>📎 safari-network-tab.png</span><span class="grow"></span><span class="muted" style="font-size:var(--font-xs);">142 KB</span></div>
+          <div class="list-row"><span>📎 server-stack.txt</span><span class="grow"></span><span class="muted" style="font-size:var(--font-xs);">3 KB</span></div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Comments (3)</h3>
+        <div class="activity-list">
+          <div class="activity-item"><span class="activity-dot" style="background: var(--color-brand-500);"></span><div><strong>Marian</strong> <span class="activity-time">2h ago</span><div>Looks like SameSite=Lax breaks it on Safari private. We may need to flip to <code>None; Secure</code> when behind HTTPS.</div></div></div>
+          <div class="activity-item"><span class="activity-dot" style="background: var(--color-brand-500);"></span><div><strong>Juan</strong> <span class="activity-time">1h ago</span><div>Confirmed — patched locally. PR up shortly.</div></div></div>
+        </div>
+        <div class="field" style="margin-top: var(--space-4);">
+          <textarea class="textarea" placeholder="Write a comment… (markdown supported)"></textarea>
+          <div style="display:flex; justify-content:flex-end; gap: var(--space-2);">
+            <button class="btn">Cancel</button>
+            <button class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>History</h3>
+        <div class="activity-list">
+          <div class="activity-item"><span class="activity-dot"></span><div><strong>Marian</strong> moved Backlog → Todo <span class="activity-time">3h ago</span></div></div>
+          <div class="activity-item"><span class="activity-dot"></span><div><strong>Marian</strong> created this bug <span class="activity-time">3h ago</span></div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

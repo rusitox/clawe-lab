@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} — Clawe Kanban{% endblock %}
+{% block body %}
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</a>
+    <span class="breadcrumb">
+      <span class="sep">/</span>
+      <a href="/">Projects</a>
+      <span class="sep">/</span>
+      <strong data-testid="project-name">{{ project.name }}</strong>
+    </span>
+    <span class="spacer"></span>
+    <button class="btn btn-sm" id="filter-mine" aria-pressed="false" data-testid="filter-mine">Mine</button>
+    <button class="btn btn-sm" id="filter-all" disabled>All kinds ▾</button>
+    <a class="btn btn-sm" href="/p/{{ project.slug }}/members" data-testid="members-link">Members</a>
+    <button class="btn btn-sm" id="activity-toggle" data-testid="activity-toggle">Activity</button>
+    <span class="avatar" aria-hidden="true">{{ user_initials }}</span>
+    <button class="btn btn-primary btn-sm" id="new-task-btn" data-testid="new-task-btn" title="⌘N">+ Task</button>
+  </header>
+
+  <main
+    id="board-main"
+    data-project-id="{{ project.id }}"
+    data-project-slug="{{ project.slug }}"
+    data-current-user-initials="{{ user_initials }}"
+  >
+    <section class="board" id="board" data-testid="board" aria-label="Kanban board" aria-busy="true">
+      <!-- Columns rendered by static/js/board.js -->
+    </section>
+    <div id="kbd-live" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+  </main>
+
+  <template id="column-template">
+    <section class="column" data-column-id="" aria-label="">
+      <header class="column-header">
+        <span class="column-name"></span>
+        <span class="column-count"></span>
+      </header>
+      <div class="column-list" role="list" data-testid="column-list"></div>
+      <button class="btn btn-ghost btn-sm column-add" type="button" data-action="add-task">+ Add task</button>
+    </section>
+  </template>
+
+  <template id="task-card-template">
+    <article class="task-card" data-testid="task-card" role="listitem" tabindex="0">
+      <header class="task-card__row">
+        <span class="kind-badge" aria-hidden="true"></span>
+        <span class="priority-chip" aria-hidden="true" hidden></span>
+        <span class="task-card__code muted" hidden></span>
+      </header>
+      <p class="task-card__title"></p>
+      <footer class="task-card__footer">
+        <span class="task-card__assignees"></span>
+        <span class="task-card__counters muted" hidden></span>
+      </footer>
+    </article>
+  </template>
+
+  <dialog id="new-task-dialog" data-testid="new-task-dialog">
+    <form id="new-task-form">
+      <h2>New task</h2>
+      <div class="kind-switcher" role="radiogroup" aria-label="Kind">
+        <input type="radio" id="nt-task" name="nt-kind" value="task" checked>
+        <label for="nt-task"><span class="kind-badge kind-task" aria-hidden="true">T</span> Task</label>
+        <input type="radio" id="nt-bug" name="nt-kind" value="bug">
+        <label for="nt-bug"><span class="kind-badge kind-bug" aria-hidden="true">B</span> Bug</label>
+        <input type="radio" id="nt-prop" name="nt-kind" value="proposal">
+        <label for="nt-prop"><span class="kind-badge kind-proposal" aria-hidden="true">P</span> Proposal</label>
+      </div>
+      <div class="field">
+        <label for="nt-title">Title</label>
+        <input id="nt-title" class="input" type="text" required minlength="1" maxlength="255" autocomplete="off" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="nt-column">Column</label>
+          <select id="nt-column" class="input">
+            <option value="backlog">Backlog</option>
+            <option value="todo">Todo</option>
+            <option value="inprogress">In progress</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="nt-priority">Priority</label>
+          <select id="nt-priority" class="input">
+            <option value="">—</option>
+            <option value="P0">P0</option>
+            <option value="P1">P1</option>
+            <option value="P2" selected>P2</option>
+            <option value="P3">P3</option>
+          </select>
+        </div>
+      </div>
+      <p id="nt-error" class="banner banner-error" role="alert" hidden></p>
+      <footer>
+        <button type="button" class="btn" data-action="close">Cancel <kbd>Esc</kbd></button>
+        <button type="button" id="nt-submit" class="btn btn-primary">Create <kbd>⌘ Enter</kbd></button>
+      </footer>
+    </form>
+  </dialog>
+</div>
+
+<script type="module" src="/static/js/board.js"></script>
+{% endblock %}

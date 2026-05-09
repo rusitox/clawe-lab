@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+coverage/
+.coverage
+
+# Node (dev tooling only — eslint + playwright)
+node_modules/
+playwright-report/
+test-results/
+tests-e2e/__screenshots__/*-actual-*.png
+tests-e2e/__screenshots__/*-diff-*.png
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# v2 runtime data (dev)
+var/
+.env
+
+# Claude Code (per-machine personal overrides)
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*
+.secrets/

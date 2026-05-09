@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban v2 - Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: '#3b5bdb',
+                hover: '#2f49b8',
+                active: '#25399a',
+              },
+              surface: '#ffffff',
+              page: '#f7f8fb',
+              border: '#e3e6ec',
+              text: {
+                primary: '#14171f',
+                muted: '#5b6477',
+              }
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            fontFamily: {
+              headline: ["Inter", "sans-serif"],
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+              label: ["Inter", "sans-serif"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f8fb; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+    </style>
+</head>
+<body class="text-text-primary antialiased">
+<!-- TopAppBar -->
+<header class="sticky top-0 flex items-center justify-between px-6 h-14 w-full bg-white border-b border-[#e3e6ec] z-50 shadow-sm font-['Inter'] text-sm antialiased">
+<div class="flex items-center gap-4">
+<span class="text-lg font-semibold text-[#14171f] tracking-tight">Clawe 🐾</span>
+<div class="h-4 w-[1px] bg-border mx-2"></div>
+<nav class="flex items-center gap-1 text-[#5b6477]">
+<span class="hover:text-text-primary cursor-pointer transition-colors">Projects</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-text-primary font-medium">Home</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-[240px] h-8 pl-9 pr-3 bg-[#f7f8fb] border-none rounded-md text-xs focus:ring-1 focus:ring-brand transition-all outline-none" placeholder="Search projects…" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-md hover:bg-[#f7f8fb] text-text-muted transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-[#f7f8fb] text-text-muted transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<img alt="User avatar" class="w-7 h-7 rounded-full border border-border object-cover" data-alt="Professional headshot of a smiling male user with short hair and a clean office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmDW2W1WD6NHfGMn3iUHR4n_0lDKjaArNytEMgh1DrJ7LZjk_WqxdzbGk2M06VyD0bhAA6Ty-tzYSeTJFvVJiG_ySLMpDHnDH73zVHpaTOGiSHxrEai0R6X1KXoctGHegWHS99k6FQjup_8kA5qiz10zdkIaGpvvaDIRtPC7Qz25HLorOGeYp_QqzO-AxTNmHb6mgLpeorIuaQrrrxE2xF1Z6F56xlaaDj8rFDyRkA1cg-6REC4c5SFhNnhYDZTz3DY7_oBgKN39ds"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-3.5rem)]">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full py-4 bg-[#f7f8fb] border-r border-[#e3e6ec] fixed left-0 top-14 w-64 font-['Inter'] text-[13px] font-medium">
+<div class="px-5 mb-6 flex items-center gap-3">
+<div class="w-6 h-6 bg-brand rounded flex items-center justify-center text-white text-[10px]">OC</div>
+<div>
+<div class="text-base font-bold text-[#14171f] leading-tight">OpenClaw</div>
+<div class="text-[11px] text-text-muted font-normal">Productivity Workspace</div>
+</div>
+</div>
+<div class="flex-1 space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">inbox</span>
+<span>Inbox</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+<span>My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all bg-[#e3e6ec] text-[#14171f]" href="#">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+<span>Backlog</span>
+</a>
+</div>
+<div class="mt-auto pt-4 space-y-0.5 border-t border-border mx-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-8">
+<!-- Header Row -->
+<div class="flex items-center justify-between mb-8">
+<div>
+<h1 class="text-2xl font-semibold text-text-primary tracking-tight">Your projects</h1>
+<p class="text-sm text-text-muted mt-1">Manage and track your team workspaces</p>
+</div>
+<button class="bg-brand hover:bg-brand-hover active:bg-brand-active text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>New project</span>
+</button>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+<!-- Project Card: Clawe HQ -->
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="w-10 h-10 rounded-lg bg-[#e3e6ec] flex items-center justify-center text-brand">
+<span class="material-symbols-outlined">corporate_fare</span>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<h3 class="text-base font-semibold mb-3">Clawe HQ</h3>
+<!-- Mini board preview -->
+<div class="flex gap-1.5 mb-4">
+<div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-300 w-[60%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-amber-50 rounded-full overflow-hidden">
+<div class="h-full bg-amber-200 w-[40%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-blue-50 rounded-full overflow-hidden">
+<div class="h-full bg-blue-300 w-[25%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-emerald-50 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-300 w-[80%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="text-[12px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>47 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>3 members</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Portrait of a woman with long hair smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADRzfD7NQM6pWnhbz3F8Mq-8_hU1IQsho8mRqowTcs-N-LLChL62FswRpoWLEmTVB_bbTcxtidUL9Xqksnef5FLzZO3yN3RhaX-ZTN4WbHbekq5yDUlwZFAud6MN72it1_jOR3vOHKtE_4EOkRgd9qnAoR1ZxNn5JueXu79CW6lpfQWOpw6ayOEt8lBxU6Qqgnrip_yYFYUSmQhokpyR6IvSMwcXlSM4YC-isuV1Wi7XL7eOpbWAHMqoIodArjkG3isaa4Y2LuCy4a"/>
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Portrait of a man with beard looking forward" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeZo9CZ-QZRZVN_TkckQBdxEY4Qpm8EaW5_fw93kdsP2SzSxJO6-aX9PcuDKaU1sp-9je0DAbdykjTFMTEnzfelzBaU40OpQ5gvNu5ItauuLQuQ5mv8xJ8g99WTueDQdjb1OxZWGJT9auRIUzQkvLHkMVoNJpUf9CTn6QhhWBUjVRNj0mrmWm25Yljl_uU3fmdJOs5OVJzto_MrGQJY73mO_lr9moHqAOCgPDBHfeGKAanHGNlaEyj4Pn9iUvGI74XFjxvzZQqWL6X"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">ML</div>
+</div>
+</div>
+</div>
+<!-- Project Card: OpenClaw -->
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-brand">
+<span class="material-symbols-outlined">code</span>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<h3 class="text-base font-semibold mb-3">OpenClaw</h3>
+<div class="flex gap-1.5 mb-4">
+<div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-300 w-[20%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-amber-50 rounded-full overflow-hidden">
+<div class="h-full bg-amber-200 w-[70%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-blue-50 rounded-full overflow-hidden">
+<div class="h-full bg-blue-300 w-[10%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-emerald-50 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-300 w-[30%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="text-[12px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>12 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>1 member</span>
+</div>
+<div class="flex">
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Close up of a young man with glasses and casual shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgpNQBU5IBXFXJSOeVQRUsMOUNuLYYTlC1JFsy0EZHy_N9-G2zXID6_Uiiz1SBza2O_6UUFi_lKlYlItlVxAfD13bEXsL1wsLkEKYing4wNah6-D5eZKoeWUGwfU2OFtLZBarbI3usXwz7gM4irBWGBLVTTJSIlD9lEA-uN1GJ28CebXoHJXNFq8rQtufSf3uF1YqOD5DfqhyHl-3lZsdSva77efzebV4TNH97TFNczHtXQgLbitJdNF6QmjqIxqtuHfxZmlJtcHPX"/>
+</div>
+</div>
+</div>
+<!-- Project Card: Familyhub -->
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined">home</span>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<h3 class="text-base font-semibold mb-3">Familyhub</h3>
+<div class="flex gap-1.5 mb-4">
+<div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-300 w-[10%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-amber-50 rounded-full overflow-hidden">
+<div class="h-full bg-amber-200 w-[10%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-blue-50 rounded-full overflow-hidden">
+<div class="h-full bg-blue-300 w-[40%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-emerald-50 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-300 w-[90%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="text-[12px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>3 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>2 members</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Portrait of a young woman with light brown hair and a bright background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIuyiXGae1raJStSAAv9LlfdKR_BNG8mN5ytRqGN5D4DTuLKSNI242y06lxpDODf7lpaiC6OOBFweUKxzXq6NecFwMNonFpyatOJV1TsvgOVDwuW4hhNs3_CMh63s-JgHnd8PCwrAbAN06f5d_o4pjz974YHQ7S76nMnjiQezKmLw-Bqy2kmHWDnpchthh0Y1qitW7XwDcGOeEGKUHsaxoI7p-4FIQdjSgy3QFHm00L-amyYBI9POCcKe3fo1qOV8fLw_foa_C9FpX"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">JD</div>
+</div>
+</div>
+</div>
+<!-- Project Card: Kanban v2 -->
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined">dashboard</span>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<h3 class="text-base font-semibold mb-3">Kanban v2</h3>
+<div class="flex gap-1.5 mb-4">
+<div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-300 w-[30%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-amber-50 rounded-full overflow-hidden">
+<div class="h-full bg-amber-200 w-[30%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-blue-50 rounded-full overflow-hidden">
+<div class="h-full bg-blue-300 w-[30%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-emerald-50 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-300 w-[30%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="text-[12px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>18 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>2 members</span>
+</div>
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Portrait of a man in a professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsG9JTrct1AH4-Dq0B2KF-pF80cz6jlE8Mj2KwaP8KeoDbsdx3OKmjAcpnw3ZBg4OUe4KAwKWfDWkaTxef1pBSJY_UqRG3FVmv5_zqEFIOVtnwUfu8oExtwBlh3ovsGXc5Nf4mUpRAMQYXjx9WyB1Jxezz-9a--wuVE0OJWIPCh0wEUOEOUTQrW839Ub8gSZ0ljOk61SQtoMja2SBDeBn7k2q58YEDbago17FXlPVuuuFHA-R45RCsShQ2ihj-Kob4QbyYULGj0mXO"/>
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Portrait of a man with glasses and short hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIUOQRSmtnozz0YZd9FV8-9pZS1lV1UtoUy9n19Hig4XQc0fQ79TF4djvby7jx-hxv3xJ9zOas-2sEsh7Jpg0DRZzGhLUonQHZYol2FEDhPdl3GlIlzV-Lt2eI2D57BGhz9vUcPxbzpPdccJYnBekX-5ci7p3CvCeUvyPJ8_MKuEc76UZUQvyz5nxbcxy3RrG7qtHCN2sTXX7jA1otbwC9JcncleMPzeuvK4N2qd24CP7JwmxTqfcW-_kME_ARi0_kAD2ZUjy2w9vm"/>
+</div>
+</div>
+</div>
+<!-- Project Card: Personal -->
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="w-10 h-10 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600">
+<span class="material-symbols-outlined">person</span>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<h3 class="text-base font-semibold mb-3">Personal</h3>
+<div class="flex gap-1.5 mb-4">
+<div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-slate-300 w-[100%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-amber-50 rounded-full overflow-hidden">
+<div class="h-full bg-amber-200 w-[0%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-blue-50 rounded-full overflow-hidden">
+<div class="h-full bg-blue-300 w-[0%]"></div>
+</div>
+<div class="h-1.5 flex-1 bg-emerald-50 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-300 w-[0%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="text-[12px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>7 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>1 member</span>
+</div>
+<div class="flex">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-pink-100 flex items-center justify-center text-[10px] font-bold text-pink-600">MO</div>
+</div>
+</div>
+</div>
+<!-- Empty Card / Add State -->
+<div class="group border-2 border-dashed border-border rounded-xl p-4 flex flex-col items-center justify-center text-center hover:border-brand hover:bg-white transition-all cursor-pointer min-h-[200px]">
+<div class="w-12 h-12 rounded-full bg-[#f7f8fb] group-hover:bg-blue-50 flex items-center justify-center text-text-muted group-hover:text-brand transition-colors mb-4">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</div>
+<span class="text-sm font-medium text-text-muted group-hover:text-text-primary">Create new project</span>
+</div>
+</div>
+</main>
+</div>
+</body></html>

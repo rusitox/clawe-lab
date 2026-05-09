@@ -1,0 +1,194 @@
+name: Deploy (Oracle VPS)
+
+# Trigger model:
+#  - `workflow_run`: deploy automatically AFTER the CI workflow finishes green on `main`.
+#  - `workflow_dispatch`: manual deploy from any branch via the "Run workflow" button.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (default: main)"
+        required: false
+        default: "main"
+
+defaults:
+  run:
+    working-directory: projects/kanban-dashboard
+
+concurrency:
+  group: deploy-${{ github.event.inputs.ref || github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/openclaw-kanban-v2
+  PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  guard:
+    name: Block if CI failed
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    steps:
+      - run: echo "CI green or manual dispatch — proceeding."
+
+  build-and-push:
+    name: Build + push image to GHCR
+    runs-on: ubuntu-latest
+    needs: guard
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_ref: ${{ steps.meta.outputs.image_ref }}
+      short_sha: ${{ steps.meta.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.ref || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Resolve image metadata
+        id: meta
+        run: |
+          OWNER_LC="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          SHORT="${GITHUB_SHA::7}"
+          IMAGE_REF="${REGISTRY}/${OWNER_LC}/openclaw-kanban-v2:${SHORT}"
+          {
+            echo "image_ref=${IMAGE_REF}"
+            echo "image_repo=${REGISTRY}/${OWNER_LC}/openclaw-kanban-v2"
+            echo "short_sha=${SHORT}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU (for arm64 emulation)
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/arm64
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push (multi-arch)
+        uses: docker/build-push-action@v6
+        with:
+          context: projects/kanban-dashboard
+          file: projects/kanban-dashboard/Dockerfile
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image_repo }}:${{ steps.meta.outputs.short_sha }}
+            ${{ steps.meta.outputs.image_repo }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+  deploy:
+    name: SSH deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment:
+      name: production
+      url: ${{ secrets.DEPLOY_PUBLIC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust VPS host key
+        env:
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload remote-deploy.sh + env.production + compose file
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          scp -o StrictHostKeyChecking=yes \
+            deploy/remote-deploy.sh \
+            deploy/env.production \
+            docker-compose.prod.yml \
+            "$DEPLOY_USER@$DEPLOY_HOST:/tmp/"
+          ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" '
+            set -e
+            mkdir -p /home/ubuntu/openclaw-kanban-v2/deploy
+            mv /tmp/env.production /home/ubuntu/openclaw-kanban-v2/deploy/env.production
+            chmod 0644 /home/ubuntu/openclaw-kanban-v2/deploy/env.production
+            mv /tmp/docker-compose.prod.yml /home/ubuntu/openclaw-kanban-v2/docker-compose.prod.yml
+            chmod 0644 /home/ubuntu/openclaw-kanban-v2/docker-compose.prod.yml
+          '
+
+      - name: Run remote-deploy.sh
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          APP_IMAGE: ${{ needs.build-and-push.outputs.image_ref }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        run: |
+          # Pass secrets via -o SendEnv + AcceptEnv on the server, OR inline as
+          # `KEY=val cmd` on the remote shell. We use the inline form so we don't
+          # need to touch sshd_config. Values are quoted with single quotes; if
+          # any secret contains a single quote, escape it via shell parameter
+          # expansion. Backslashes and dollar signs survive single-quoting.
+          q() { printf "%s" "$1" | sed "s/'/'\\\\''/g"; }
+          ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            "APP_IMAGE='$(q "$APP_IMAGE")' \
+             POSTGRES_PASSWORD='$(q "$POSTGRES_PASSWORD")' \
+             SESSION_SECRET='$(q "$SESSION_SECRET")' \
+             GOOGLE_CLIENT_ID='$(q "$GOOGLE_CLIENT_ID")' \
+             GOOGLE_CLIENT_SECRET='$(q "$GOOGLE_CLIENT_SECRET")' \
+             bash /tmp/remote-deploy.sh && rm -f /tmp/remote-deploy.sh"
+
+      - name: Public health check
+        if: ${{ secrets.DEPLOY_PUBLIC_URL != '' }}
+        env:
+          DEPLOY_PUBLIC_URL: ${{ secrets.DEPLOY_PUBLIC_URL }}
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS --max-time 3 "$DEPLOY_PUBLIC_URL/api/health" | tee /dev/stderr | grep -q '"db":"up"'; then
+              echo "✓ public health OK"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "✗ public health did not return db=up within 60s"
+          exit 1
+
+      - name: Deploy summary
+        if: always()
+        env:
+          IMAGE_REF: ${{ needs.build-and-push.outputs.image_ref }}
+        run: |
+          {
+            echo "### Deploy summary"
+            echo
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| SHA | \`${GITHUB_SHA}\` |"
+            echo "| Image | \`${IMAGE_REF}\` |"
+            echo "| Status | ${{ job.status }} |"
+            echo "| URL | ${{ secrets.DEPLOY_PUBLIC_URL }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

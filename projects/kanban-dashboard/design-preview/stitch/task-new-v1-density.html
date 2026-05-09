@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban - Create Task</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: "#3b5bdb",
+                        brandHover: "#2f49b8",
+                        brandActive: "#25399a",
+                        surface: "#ffffff",
+                        pageBg: "#f7f8fb",
+                        border: "#e3e6ec",
+                        textPrimary: "#14171f",
+                        textMuted: "#5b6477",
+                        success: "#15803d",
+                        warning: "#b45309",
+                        danger: "#b91c1c",
+                        info: "#0369a1"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "4px",
+                        "sm": "4px",
+                        "md": "8px",
+                        "lg": "12px",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "system-ui", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 18px;
+        }
+        .scrim-overlay {
+            background-color: rgba(20, 23, 31, 0.45);
+        }
+        .kbd-hint {
+            @apply px-1.5 py-0.5 text-[10px] font-medium bg-gray-100 border border-gray-300 text-gray-500 rounded shadow-sm inline-flex items-center justify-center;
+        }
+    </style>
+</head>
+<body class="bg-pageBg font-sans text-textPrimary antialiased overflow-hidden">
+<div class="fixed inset-0 flex flex-col opacity-35 select-none pointer-events-none">
+<header class="bg-white border-b border-border h-14 px-6 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="text-lg font-bold text-textPrimary flex items-center gap-2">Clawe Kanban</span>
+</div>
+</header>
+<div class="flex flex-1">
+<aside class="w-64 border-r border-border p-4 bg-pageBg space-y-2"></aside>
+<main class="flex-1 p-6 flex gap-6 overflow-hidden">
+<div class="w-72 flex-shrink-0">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-semibold uppercase tracking-wider text-textMuted">Todo</span>
+</div>
+</div>
+</main>
+</div>
+</div>
+<div class="fixed inset-0 scrim-overlay flex items-center justify-center p-4 z-50">
+<div class="bg-white w-full max-w-[560px] rounded-lg shadow-lg flex flex-col max-h-[921px] border border-border">
+<div class="flex items-center justify-between px-5 py-3 border-b border-border">
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-semibold text-textPrimary">New</h2>
+<span class="text-[11px] text-textMuted font-medium uppercase tracking-wider bg-pageBg px-1.5 py-0.5 rounded">Issue</span>
+</div>
+<button class="text-textMuted hover:text-textPrimary transition-colors">
+<span class="material-symbols-outlined !text-[20px]">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-5 space-y-5">
+<div class="space-y-2">
+<div class="flex gap-1 p-1 bg-pageBg border border-border rounded-md">
+<button class="flex-1 flex flex-col items-center justify-center py-1.5 px-2 text-xs font-medium text-textMuted hover:bg-white/50 rounded transition-all">
+<span class="text-[10px] font-bold text-textMuted uppercase opacity-60">Task</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-1.5 px-2 text-xs font-semibold text-brand bg-white border border-brand/20 rounded shadow-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-danger"></span>
+<span>Bug</span>
+</div>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-1.5 px-2 text-xs font-medium text-textMuted hover:bg-white/50 rounded transition-all">
+<span class="text-[10px] font-bold text-textMuted uppercase opacity-60">Proposal</span>
+</button>
+</div>
+<div class="flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-brand !text-[14px]">info</span>
+<p class="text-[11px] text-textMuted">Active: <b>Bug</b> — We'll prefill repro / expected / actual behavior.</p>
+</div>
+</div>
+<div class="space-y-1">
+<input class="w-full bg-transparent text-lg font-medium border-none p-0 focus:ring-0 placeholder:text-textMuted/30" placeholder="Login throws 500 on Safari 17" type="text" value=""/>
+<div class="h-[1px] w-full bg-border"></div>
+<p class="text-[11px] text-danger hidden">Title is required to create a ticket.</p>
+</div>
+<div class="grid grid-cols-2 gap-3 bg-pageBg/40 p-3 rounded-md border border-border/50">
+<div class="flex items-center justify-between gap-4">
+<label class="text-[11px] font-semibold text-textMuted uppercase shrink-0">Column</label>
+<button class="flex-1 flex items-center justify-between px-2 py-1 bg-white border border-border rounded text-[12px] hover:border-brand/40 transition-colors">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+<span>Todo</span>
+</div>
+<span class="material-symbols-outlined text-textMuted !text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="flex items-center justify-between gap-4">
+<label class="text-[11px] font-semibold text-textMuted uppercase shrink-0">Priority</label>
+<button class="flex-1 flex items-center justify-between px-2 py-1 bg-white border border-border rounded text-[12px] hover:border-brand/40 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-danger !text-[14px]" style="font-variation-settings: 'FILL' 1;">signal_cellular_4_bar</span>
+<span>P0</span>
+</div>
+<span class="material-symbols-outlined text-textMuted !text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="flex items-center justify-between gap-4">
+<label class="text-[11px] font-semibold text-textMuted uppercase shrink-0 text-left w-[44px]">Team</label>
+<button class="flex-1 flex items-center justify-between px-2 py-1 bg-white border border-border rounded text-[12px] hover:border-brand/40 transition-colors">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-[2px] bg-brand"></div>
+<span>Auth</span>
+</div>
+<span class="material-symbols-outlined text-textMuted !text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="flex items-center justify-between gap-4">
+<label class="text-[11px] font-semibold text-textMuted uppercase shrink-0">Assignees</label>
+<div class="flex-1 flex items-center -space-x-1 justify-end">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-indigo-500 flex items-center justify-center text-[9px] font-bold text-white uppercase shadow-sm">MO</div>
+<button class="w-6 h-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors shadow-sm">
+<span class="material-symbols-outlined !text-[14px] text-textMuted">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex gap-3 text-[12px]">
+<button class="font-semibold text-textPrimary border-b-2 border-brand pb-0.5">Write</button>
+<button class="font-medium text-textMuted hover:text-textPrimary pb-0.5">Preview</button>
+</div>
+<div class="flex items-center gap-3 text-[10px] text-textMuted font-mono">
+<span>**bold**</span>
+<span>_italic_</span>
+<span>`code`</span>
+<span class="text-border">|</span>
+<span class="flex items-center gap-1 opacity-70">Markdown supported</span>
+</div>
+</div>
+<div class="relative group">
+<textarea class="w-full font-mono text-[13px] bg-white border border-border rounded-md p-3 focus:ring-1 focus:ring-brand focus:border-brand resize-none leading-relaxed text-textPrimary" rows="5" spellcheck="false">## Steps
+1. 
+## Expected
+## Actual</textarea>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-[11px] font-semibold text-textMuted uppercase tracking-tight">Attachments</label>
+<span class="text-[10px] text-textMuted opacity-60">Paste supported (⌘V)</span>
+</div>
+<div class="flex gap-3">
+<div class="relative group flex-shrink-0">
+<div class="w-14 h-14 rounded-md border border-border bg-pageBg flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-brand/40 text-xl">image</span>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px] cursor-pointer">close</span>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-success rounded-full border-2 border-white"></div>
+</div>
+<div class="flex-1 border-2 border-dashed border-border rounded-md px-4 flex items-center gap-3 bg-pageBg/30 hover:bg-pageBg transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-textMuted group-hover:text-brand transition-colors !text-[18px]">cloud_upload</span>
+<div class="flex flex-col">
+<p class="text-[12px] text-textMuted">Drop or <span class="text-brand font-medium">browse</span></p>
+<p class="text-[10px] text-textMuted/60">Max size 25MB per file</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 p-2 bg-danger/5 border border-danger/10 rounded hidden">
+<span class="material-symbols-outlined text-danger !text-[14px]">warning</span>
+<p class="text-[11px] text-danger font-medium">video_demo.mp4 is too large (42MB)</p>
+</div>
+</div>
+</div>
+<div class="px-5 py-4 bg-white border-t border-border flex items-center justify-between">
+<div class="flex items-center gap-1.5 opacity-0 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-warning !text-[14px]">error</span>
+<span class="text-[11px] text-textMuted font-medium">Unsaved changes</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="kbd-hint">Esc</span>
+<button class="text-[13px] font-medium text-textMuted hover:text-textPrimary transition-colors">Cancel</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-1.5 bg-brand hover:bg-brandHover active:bg-brandActive text-white text-[13px] font-semibold rounded shadow-sm transition-all flex items-center gap-2">
+                            Create Issue
+                        </button>
+<span class="kbd-hint">⌘ Enter</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

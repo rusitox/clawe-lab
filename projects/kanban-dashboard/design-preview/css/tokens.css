@@ -1,0 +1,92 @@
+/* Design tokens — see specs/sdd-kanban-v2.md §3.5 */
+:root {
+  /* Color — surfaces */
+  --color-bg: #f7f8fb;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border: #e3e6ec;
+
+  /* Color — text */
+  --color-text: #14171f;
+  --color-text-muted: #5b6477;
+  --color-text-on-brand: #ffffff;
+
+  /* Color — brand */
+  --color-brand-50: #eef1ff;
+  --color-brand-500: #3b5bdb;
+  --color-brand-600: #2f49b8;
+  --color-brand-700: #25399a;
+
+  /* Color — semantic */
+  --color-success-500: #15803d;
+  --color-warning-500: #b45309;
+  --color-danger-500: #b91c1c;
+  --color-info-500: #0369a1;
+
+  /* Color — kinds (task/bug/proposal) */
+  --color-kind-task: var(--color-text-muted);
+  --color-kind-bug: var(--color-danger-500);
+  --color-kind-proposal: var(--color-info-500);
+
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-md: 16px;
+  --font-lg: 18px;
+  --font-xl: 24px;
+  --font-2xl: 32px;
+  --line-xs: 16px;
+  --line-sm: 20px;
+  --line-md: 24px;
+  --line-lg: 26px;
+  --line-xl: 32px;
+  --line-2xl: 40px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Spacing (4-pt) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
+
+  /* Motion */
+  --motion-fast: 120ms ease-out;
+  --motion-base: 200ms ease;
+  --motion-slow: 320ms ease;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f1115;
+  --color-surface: #161922;
+  --color-surface-raised: #1d2230;
+  --color-border: #262b38;
+  --color-text: #e6e9f1;
+  --color-text-muted: #9098ab;
+  --color-brand-50: #1c244a;
+  --color-shadow-strength: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+  }
+}

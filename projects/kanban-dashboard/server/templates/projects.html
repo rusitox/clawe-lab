@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Projects — Clawe Kanban{% endblock %}
+{% block body %}
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</a>
+    <span class="breadcrumb"><span class="sep">/</span> Projects</span>
+    <span class="spacer"></span>
+    <input id="project-search" class="input input-sm" type="search" placeholder="Search projects…" aria-label="Search projects" />
+    <span class="avatar" aria-hidden="true" data-testid="me-avatar">{{ user_initials }}</span>
+    <form action="/logout" method="post" style="display:inline;">
+      <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
+    </form>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h1 class="page-title">Your projects</h1>
+      <div class="page-header-actions">
+        <div role="tablist" aria-label="Sort projects" class="sort-tabs">
+          <button role="tab" data-sort="recent" aria-selected="true" class="sort-tab">Recently active</button>
+          <button role="tab" data-sort="alpha" aria-selected="false" class="sort-tab">A&ndash;Z</button>
+          <button role="tab" data-sort="assigned" aria-selected="false" class="sort-tab">Where I&rsquo;m assigned</button>
+        </div>
+        <button id="new-project-btn" class="btn btn-primary" data-testid="new-project-btn">+ New project</button>
+      </div>
+    </section>
+
+    <section id="project-grid" class="project-grid" data-testid="project-grid" aria-busy="true">
+      <!-- Skeleton placeholders rendered immediately; replaced when data arrives. -->
+      <div class="project-card project-card--skeleton" aria-hidden="true">
+        <div class="skeleton skeleton-title"></div>
+        <div class="mini-board mini-board--skeleton"></div>
+        <div class="skeleton skeleton-meta"></div>
+      </div>
+      <div class="project-card project-card--skeleton" aria-hidden="true">
+        <div class="skeleton skeleton-title"></div>
+        <div class="mini-board mini-board--skeleton"></div>
+        <div class="skeleton skeleton-meta"></div>
+      </div>
+      <div class="project-card project-card--skeleton" aria-hidden="true">
+        <div class="skeleton skeleton-title"></div>
+        <div class="mini-board mini-board--skeleton"></div>
+        <div class="skeleton skeleton-meta"></div>
+      </div>
+    </section>
+
+    <template id="project-card-template">
+      <a class="project-card" href="#">
+        <header class="project-card__header">
+          <h3 class="project-card__name"></h3>
+          <span class="role-tag"></span>
+        </header>
+        <div class="mini-board" role="img" aria-label="Task distribution"></div>
+        <p class="project-card__meta muted"></p>
+        <p class="project-card__activity muted"></p>
+      </a>
+    </template>
+
+    <template id="empty-state-template">
+      <div class="empty-state" data-testid="empty-projects">
+        <div class="glyph" aria-hidden="true">＋</div>
+        <h3>No projects yet</h3>
+        <p class="muted">Create your first project to start tracking tasks, bugs, and proposals.</p>
+        <button class="btn btn-primary" data-action="open-create">+ Create project</button>
+      </div>
+    </template>
+
+    <dialog id="new-project-dialog" data-testid="new-project-dialog">
+      <form id="new-project-form">
+        <h2>New project</h2>
+        <div class="field">
+          <label for="np-name">Name</label>
+          <input id="np-name" name="name" class="input" type="text" required minlength="1" maxlength="255" autocomplete="off" />
+        </div>
+        <p id="np-error" class="banner banner-error" role="alert" hidden></p>
+        <footer>
+          <button type="button" class="btn" data-action="close">Cancel</button>
+          <button type="button" id="np-submit" class="btn btn-primary">Create</button>
+        </footer>
+      </form>
+    </dialog>
+  </main>
+</div>
+
+<script type="module" src="/static/js/projects.js"></script>
+{% endblock %}

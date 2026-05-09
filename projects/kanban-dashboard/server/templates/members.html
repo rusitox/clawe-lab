@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Members — {{ project.name }}{% endblock %}
+{% block body %}
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</a>
+    <span class="breadcrumb">
+      <span class="sep">/</span> <a href="/">Projects</a>
+      <span class="sep">/</span> <a href="/p/{{ project.slug }}">{{ project.name }}</a>
+      <span class="sep">/</span> <strong>Members</strong>
+    </span>
+    <span class="spacer"></span>
+    <span class="avatar" aria-hidden="true">{{ user_initials }}</span>
+  </header>
+
+  <main
+    id="members-main"
+    data-project-id="{{ project.id }}"
+    data-your-role="{{ your_role }}"
+    data-your-user-id="{{ your_user_id }}"
+  >
+    <section class="page-header">
+      <h1 class="page-title">Members</h1>
+      <div class="page-header-actions">
+        <input id="member-search" class="input input-sm" type="search" placeholder="Search by name or email…" aria-label="Search members" />
+        <button id="invite-btn" class="btn btn-primary" data-testid="invite-btn">+ Invite</button>
+      </div>
+    </section>
+
+    <p class="muted" id="member-summary" data-testid="member-summary">Loading…</p>
+
+    <section class="list" id="member-list" data-testid="member-list" aria-busy="true"></section>
+
+    <section id="bulk-actions" class="bulk-actions" hidden data-testid="bulk-actions">
+      <span><strong id="bulk-count">0</strong> selected</span>
+      <span class="spacer" style="flex:1"></span>
+      <button class="btn btn-sm" id="bulk-make-editor">Make editor</button>
+      <button class="btn btn-sm" id="bulk-make-viewer">Make viewer</button>
+      <button class="btn btn-sm btn-danger" id="bulk-remove">Remove</button>
+    </section>
+
+    <dialog id="invite-dialog" data-testid="invite-dialog">
+      <form id="invite-form">
+        <h2>Invite member</h2>
+        <div class="field">
+          <label for="invite-email">Email</label>
+          <input id="invite-email" class="input" type="email" required autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="invite-role">Role</label>
+          <select id="invite-role" class="input">
+            <option value="editor" selected>Editor</option>
+            <option value="viewer">Viewer</option>
+            <option value="owner">Owner</option>
+          </select>
+        </div>
+        <p id="invite-error" class="banner banner-error" role="alert" hidden></p>
+        <footer>
+          <button type="button" class="btn" data-action="close">Cancel</button>
+          <button type="button" class="btn btn-primary" id="invite-submit">Send invite</button>
+        </footer>
+      </form>
+    </dialog>
+  </main>
+</div>
+<script type="module" src="/static/js/members.js"></script>
+{% endblock %}

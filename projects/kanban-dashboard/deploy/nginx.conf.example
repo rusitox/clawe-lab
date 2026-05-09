@@ -1,0 +1,75 @@
+# /etc/nginx/sites-available/openclaw-kanban-v2.conf
+#
+# Reverse proxy for Clawe Kanban v2.
+# Replace `kanban.example.com` with your real domain and use Let's Encrypt
+# (certbot --nginx) for the certificates.
+
+# Rate limit zone — 10 r/s per IP for the API surface.
+limit_req_zone $binary_remote_addr zone=kanban_api:10m rate=10r/s;
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name kanban.example.com;
+
+    # ACME HTTP-01 challenge stays on :80; everything else upgrades to HTTPS.
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name kanban.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/kanban.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/kanban.example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+
+    # Security headers — defaults; tune if you embed in iframes etc.
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+
+    # Upload limit must match ATTACHMENTS_MAX_BYTES + headroom.
+    client_max_body_size 12m;
+
+    # Gzip text responses (Postgres JSON for big boards).
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+    gzip_min_length 1024;
+
+    # Static assets — let nginx serve them straight off disk.
+    location /static/ {
+        alias /opt/openclaw-kanban-v2/static/;
+        access_log off;
+        expires 1h;
+        add_header Cache-Control "public, max-age=3600";
+    }
+
+    # API surface — rate-limited.
+    location /api/ {
+        limit_req zone=kanban_api burst=20 nodelay;
+        proxy_pass http://127.0.0.1:8787;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 60s;
+    }
+
+    # Everything else (HTML pages, OAuth callback, /static/* if not matched above).
+    location / {
+        proxy_pass http://127.0.0.1:8787;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 60s;
+    }
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>API Tokens - Clawe Kanban v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#3b5bdb',
+                            hover: '#2f49b8',
+                            active: '#25399a',
+                        },
+                        surface: '#ffffff',
+                        page: '#f7f8fb',
+                        border: '#e3e6ec',
+                        text: {
+                            primary: '#14171f',
+                            muted: '#5b6477',
+                        },
+                        success: '#15803d',
+                        warning: '#b45309',
+                        danger: '#b91c1c',
+                        info: '#0369a1',
+                    },
+                    borderRadius: {
+                        'DEFAULT': '8px',
+                        'sm': '4px',
+                        'md': '8px',
+                        'lg': '12px',
+                        'full': '9999px',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px rgba(0,0,0,.04)',
+                        'md': '0 2px 6px rgba(0,0,0,.06)',
+                        'lg': '0 12px 32px rgba(0,0,0,.12)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #f7f8fb;
+        }
+        .scrim {
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="h-full text-text-primary">
+<nav class="fixed top-0 w-full z-40 bg-white border-b border-border shadow-sm flex justify-between items-center px-4 h-14">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                🐾 Clawe Kanban
+            </span>
+<div class="h-4 w-[1px] bg-border mx-2"></div>
+<nav class="flex items-center text-sm font-medium space-x-2">
+<span class="text-text-muted">Settings</span>
+<span class="text-slate-400">/</span>
+<span class="text-brand font-semibold">API tokens</span>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-1.5 text-text-muted hover:bg-slate-50 rounded-md transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-1.5 text-text-muted hover:bg-slate-50 rounded-md transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-200 border border-border flex items-center justify-center font-semibold text-xs text-text-muted">MO</div>
+</div>
+</nav>
+<div class="pt-14 flex min-h-screen">
+<aside class="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-slate-50 flex flex-col gap-1 p-3">
+<a class="flex items-center gap-3 px-3 py-2 text-text-muted hover:bg-slate-200/50 rounded-md text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-lg">person</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-white border border-border text-brand rounded-md text-[13px] font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined text-lg">vpn_key</span>
+<span>API tokens</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-muted hover:bg-slate-200/50 rounded-md text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-lg">notifications</span>
+<span>Notifications</span>
+</a>
+</aside>
+<main class="ml-60 flex-1 p-8">
+<div class="max-w-4xl mx-auto">
+<div class="mb-6 flex items-center gap-3 px-4 py-3 bg-slate-100 border border-slate-200 rounded-md text-text-muted">
+<span class="material-symbols-outlined text-info text-xl">info</span>
+<p class="text-[13px]">
+                        Tokens never expire automatically. <span class="font-semibold">Rotate every 90 days</span> for high-value automation to maintain a strong security posture.
+                    </p>
+</div>
+<div class="flex justify-between items-start mb-8">
+<div>
+<h1 class="text-2xl font-bold text-text-primary">API tokens</h1>
+<p class="mt-1 text-text-muted text-sm leading-relaxed max-w-2xl">
+                            Personal tokens act on your behalf and inherit your role across every project. Treat them like passwords.
+                        </p>
+</div>
+<button class="px-4 py-2 bg-brand hover:bg-brand-hover text-white text-sm font-semibold rounded-md shadow-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        New token
+                    </button>
+</div>
+<div class="flex gap-2 mb-8">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted text-[18px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border border-border rounded-md text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all" placeholder="Search tokens by name..." type="text"/>
+</div>
+<select class="px-4 py-2 bg-white border border-border rounded-md text-sm text-text-muted focus:ring-2 focus:ring-brand outline-none">
+<option>All tokens</option>
+<option>Never used</option>
+<option>Used in last 24h</option>
+<option>Used in last 30d</option>
+<option class="text-danger font-medium">Unfamiliar IPs</option>
+</select>
+</div>
+<div class="mb-10">
+<div class="flex items-center justify-between mb-3 px-1">
+<h2 class="text-xs font-bold uppercase tracking-wider text-text-muted">Active (3)</h2>
+</div>
+<div class="space-y-3">
+<div class="bg-surface border border-border rounded-md p-4 flex items-start justify-between hover:border-slate-300 transition-colors">
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-slate-50 border border-border text-slate-400 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">openclaw-prod</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_a1b2…</code>
+</div>
+<div class="flex flex-col gap-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            Created 2 days ago
+                                        </span>
+<span class="flex items-center gap-1.5 font-medium text-slate-700">
+<span class="material-symbols-outlined text-[14px]">history</span>
+                                            Last seen from 192.168.1.45 · macOS Chrome · 4 min ago
+                                        </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-border hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+<div class="bg-surface border border-border rounded-md p-4 flex items-start justify-between hover:border-slate-300 transition-colors">
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-slate-50 border border-border text-slate-400 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">local-dev</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_c3d4…</code>
+<span class="px-2 py-0.5 bg-slate-100 text-[10px] uppercase font-bold text-slate-500 rounded-full border border-border ml-1">Never used</span>
+</div>
+<div class="flex flex-col gap-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            Created last week
+                                        </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-border hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+<div class="bg-surface border border-border rounded-md p-4 flex items-start justify-between border-l-4 border-l-warning hover:border-slate-300 hover:border-l-warning transition-colors">
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-slate-50 border border-border text-slate-400 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm">ci-runner</span>
+<code class="px-1.5 py-0.5 bg-slate-100 text-[11px] font-mono text-text-muted rounded border border-slate-200">kbn_e5f6…</code>
+</div>
+<div class="flex flex-col gap-1 text-[12px] text-text-muted">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            Created 1 month ago
+                                        </span>
+<span class="flex items-center gap-1.5 font-medium text-warning">
+<span class="material-symbols-outlined text-[16px] fill-warning">warning</span>
+                                            Last seen from 84.15.x.x · Unknown Agent · 3 hours ago
+                                        </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-primary hover:bg-slate-50 border border-border rounded transition-all">Rotate</button>
+<button class="px-3 py-1.5 text-[12px] font-medium text-danger hover:bg-danger/5 border border-border hover:border-danger/20 rounded transition-all">Revoke</button>
+</div>
+</div>
+</div>
+</div>
+<hr class="border-border mb-6"/>
+<div>
+<button class="flex items-center gap-2 w-full mb-3 px-1 text-text-muted hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">keyboard_arrow_down</span>
+<h2 class="text-xs font-bold uppercase tracking-wider">Revoked (1)</h2>
+</button>
+<div class="space-y-3">
+<div class="bg-slate-50 border border-border rounded-md p-4 flex items-center justify-between opacity-60">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-slate-100 text-slate-300 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">key_off</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm line-through text-text-muted">old-laptop</span>
+<code class="px-1.5 py-0.5 bg-slate-200/50 text-[11px] font-mono text-text-muted rounded">kbn_g7h8…</code>
+</div>
+<p class="text-[12px] text-text-muted mt-0.5">Revoked 1 month ago</p>
+</div>
+</div>
+<span class="text-[11px] font-medium text-slate-400 uppercase tracking-tight">Inactive</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 scrim">
+<div class="w-full max-w-[520px] bg-white rounded-lg shadow-lg overflow-hidden border border-border">
+<div class="flex items-center justify-between px-6 py-4 border-b border-border bg-slate-50/50">
+<div class="flex items-center gap-2 text-success font-semibold">
+<span class="material-symbols-outlined">check_circle</span>
+<h2>Token successfully generated</h2>
+</div>
+<button class="text-text-muted hover:text-text-primary">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-8">
+<div class="mb-6 p-4 bg-danger/5 border border-danger/20 rounded-md flex items-start gap-3">
+<span class="material-symbols-outlined text-danger text-[24px] mt-0.5">warning</span>
+<p class="text-danger font-bold text-[15px] leading-snug">
+                        Copy your token now — you won't be able to see it again for security reasons.
+                    </p>
+</div>
+<div class="space-y-4">
+<div class="relative">
+<div class="w-full font-mono text-[14px] bg-slate-900 text-slate-100 p-5 rounded-md pr-16 break-all leading-relaxed border border-slate-700">
+                            kbn_a1b2c3d4e5f6g7h8i9j0K1L2M3N4O5P6Q7R8S9T0u1v2w3x4y5z6
+                            <button class="absolute right-4 top-4 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[11px] font-bold transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+                                COPY
+                            </button>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 px-4 py-2.5 border border-border hover:bg-slate-50 rounded text-sm font-semibold flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                            Download .env
+                        </button>
+<button class="flex-1 px-4 py-2.5 bg-brand hover:bg-brand-hover text-white rounded text-sm font-semibold shadow-sm transition-colors">
+                            Done
+                        </button>
+</div>
+<p class="text-[11px] text-text-muted text-center pt-2">
+                        After closing, only the identifier <code class="bg-slate-100 px-1 rounded">kbn_a1b2…</code> will be stored to help you manage this token.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-[110] flex items-center justify-center p-4 scrim hidden">
+<div class="w-full max-w-[400px] bg-white rounded-lg shadow-lg border border-border">
+<div class="p-6">
+<div class="w-12 h-12 bg-danger/10 text-danger rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[28px]">delete_forever</span>
+</div>
+<h3 class="text-lg font-bold text-text-primary mb-2">Revoke openclaw-prod?</h3>
+<p class="text-sm text-text-muted leading-relaxed">
+                    Any automation, script, or CI runner using this token will <span class="text-danger font-bold">start failing immediately</span>. This action is permanent and cannot be undone.
+                </p>
+</div>
+<div class="flex items-center gap-3 p-4 bg-slate-50 border-t border-border rounded-b-lg">
+<button class="flex-1 px-4 py-2 text-sm font-semibold border border-border hover:bg-white rounded transition-colors">Cancel</button>
+<button class="flex-1 px-4 py-2 text-sm font-semibold bg-danger hover:bg-red-700 text-white rounded shadow-sm transition-colors">Revoke token</button>
+</div>
+</div>
+</div>
+<div class="fixed bottom-8 right-8 w-64 bg-white border border-border shadow-lg rounded-lg p-4 pointer-events-none opacity-0 transition-opacity">
+<p class="text-[11px] font-bold uppercase text-text-muted mb-2">Naming conventions</p>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-1 bg-slate-100 text-[11px] rounded border border-border">openclaw-prod</span>
+<span class="px-2 py-1 bg-slate-100 text-[11px] rounded border border-border">ci-runner</span>
+<span class="px-2 py-1 bg-slate-100 text-[11px] rounded border border-border">local-dev</span>
+</div>
+</div>
+
+</body></html>

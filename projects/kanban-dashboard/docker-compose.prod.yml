@@ -1,0 +1,52 @@
+# Production stack — Clawe Kanban v2.
+#
+# Usage on the VPS:
+#   /home/ubuntu/openclaw-kanban-v2/
+#     ├── docker-compose.prod.yml   ← this file
+#     └── .env                      ← copy of /etc/openclaw-kanban.env (chmod 0600)
+#
+#   docker compose -f docker-compose.prod.yml --env-file .env pull
+#   docker compose -f docker-compose.prod.yml --env-file .env up -d
+#
+# nginx on the host proxies https://<domain> → 127.0.0.1:8787 → app container.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: openclaw-kanban-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-openclaw}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in env}
+      POSTGRES_DB: ${POSTGRES_DB:-openclaw_kanban}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openclaw} -d ${POSTGRES_DB:-openclaw_kanban}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    # Postgres is internal-only; nothing needs to reach it from outside compose.
+
+  app:
+    image: ${APP_IMAGE:-ghcr.io/rusitox/openclaw-kanban-v2:latest}
+    container_name: openclaw-kanban-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # DATABASE_URL is computed from the Postgres vars so we never duplicate the password.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-openclaw}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-openclaw_kanban}
+    ports:
+      # Bind to localhost only — TLS termination is at the host's nginx.
+      # HOST_PORT lets multiple apps coexist on one VPS (kanban=8788, familyhub=8787, …).
+      - "127.0.0.1:${HOST_PORT:-8787}:8787"
+    volumes:
+      - attachments:/app/var/attachments
+
+volumes:
+  pgdata:
+  attachments:
