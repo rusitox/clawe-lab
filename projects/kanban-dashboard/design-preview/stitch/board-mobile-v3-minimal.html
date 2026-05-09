@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<title>Clawe Kanban v2 - Mobile Project Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: '#3b5bdb',
+                hover: '#2f49b8',
+                active: '#25399a',
+              },
+              surface: '#ffffff',
+              page: '#f7f8fb',
+              border: '#e3e6ec',
+              text: {
+                primary: '#14171f',
+                muted: '#5b6477',
+              }
+            },
+            borderRadius: {
+              "sm": "0.25rem",
+              "md": "0.5rem",
+              "lg": "0.75rem",
+              "full": "9999px"
+            },
+            fontFamily: {
+              body: ["Inter", "sans-serif"]
+            }
+          }
+        }
+      }
+    </script>
+<style type="text/tailwindcss">
+      @layer base {
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+      }
+      .material-symbols-outlined { 
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; 
+        font-size: 20px; 
+      }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .active-tab-indicator {
+        position: relative;
+      }
+      .active-tab-indicator::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 16px;
+        height: 2px;
+        background-color: #3b5bdb;
+        border-radius: 2px;
+      }
+      .card-long-press-trigger {
+        touch-action: manipulation;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-page text-text-primary flex flex-col min-h-screen select-none">
+<header class="sticky top-0 z-50 bg-white border-b border-border flex justify-between items-center px-2 h-14 w-full">
+<button aria-label="Open menu" class="flex items-center justify-center w-11 h-11">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<button aria-label="Switch project" class="flex items-center gap-1 text-sm font-semibold tracking-tight h-11 px-2">
+<span>Clawe HQ</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<button class="flex items-center justify-center w-11 h-11">
+<div class="w-7 h-7 rounded-full bg-brand text-white text-[10px] font-bold border border-border overflow-hidden">
+<img alt="MO" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGOdiN4135KWjPAOiw3RKF7n1qA0Hk1168mfU3BB71QUUinoAMQbNH0LJf38Pls20FhZcKXLUXNx4jB_WdbRHbX4SxugRSHzxxg3QwRwWGUPQjn9xt5YMjm-I12lfeZRWmnd6Erv2wtWRvW1hkQxilEp7MfDlP833ifF_Z-1ndz0LZqK-sJAJ25XwR95jBTARbcZC54ul8Fpa9h4uH5VTT5Z0YcpB8LL9YuZZzOGi4EByJV_02DOAlmgomeprK4XPwF1BKBrCiEygb"/>
+</div>
+</button>
+</header>
+<nav class="sticky top-14 z-40 bg-white border-b border-border flex items-center px-2 overflow-x-auto hide-scrollbar h-14" role="tablist">
+<button aria-selected="false" class="flex-shrink-0 min-w-[88px] h-full flex flex-col items-center justify-center px-4 transition-colors" role="tab">
+<span class="text-[11px] font-medium text-text-muted mb-0.5">Backlog</span>
+<span class="text-xs font-semibold text-text-muted">4</span>
+</button>
+<button aria-selected="true" class="flex-shrink-0 min-w-[88px] h-full flex flex-col items-center justify-center px-4 active-tab-indicator" role="tab">
+<span class="text-[11px] font-medium text-brand mb-0.5">Todo</span>
+<span class="text-xs font-bold text-brand">3</span>
+</button>
+<button aria-selected="false" class="flex-shrink-0 min-w-[88px] h-full flex flex-col items-center justify-center px-4 relative transition-colors" role="tab">
+<span class="text-[11px] font-medium text-text-muted mb-0.5">Active</span>
+<span class="text-xs font-semibold text-text-muted">0</span>
+<div class="absolute top-3 right-5 w-1.5 h-1.5 bg-brand rounded-full border border-white"></div>
+</button>
+<button aria-selected="false" class="flex-shrink-0 min-w-[88px] h-full flex flex-col items-center justify-center px-4 transition-colors" role="tab">
+<span class="text-[11px] font-medium text-text-muted mb-0.5">Done</span>
+<span class="text-xs font-semibold text-text-muted">12</span>
+</button>
+</nav>
+<div class="flex items-center justify-between px-4 py-2.5 bg-page">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 h-11 px-4 bg-white border border-border rounded-md text-[13px] font-medium text-text-primary shadow-sm active:bg-gray-100">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+      Filter
+    </button>
+<button class="flex items-center justify-center h-11 px-4 bg-white border border-border rounded-md text-[13px] font-medium text-text-primary shadow-sm active:bg-gray-100">
+      Mine
+    </button>
+</div>
+<button class="flex items-center justify-center w-11 h-11 bg-white border border-border rounded-md text-text-muted shadow-sm">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+</div>
+<main class="flex-1 px-4 pt-1 pb-32">
+<div class="flex justify-center items-center py-2 opacity-30">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</div>
+<div class="flex flex-col gap-3">
+<article class="bg-[#fff5f5] border-2 border-[#f03e3e] rounded-lg p-3 shadow-sm card-long-press-trigger">
+<div class="flex items-center gap-2 mb-2">
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-[#f03e3e] text-white rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[12px] leading-none" style="font-variation-settings: 'FILL' 1;">error</span>
+          P0
+        </div>
+<span class="text-[11px] font-mono font-medium text-[#f03e3e]/80">CLW-104</span>
+</div>
+<h3 class="text-[14px] font-semibold text-text-primary leading-tight line-clamp-2 mb-4">
+        Login throws 500 on Safari 17 due to cookie policy updates
+      </h3>
+<footer class="flex items-center justify-between">
+<div class="flex items-center h-11 pr-2">
+<div class="w-7 h-7 rounded-full border border-white overflow-hidden bg-slate-200">
+<img alt="MO" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1mqfO22gNhUE5pbdZTPJpKFZ9YuX_04YPP-PTxFEi63uI-DFp2MErKU3Wte4BvAOR-CQg5YpIWXQbXaNNs-LFTHMGXHwVNHiSrhb3aXHiH6KfwM8V_JCkqh0mP_KzMMf4x41mSCnKoX2VSM27XlI0iwyMWDXpQhelY0kqfTuCvCMotxylaUg66bKi5k3eevk1l0DPrYaxQ-UL_hoh3X3EPcCD3a1EOn6sUdVABP-le6IqmfFl8TTNxwCgnzu9z5m3VoZWldwKibXs"/>
+</div>
+</div>
+<div class="flex items-center gap-3 h-11 text-text-muted">
+<span class="text-[11px] font-medium italic opacity-60">Long-press to move</span>
+<div class="flex items-center gap-2 text-[11px] font-medium">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]">attach_file</span> 1
+            </span>
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> 3
+            </span>
+</div>
+</div>
+</footer>
+</article>
+<article class="bg-white border border-border rounded-lg p-3 shadow-sm border-l-4 border-l-[#0d9488] card-long-press-trigger">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-[16px] text-text-muted">radio_button_unchecked</span>
+<span class="text-[11px] font-mono font-medium text-text-muted">CLW-215</span>
+</div>
+<h3 class="text-[14px] font-medium text-text-primary leading-tight line-clamp-2 mb-4">
+        Wire activity feed polling for live updates on dashboard
+      </h3>
+<footer class="flex items-center justify-between">
+<div class="flex -space-x-2 h-11 items-center">
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="JP" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOFEudKNcotSNbGAWlZjHxBq9WNMmc8ZapLOZZLbRfDdU6OqnYm7usNUtWEZzu0RIeOn6vZJwXYzWxhc3ymiQsW0UQLpO__tvEBqGNxDKBfT7iTdX5XINAvy1znTHyhiv7ZeEWmhkMv1CQW_GSGtgM9XIaBMcnUS6waoIrHRK9wtU9MUyPjtjpd282wlr-OJ70n-kn07qG8ctbqQRY4dpmOFC8_LjzNanyhHkwqgyXMihc-jMuSeJslS1uoU-4nkzGpI-bjS_EVTE3"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="MO" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI1n7-ZwiWqwA0rMhXzwNiXFXXy7Ay_XtvcRFya-HqKKKxeYrbqZoLsmVbN74gdNDQgY9qhZHIDT2at4n74MPlRRpV31udVygM8anpwB6UY1aAqLypMYTbUZjHmWpRBmnxq2YQEcft5nvAn4dWPt9CxrSK896fVFU0MUpuqsgjVuS2anWyqBq-qKX5eF7pGog3LS46sTBvUqaM0L1VRJ7YAIx6NABXVIFIZdASnAs3NyVeiXLybFzxKmt6MBdQRWu2UCsDWF9Z4fIu"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-gray-100 flex items-center justify-center text-[10px] font-bold text-text-muted">
+            +2
+          </div>
+</div>
+<div class="flex items-center gap-2 text-text-muted text-[11px] h-11">
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> 0
+          </span>
+</div>
+</footer>
+</article>
+<div class="mt-8 py-12 flex flex-col items-center justify-center opacity-40">
+<p class="text-[13px] font-medium">No active tasks</p>
+<p class="text-[11px]">Everything is up to date</p>
+</div>
+</div>
+</main>
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-brand text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<div class="fixed inset-0 bg-black/40 z-[60] flex items-end opacity-0 pointer-events-none transition-opacity" id="action-sheet-overlay">
+<div class="bg-white w-full rounded-t-2xl px-4 pt-2 pb-8 translate-y-full transition-transform duration-300">
+<div class="w-10 h-1.5 bg-gray-200 rounded-full mx-auto my-3"></div>
+<div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3 px-2">Move to column</div>
+<div class="flex flex-col gap-1">
+<button class="flex items-center justify-between w-full h-14 px-4 bg-page rounded-xl text-sm font-semibold">
+<span>Backlog</span>
+<span class="material-symbols-outlined text-text-muted opacity-40">chevron_right</span>
+</button>
+<button class="flex items-center justify-between w-full h-14 px-4 bg-brand/5 text-brand rounded-xl text-sm font-bold border border-brand/20">
+<span>Todo</span>
+<span class="material-symbols-outlined">check</span>
+</button>
+<button class="flex items-center justify-between w-full h-14 px-4 bg-page rounded-xl text-sm font-semibold">
+<span>In Progress</span>
+<span class="material-symbols-outlined text-text-muted opacity-40">chevron_right</span>
+</button>
+<button class="flex items-center justify-between w-full h-14 px-4 bg-page rounded-xl text-sm font-semibold">
+<span>Done</span>
+<span class="material-symbols-outlined text-text-muted opacity-40">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+
+</body></html>

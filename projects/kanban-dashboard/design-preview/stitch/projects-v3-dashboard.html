@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban v2 - Productivity Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#3b5bdb',
+                            hover: '#2f49b8',
+                            active: '#25399a',
+                            light: '#eef2ff',
+                        },
+                        surface: '#ffffff',
+                        page: '#f7f8fb',
+                        border: '#e3e6ec',
+                        text: {
+                            primary: '#14171f',
+                            muted: '#5b6477',
+                        }
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; background-color: #f7f8fb; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+        .mini-board-bar {
+            @apply h-1.5 rounded-full bg-slate-100 flex-1 overflow-hidden;
+        }
+        .mini-board-fill {
+            @apply h-full transition-all duration-500;
+        }::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e3e6ec; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+    </style>
+</head>
+<body class="text-text-primary antialiased">
+<header class="sticky top-0 flex items-center justify-between px-6 h-14 w-full bg-white border-b border-[#e3e6ec] z-50 shadow-sm text-sm">
+<div class="flex items-center gap-4">
+<span class="text-lg font-semibold text-[#14171f] tracking-tight">Clawe 🐾</span>
+<div class="h-4 w-[1px] bg-border mx-2"></div>
+<nav class="flex items-center gap-1 text-[#5b6477]">
+<span class="hover:text-text-primary cursor-pointer transition-colors">Projects</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-text-primary font-medium">Dashboard</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-[240px] h-8 pl-9 pr-3 bg-[#f7f8fb] border-none rounded-md text-xs focus:ring-1 focus:ring-brand transition-all outline-none" placeholder="Search projects ( / )" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-md hover:bg-[#f7f8fb] text-text-muted transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+</div>
+<img alt="User avatar" class="w-7 h-7 rounded-full border border-border object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmDW2W1WD6NHfGMn3iUHR4n_0lDKjaArNytEMgh1DrJ7LZjk_WqxdzbGk2M06VyD0bhAA6Ty-tzYSeTJFvVJiG_ySLMpDHnDH73zVHpaTOGiSHxrEai0R6X1KXoctGHegWHS99k6FQjup_8kA5qiz10zdkIaGpvvaDIRtPC7Qz25HLorOGeYp_QqzO-AxTNmHb6mgLpeorIuaQrrrxE2xF1Z6F56xlaaDj8rFDyRkA1cg-6REC4c5SFhNnhYDZTz3DY7_oBgKN39ds"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex flex-col h-full py-4 bg-[#f7f8fb] border-r border-[#e3e6ec] fixed left-0 top-14 w-64 text-[13px] font-medium">
+<div class="px-5 mb-6 flex items-center gap-3">
+<div class="w-6 h-6 bg-brand rounded flex items-center justify-center text-white text-[10px]">OC</div>
+<div>
+<div class="text-base font-bold text-[#14171f] leading-tight">OpenClaw</div>
+<div class="text-[11px] text-text-muted font-normal">Productivity Workspace</div>
+</div>
+</div>
+<div class="flex-1 space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">inbox</span>
+<span>Inbox</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+<span>My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all bg-[#e3e6ec] text-[#14171f]" href="#">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span>Projects</span>
+</a>
+</div>
+<div class="mt-auto pt-4 space-y-0.5 border-t border-border mx-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span>Help center</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 md:ml-64 p-8 max-w-7xl mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<h1 class="text-2xl font-bold text-text-primary tracking-tight">Your projects</h1>
+<p class="text-sm text-text-muted mt-1">Focusing on what's next.</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center bg-white border border-border p-1 rounded-lg">
+<button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-brand-light text-brand">Recent activity</button>
+<button class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-text-primary rounded-md">Assigned work</button>
+<button class="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-text-primary rounded-md">Alphabetical</button>
+</div>
+<button class="bg-brand hover:bg-brand-hover active:bg-brand-active text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>New project</span>
+<kbd class="hidden sm:inline-block ml-1 opacity-60 text-[10px] font-mono border border-white/20 rounded px-1">N</kbd>
+</button>
+</div>
+</div>
+<div class="mb-10">
+<div class="flex items-center gap-2 mb-4 text-xs font-bold text-text-muted uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">push_pin</span>
+                Pinned
+            </div>
+<div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
+<div class="group bg-white border border-border rounded-lg p-5 shadow-sm hover:border-brand transition-all cursor-pointer relative">
+<button class="absolute top-4 right-4 text-brand">
+<span class="material-symbols-outlined text-[18px] fill-[1]">push_pin</span>
+</button>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+</div>
+<div class="min-w-0">
+<h3 class="text-[15px] font-semibold truncate pr-6" title="Kanban v2: Productivity Overhaul 2024 Project">Kanban v2</h3>
+<span class="px-1.5 py-0.5 rounded bg-brand-light text-brand text-[10px] font-bold uppercase tracking-wide">Owner</span>
+</div>
+</div>
+<div class="flex gap-1.5 mb-2">
+<div class="mini-board-bar"><div class="mini-board-fill bg-slate-300 w-[20%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-amber-300 w-[30%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-blue-500 w-[40%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-emerald-500 w-[10%]"></div></div>
+</div>
+<div class="flex justify-between text-[10px] text-text-muted mb-4 px-0.5">
+<span>Backlog</span>
+<span>Done</span>
+</div>
+<div class="space-y-3">
+<div class="text-[12px] text-brand font-medium flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></div>
+                            4 new comments since yesterday
+                        </div>
+<div class="flex items-center justify-between border-t border-border pt-3">
+<div class="text-[11px] text-text-muted flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>18 tasks</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>2</span>
+</div>
+<div class="flex -space-x-1.5">
+<img class="w-5 h-5 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsG9JTrct1AH4-Dq0B2KF-pF80cz6jlE8Mj2KwaP8KeoDbsdx3OKmjAcpnw3ZBg4OUe4KAwKWfDWkaTxef1pBSJY_UqRG3FVmv5_zqEFIOVtnwUfu8oExtwBlh3ovsGXc5Nf4mUpRAMQYXjx9WyB1Jxezz-9a--wuVE0OJWIPCh0wEUOEOUTQrW839Ub8gSZ0ljOk61SQtoMja2SBDeBn7k2q58YEDbago17FXlPVuuuFHA-R45RCsShQ2ihj-Kob4QbyYULGj0mXO"/>
+<img class="w-5 h-5 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIUOQRSmtnozz0YZd9FV8-9pZS1lV1UtoUy9n19Hig4XQc0fQ79TF4djvby7jx-hxv3xJ9zOas-2sEsh7Jpg0DRZzGhLUonQHZYol2FEDhPdl3GlIlzV-Lt2eI2D57BGhz9vUcPxbzpPdccJYnBekX-5ci7p3CvCeUvyPJ8_MKuEc76UZUQvyz5nxbcxy3RrG7qtHCN2sTXX7jA1otbwC9JcncleMPzeuvK4N2qd24CP7JwmxTqfcW-_kME_ARi0_kAD2ZUjy2w9vm"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-4">
+<div class="text-xs font-bold text-text-muted uppercase tracking-wider">All Projects</div>
+</div>
+<div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
+<div class="group bg-white border border-border rounded-lg p-5 shadow-sm hover:border-brand transition-all cursor-pointer flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined text-[20px]">corporate_fare</span>
+</div>
+<div class="min-w-0">
+<h3 class="text-[15px] font-semibold truncate max-w-[140px]">Clawe HQ</h3>
+<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wide">Editor</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[18px]">push_pin</span>
+</button>
+</div>
+<div class="flex gap-1.5 mb-2">
+<div class="mini-board-bar"><div class="mini-board-fill bg-slate-400 w-[70%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-amber-300 w-[15%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-blue-400 w-[10%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-emerald-400 w-[5%]"></div></div>
+</div>
+<div class="mt-2 text-[12px] text-text-muted mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">history</span>
+                        Updated 10m ago
+                    </div>
+<div class="flex items-center justify-between mt-auto border-t border-border pt-4">
+<div class="text-[11px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>47</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span>3</span>
+</div>
+<div class="flex -space-x-1.5">
+<img class="w-5 h-5 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADRzfD7NQM6pWnhbz3F8Mq-8_hU1IQsho8mRqowTcs-N-LLChL62FswRpoWLEmTVB_bbTcxtidUL9Xqksnef5FLzZO3yN3RhaX-ZTN4WbHbekq5yDUlwZFAud6MN72it1_jOR3vOHKtE_4EOkRgd9qnAoR1ZxNn5JueXu79CW6lpfQWOpw6ayOEt8lBxU6Qqgnrip_yYFYUSmQhokpyR6IvSMwcXlSM4YC-isuV1Wi7XL7eOpbWAHMqoIodArjkG3isaa4Y2LuCy4a"/>
+<div class="w-5 h-5 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[9px] font-bold text-slate-500 uppercase">ML</div>
+</div>
+</div>
+</div>
+<div class="group bg-white border border-border rounded-lg p-5 shadow-sm border-l-2 border-l-red-500 hover:border-brand transition-all cursor-pointer flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-blue-50 flex items-center justify-center text-brand">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</div>
+<div class="min-w-0">
+<h3 class="text-[15px] font-semibold truncate max-w-[140px]">OpenClaw</h3>
+<span class="px-1.5 py-0.5 rounded bg-brand-light text-brand text-[10px] font-bold uppercase tracking-wide">Owner</span>
+</div>
+</div>
+<button class="text-text-muted hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[18px]">push_pin</span>
+</button>
+</div>
+<div class="flex gap-1.5 mb-2">
+<div class="mini-board-bar"><div class="mini-board-fill bg-slate-300 w-[10%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-amber-300 w-[10%]"></div></div>
+<div class="mini-board-bar bg-red-50"><div class="mini-board-fill bg-red-400 w-[80%]"></div></div>
+<div class="mini-board-bar"><div class="mini-board-fill bg-emerald-400 w-[0%]"></div></div>
+</div>
+<div class="mt-2 text-[12px] text-red-600 font-semibold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">warning</span>
+                        3 new bugs today
+                    </div>
+<div class="flex items-center justify-between mt-auto border-t border-border pt-4">
+<div class="text-[11px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>12</span>
+</div>
+<div class="flex">
+<img class="w-5 h-5 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgpNQBU5IBXFXJSOeVQRUsMOUNuLYYTlC1JFsy0EZHy_N9-G2zXID6_Uiiz1SBza2O_6UUFi_lKlYlItlVxAfD13bEXsL1wsLkEKYing4wNah6-D5eZKoeWUGwfU2OFtLZBarbI3usXwz7gM4irBWGBLVTTJSIlD9lEA-uN1GJ28CebXoHJXNFq8rQtufSf3uF1YqOD5DfqhyHl-3lZsdSva77efzebV4TNH97TFNczHtXQgLbitJdNF6QmjqIxqtuHfxZmlJtcHPX"/>
+</div>
+</div>
+</div>
+<div class="group bg-white border border-border rounded-lg p-5 shadow-sm hover:border-brand transition-all cursor-pointer flex flex-col opacity-90">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-8 h-8 flex-shrink-0 rounded bg-pink-50 flex items-center justify-center text-pink-600">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div class="min-w-0">
+<h3 class="text-[15px] font-semibold truncate" title="My Highly Secret Individual Personal Task Board for 2024">Personal Task Board 2024 Special</h3>
+<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[10px] font-medium uppercase tracking-wide">Viewer</span>
+</div>
+</div>
+</div>
+<div class="flex gap-1.5 mb-2">
+<div class="mini-board-bar"><div class="mini-board-fill bg-slate-400 w-[100%]"></div></div>
+<div class="mini-board-bar"></div>
+<div class="mini-board-bar"></div>
+<div class="mini-board-bar"></div>
+</div>
+<div class="mt-2 text-[12px] text-text-muted mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                        No activity in 2 weeks
+                    </div>
+<div class="flex items-center justify-between mt-auto border-t border-border pt-4">
+<div class="text-[11px] text-text-muted font-medium flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">task_alt</span>7</span>
+</div>
+<div class="w-5 h-5 rounded-full bg-pink-100 flex items-center justify-center text-[9px] font-bold text-pink-600 uppercase">MO</div>
+</div>
+</div>
+<div class="group bg-white border border-border rounded-lg p-5 shadow-sm hover:border-brand transition-all cursor-pointer flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-8 h-8 rounded bg-emerald-50 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+</div>
+<div class="min-w-0">
+<h3 class="text-[15px] font-semibold truncate">New Initiative</h3>
+<span class="px-1.5 py-0.5 rounded bg-brand-light text-brand text-[10px] font-bold uppercase tracking-wide">Owner</span>
+</div>
+</div>
+</div>
+<div class="h-1.5 w-full bg-slate-50 rounded-full border border-dashed border-slate-200 mb-2"></div>
+<div class="mt-2 text-[12px] text-text-muted mb-4 flex items-center gap-2 italic">
+                        No tasks added yet
+                    </div>
+<div class="flex items-center justify-between mt-auto border-t border-border pt-4">
+<div class="text-[11px] text-text-muted font-medium">
+                            Only you
+                        </div>
+<div class="w-5 h-5 rounded-full bg-slate-200 animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 bg-white border border-brand p-4 rounded-lg shadow-lg max-w-sm hidden">
+<h4 class="text-xs font-bold text-brand uppercase tracking-wider mb-3">Quick Create Project</h4>
+<div class="space-y-3">
+<input autofocus="" class="w-full h-9 px-3 py-1 bg-page border-border rounded-md text-sm focus:ring-1 focus:ring-brand focus:border-brand outline-none" placeholder="Project name" type="text"/>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-muted">clawe.app /</span>
+<input class="flex-1 h-9 px-3 py-1 bg-page border-border rounded-md text-sm focus:ring-1 focus:ring-brand focus:border-brand outline-none" placeholder="slug" type="text"/>
+</div>
+<div class="flex justify-end gap-2 pt-2">
+<button class="px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-page rounded-md">Cancel</button>
+<button class="px-3 py-1.5 text-xs font-semibold bg-brand text-white rounded-md">Create project</button>
+</div>
+</div>
+</div>
+<div class="mt-12 p-12 border border-border border-dashed rounded-lg bg-white flex flex-col items-center justify-center text-center">
+<div class="max-w-md w-full">
+<div class="relative mb-6">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-[20px]">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-[#f7f8fb] border-border border rounded-xl text-sm focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all outline-none" placeholder="Looking for a specific project?" type="text"/>
+</div>
+<p class="text-sm text-text-muted">Showing 5 of 5 projects. Try a keyboard shortcut like <kbd class="px-1 py-0.5 border border-border rounded bg-page text-[10px] font-mono">CMD+K</kbd></p>
+</div>
+</div>
+</main>
+</div>
+<div class="hidden fixed inset-0 bg-page z-[60] flex items-center justify-center p-6" id="empty-state-overlay">
+<div class="max-w-md w-full text-center">
+<div class="w-20 h-20 bg-white border border-border rounded-2xl flex items-center justify-center text-brand mx-auto mb-6 shadow-sm">
+<span class="material-symbols-outlined text-[40px]">grid_view</span>
+</div>
+<h2 class="text-2xl font-bold text-text-primary mb-2">No projects yet</h2>
+<p class="text-text-muted mb-8 leading-relaxed">Start by creating a workspace for your team tasks, bugs, or personal goals. It only takes a second.</p>
+<button class="w-full bg-brand hover:bg-brand-hover text-white py-3 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+            Create your first project
+        </button>
+<p class="mt-6 text-xs text-text-muted">Need help getting started? <a class="text-brand hover:underline font-medium" href="#">Read the guide</a></p>
+</div>
+</div>
+
+</body></html>

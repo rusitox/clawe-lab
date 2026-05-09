@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Task Detail - Clawe Kanban</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: "#3b5bdb",
+                            hover: "#2f49b8",
+                            active: "#25399a"
+                        },
+                        surface: "#ffffff",
+                        page: "#f7f8fb",
+                        border: "#e3e6ec",
+                        text: {
+                            primary: "#14171f",
+                            muted: "#5b6477"
+                        },
+                        semantic: {
+                            success: "#15803d",
+                            warning: "#b45309",
+                            danger: "#b91c1c",
+                            info: "#0369a1"
+                        }
+                    },
+                    borderRadius: {
+                        "DEFAULT": "4px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        headline: ["Inter", "sans-serif"],
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                        label: ["Inter", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px rgba(0,0,0,.04)',
+                        'md': '0 2px 6px rgba(0,0,0,.06)',
+                        'lg': '0 12px 32px rgba(0,0,0,.10)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 18px;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-[#f7f8fb] text-[#14171f] overflow-hidden">
+<!-- Background: Board (Non-interactive, Low Opacity) -->
+<div class="fixed inset-0 opacity-[0.35] pointer-events-none flex flex-col h-full w-full">
+<!-- TopAppBar (JSON Mapping) -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-4 h-14 w-full z-40">
+<div class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-[#3b5bdb]">dashboard</span>
+                Clawe Kanban
+            </div>
+<div class="flex items-center gap-4">
+<div class="h-8 w-64 bg-slate-100 rounded-md"></div>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-slate-400">notifications</span>
+<span class="material-symbols-outlined text-slate-400">history</span>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<!-- SideNavBar (JSON Mapping) -->
+<aside class="bg-slate-50 dark:bg-[#14171f] border-r border-slate-200 dark:border-slate-800 w-64 flex flex-col pt-4 pb-4">
+<div class="px-4 mb-6">
+<div class="text-indigo-600 font-bold text-lg">OpenClaw</div>
+<div class="text-[11px] text-slate-500">Productivity Engine</div>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-4 py-2 text-[#3b5bdb] border-r-2 border-[#3b5bdb] bg-indigo-50/50">
+<span class="material-symbols-outlined mr-3">inbox</span>
+<span class="text-[13px] font-medium">Inbox</span>
+</div>
+<div class="flex items-center px-4 py-2 text-slate-600">
+<span class="material-symbols-outlined mr-3">task_alt</span>
+<span class="text-[13px] font-medium">My Tasks</span>
+</div>
+</nav>
+</aside>
+<!-- Kanban Grid Canvas -->
+<main class="flex-1 p-6 grid grid-cols-4 gap-6">
+<!-- Column 1 -->
+<div class="space-y-4">
+<div class="flex justify-between items-center text-xs font-semibold text-[#5b6477] uppercase tracking-wider">
+<span>Todo (4)</span>
+</div>
+<div class="bg-white p-3 rounded-lg shadow-sm border-l-4 border-semantic-danger">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-[18px] h-[18px] bg-red-100 text-semantic-danger text-[10px] rounded-full flex items-center justify-center font-bold">B</span>
+<span class="text-[11px] font-semibold text-semantic-danger px-1.5 py-0.5 bg-red-50 rounded">P0</span>
+</div>
+<div class="text-sm font-medium">Login throws 500 on Safari 17</div>
+</div>
+</div>
+<!-- Other Columns -->
+<div class="space-y-4"><div class="text-xs font-semibold text-[#5b6477] uppercase tracking-wider">In Progress</div></div>
+<div class="space-y-4"><div class="text-xs font-semibold text-[#5b6477] uppercase tracking-wider">Review</div></div>
+<div class="space-y-4"><div class="text-xs font-semibold text-[#5b6477] uppercase tracking-wider">Done</div></div>
+</main>
+</div>
+</div>
+<!-- Scrim -->
+<div class="fixed inset-0 bg-[#14171f]/45 z-40"></div>
+<!-- Drawer: Task Detail -->
+<section aria-modal="true" class="fixed right-0 top-0 h-full w-[480px] bg-white dark:bg-slate-900 shadow-lg z-50 flex flex-col transition-transform duration-300 ease-in-out border-l border-slate-200 dark:border-slate-800" role="dialog">
+<!-- HEADER (JSON style_shell_layout & style_separation_logic) -->
+<header class="flex justify-between items-center px-6 h-14 border-b border-slate-200 dark:border-slate-800 shrink-0">
+<div class="flex items-center gap-3">
+<!-- Kind Badge: Bug -->
+<div class="w-[18px] h-[18px] bg-red-100 dark:bg-red-900/30 text-semantic-danger text-[10px] rounded-full flex items-center justify-center font-bold border border-red-200 dark:border-red-800">B</div>
+<!-- Priority Chip: P0 -->
+<div class="text-[11px] font-bold text-white px-2 py-0.5 bg-semantic-danger rounded">P0</div>
+<!-- Task Code -->
+<span class="text-sm text-text-muted font-medium">CKB-23</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 text-text-muted transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<!-- DRAWER CONTENT (Scrollable area) -->
+<div class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-8">
+<!-- TITLE -->
+<h2 class="text-2xl font-semibold text-[#14171f] dark:text-white leading-tight">
+                Login throws 500 on Safari 17
+            </h2>
+<!-- META ROW -->
+<div class="flex items-center gap-3 flex-wrap">
+<button class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded text-sm font-medium flex items-center gap-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    Todo <span class="material-symbols-outlined text-[14px]">expand_more</span>
+</button>
+<button class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded text-sm font-medium flex items-center gap-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    Team: Auth <span class="material-symbols-outlined text-[14px]">expand_more</span>
+</button>
+<div class="flex items-center ml-2 -space-x-2">
+<img alt="MO" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 object-cover" data-alt="portrait of a professional developer wearing glasses and a focused expression in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbXHCuxExVSpfwXkGkcFAoL2Zw7fqpXK7Uj_BxvF29Ue3gZJWvS-8yQC1asS4Vh3sysf3d4ZNTO-WuV99JUHL4VKIpJNYBLDrHgt0F-JDlAy8N0YX6HU41t3BZQ12x61grzrzKDRKC0Sqxt2xXt5A3mFibbw2iJPfLQ8YQ0pD0xsoHOAlLNOHkzg0QU0J6xVhP2MGp2kw2U8Jw8TrGk1uPOIya4d5Rw2sCNO8bdwW8zIobl56aQj9IDk_UpEA593AhjkkMzVz4VIkB"/>
+</div>
+<button class="text-brand dark:text-[#5c7cfa] text-sm font-medium hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add</span> Assignee
+                </button>
+</div>
+<!-- DESCRIPTION -->
+<section class="space-y-4">
+<h3 class="text-xs font-semibold text-[#5b6477] dark:text-slate-400 uppercase tracking-widest">Description</h3>
+<div class="text-sm text-[#14171f] dark:text-slate-300 leading-relaxed space-y-4">
+<p>When users attempt to log in using Safari version 17.x, the authentication endpoint returns a 500 Internal Server Error. Other browsers (Chrome, Firefox) are unaffected. Initial logs suggest a failure in processing the User-Agent header or a cookie serialization issue specific to this browser engine.</p>
+<div class="space-y-2">
+<p class="font-semibold text-text-primary dark:text-white">Repro</p>
+<ol class="list-decimal ml-4 space-y-1">
+<li>Open Safari 17</li>
+<li>Navigate to <code class="bg-slate-100 dark:bg-slate-800 px-1 rounded">/login</code></li>
+<li>Submit login form with valid credentials</li>
+</ol>
+</div>
+</div>
+</section>
+<!-- ATTACHMENTS -->
+<section class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-semibold text-[#5b6477] dark:text-slate-400 uppercase tracking-widest">Attachments (2)</h3>
+<button class="text-brand dark:text-[#5c7cfa] text-xs font-medium hover:underline">Add</button>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">attach_file</span>
+<div>
+<div class="text-sm font-medium">safari-network-tab.png</div>
+<div class="text-[11px] text-text-muted">1.2 MB • Added 2h ago</div>
+</div>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 text-slate-400 cursor-pointer">download</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<div>
+<div class="text-sm font-medium">server-stack.txt</div>
+<div class="text-[11px] text-text-muted">45 KB • Added 2h ago</div>
+</div>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 text-slate-400 cursor-pointer">download</span>
+</div>
+</div>
+</section>
+<!-- COMMENTS -->
+<section class="space-y-4">
+<h3 class="text-xs font-semibold text-[#5b6477] dark:text-slate-400 uppercase tracking-widest">Comments (3)</h3>
+<div class="space-y-6">
+<!-- Comment Item 1 -->
+<div class="flex gap-3">
+<img alt="Marian" class="w-7 h-7 rounded-full object-cover" data-alt="portrait of a professional woman with a friendly smile in a creative workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHLvU2jnj28Up82ABIe6R1iohJjeRe7JvmF_quEYWQKEGf92v7eUuxyzq61o5Hjq3rezQp6xvd_TPmJuhz6AE5-_ZjnBOXCBnJOdhEWiQcLTZxvML8rk0xduDMye7NZ1eb6bpUAalSrXYVRdAMe8uHzmy_P5aipOfv4tDptW2yQzGgrAeD52v5-eEcJmp8aNllsfh8jOrcg0ru_8iP128mz_ThKw5lH-u2Xfd9ROB6H0ne557t5a6TA3lzxAzMzM_cKUowFDrWNgU2"/>
+<div class="flex-1 space-y-1">
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold">Marian</span>
+<span class="text-xs text-text-muted">2h ago</span>
+</div>
+<p class="text-sm text-text-primary dark:text-slate-300">I've verified this. It seems to be related to the new Intelligent Tracking Prevention changes in Safari 17. Re-assigned to Auth team.</p>
+</div>
+</div>
+<!-- Comment Input -->
+<div class="flex gap-3 pt-2">
+<div class="w-7 h-7 rounded-full bg-brand flex items-center justify-center text-[10px] text-white font-bold shrink-0">JD</div>
+<div class="flex-1 space-y-3">
+<textarea class="w-full text-sm p-3 rounded-lg border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-brand focus:border-transparent bg-white dark:bg-slate-800 resize-none min-h-[100px]" placeholder="Write a comment…"></textarea>
+<div class="flex justify-end items-center gap-2">
+<button class="px-3 py-1.5 text-sm font-medium text-text-muted hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors">Cancel</button>
+<button class="px-4 py-1.5 text-sm font-medium text-white bg-brand hover:bg-brand-hover rounded shadow-sm transition-colors">Send</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- HISTORY -->
+<section class="space-y-4 pb-8">
+<h3 class="text-xs font-semibold text-[#5b6477] dark:text-slate-400 uppercase tracking-widest">History</h3>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[16px] text-slate-400 mt-0.5">swap_horiz</span>
+<p class="text-sm text-text-muted">
+<span class="font-semibold text-text-primary dark:text-white">Marian</span> moved 
+                            <span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-xs">Backlog</span> → 
+                            <span class="px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-brand dark:text-indigo-400 rounded text-xs">Todo</span>
+<span class="ml-1">3h ago</span>
+</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[16px] text-slate-400 mt-0.5">add_circle</span>
+<p class="text-sm text-text-muted">
+<span class="font-semibold text-text-primary dark:text-white">Marian</span> created this bug <span class="ml-1">3h ago</span>
+</p>
+</div>
+</div>
+</section>
+</div>
+</section>
+</body></html>

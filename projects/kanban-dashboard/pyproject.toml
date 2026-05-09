@@ -1,0 +1,100 @@
+[project]
+name = "openclaw-kanban"
+version = "2.0.0a0"
+description = "Multi-tenant Kanban dashboard for Clawe and OpenClaw"
+requires-python = ">=3.11"
+readme = "README.md"
+
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
+    "psycopg[binary]>=3.2",
+    "pydantic[email]>=2.9",
+    "pydantic-settings>=2.6",
+    "python-multipart>=0.0.12",
+    "authlib>=1.3",
+    "itsdangerous>=2.2",
+    "argon2-cffi>=23.1",
+    "markdown-it-py>=3.0",
+    "bleach>=6.2",
+    "jinja2>=3.1",
+    "python-magic>=0.4",
+    "httpx>=0.28",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.7",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "factory-boy>=3.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["server"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["server.py", "app.js", "scripts/reconcile_kanban.py"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "B",        # bugbear
+    "UP",       # pyupgrade
+    "SIM",      # simplify
+    "T20",      # no print()
+    "S",        # bandit-lite (security)
+    "RUF",      # ruff-specific
+]
+ignore = [
+    "E501",   # line length handled by formatter
+    "S101",   # asserts in tests are fine
+    "B008",   # FastAPI: Depends() in defaults is idiomatic
+    "S105",   # false positives on URL/prefix string constants
+    "S107",   # false positives on default param strings
+    "RUF059", # unused unpacked tuple in tests is a clarity choice
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "T20", "E402"]
+"tests-e2e/**" = ["S"]
+"scripts/**" = ["T20"]
+"server/migrations/**" = ["E402"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+exclude = ["server/migrations/versions/.*", "scripts/reconcile_kanban\\.py"]
+
+[[tool.mypy.overrides]]
+module = ["bleach.*", "magic.*", "factory.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["server"]
+branch = true
+omit = ["server/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe HQ Members - Clawe Kanban v2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: "#3b5bdb",
+                hover: "#2f49b8",
+                active: "#25399a",
+                light: "#eef1ff"
+              },
+              surface: "#ffffff",
+              page: "#f7f8fb",
+              border: "#e3e6ec",
+              text: {
+                primary: "#14171f",
+                muted: "#5b6477"
+              },
+              semantic: {
+                success: "#15803d",
+                warning: "#b45309",
+                danger: "#b91c1c",
+                info: "#0369a1"
+              }
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "sm": "4px",
+              "md": "8px",
+              "lg": "12px",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            fontFamily: {
+              headline: ["Inter", "sans-serif"],
+              display: ["Inter", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+              label: ["Inter", "sans-serif"]
+            },
+            boxShadow: {
+              'subtle-sm': '0 1px 2px rgba(0,0,0,.04)',
+              'subtle-md': '0 2px 6px rgba(0,0,0,.06)',
+              'subtle-lg': '0 12px 32px rgba(0,0,0,.10)',
+            }
+          },
+        },
+      }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body { font-family: 'Inter', sans-serif; background-color: #f7f8fb; color: #14171f; }
+        }
+        .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
+        .high-density-table tr:hover td { background-color: #f9fafb; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand/10 min-h-screen">
+<header class="flex items-center justify-between w-full px-4 h-12 sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+<span class="text-indigo-600">🐾</span> Clawe Kanban v2
+        </span>
+<nav class="hidden md:flex items-center gap-4 ml-6 font-sans text-sm font-medium tracking-tight">
+<a class="text-slate-500 hover:text-indigo-600 transition-all cursor-pointer" href="#">Workspace</a>
+<a class="text-slate-500 hover:text-indigo-600 transition-all cursor-pointer" href="#">OpenClaw</a>
+<a class="text-slate-900 font-semibold cursor-pointer" href="#">Members</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-slate-500 hover:text-indigo-600">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-indigo-600">help_outline</button>
+<div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold border border-slate-200 shadow-sm overflow-hidden">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeW6f7nSMqpd6F6nUvUCXvcARurrJK4RKztOCblD8KJnS5tF4xIMjbJ5bhUmLppYT5wixmjxdeh57PyCN6wcVSW8L7JQjftsviSNdubK3HjXruwJwWqWEX9wwIaaAKK2cKxW2Zc2Y6NPaDirKDDGsGJ047O5zRDI_hIMLsJbu-Vx0m4LUWw_PQgNec0uHpv-NxNr188n7cwAfvUqiAbDQUDKqEMmTvi68YAZ-IudQqFdDIs0wl0Lzek4xE1AvUBCAcOCLCbE69ivpC"/>
+</div>
+</div>
+</header>
+<div class="flex">
+<aside class="fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 border-r border-slate-200 bg-slate-50/50 flex flex-col p-3 gap-y-1">
+<div class="px-3 py-4 mb-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">O</div>
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-none">OpenClaw</h2>
+<p class="text-[11px] text-slate-500 mt-1 uppercase tracking-wider font-semibold">Productivity</p>
+</div>
+</div>
+<nav class="flex flex-col gap-0.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium text-slate-600 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined">grid_view</span> Projects
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium text-slate-600 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span> My Tasks
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium text-slate-600 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined">pulse_alert</span> Activity
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium bg-white text-indigo-600 shadow-sm border border-slate-200" href="#">
+<span class="material-symbols-outlined">group</span> Members
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-[13px] font-medium text-slate-600 hover:bg-slate-200/50" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+</aside>
+<main class="ml-64 flex-1 p-8 max-w-[1200px] pb-32">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-[11px] text-text-muted mb-6 uppercase tracking-wider font-semibold">
+<span>Projects</span>
+<span class="material-symbols-outlined !text-[12px]">chevron_right</span>
+<span>Clawe HQ</span>
+<span class="material-symbols-outlined !text-[12px]">chevron_right</span>
+<span class="text-text-primary">Members</span>
+</nav>
+<div class="flex items-start justify-between mb-8">
+<div>
+<h1 class="text-2xl font-bold text-text-primary tracking-tight mb-1">Members</h1>
+<p class="text-sm text-text-muted">Manage roles and permissions for 30 project members.</p>
+</div>
+<button class="bg-brand hover:bg-brand-hover text-white text-sm font-semibold px-4 py-2 rounded-md flex items-center gap-2 shadow-subtle-sm transition-all">
+<span class="material-symbols-outlined">person_add</span> Invite Member
+            </button>
+</div>
+<div class="flex items-center justify-between mb-4 gap-4">
+<div class="flex items-center gap-2 flex-1">
+<div class="relative flex-1 max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 !text-lg">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 text-sm border-slate-200 rounded-md focus:ring-brand focus:border-brand" placeholder="Search by name or email..." type="text"/>
+</div>
+<select class="text-sm border-slate-200 rounded-md focus:ring-brand focus:border-brand py-1.5 pr-10">
+<option>All roles</option>
+<option>Owner</option>
+<option>Editor</option>
+<option>Viewer</option>
+</select>
+</div>
+<div class="text-sm text-text-muted font-medium">
+                Showing <span class="text-text-primary">12</span> of <span class="text-text-primary">30</span>
+</div>
+</div>
+<div class="bg-surface border border-border rounded-md shadow-subtle-sm overflow-hidden">
+<table class="w-full text-left border-collapse high-density-table">
+<thead>
+<tr class="bg-slate-50/80 border-b border-border">
+<th class="w-10 p-3"><input class="rounded border-slate-300 text-brand focus:ring-brand" type="checkbox"/></th>
+<th class="p-3 text-[11px] font-bold text-text-muted uppercase tracking-wider">Member</th>
+<th class="p-3 text-[11px] font-bold text-text-muted uppercase tracking-wider">Role</th>
+<th class="p-3 text-[11px] font-bold text-text-muted uppercase tracking-wider">Activity</th>
+<th class="p-3 text-[11px] font-bold text-text-muted uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-border">
+<tr>
+<td class="p-3"><input class="rounded border-slate-300 text-brand focus:ring-brand" disabled="" type="checkbox"/></td>
+<td class="p-3">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATYBmLdZ-bX0N17OgA3PuXrHOnELAY1r4hlU1vAD7naZhtOP8zEhgQPO5Raz0RMQ9KeA1VeE0mcNUt5BkJTaVvu6jT8rBSfwjwiXlyVzJil_Us4CGtga17yBtOa22ORmIFZPlAkYDq2fMza4_vFW5oUsyC2AEZvWbLFqHIxyCQacse9Sap_u21TWkUkmCSMYujU84zX5Ii_y05M6WB89jfD9N43iEEA4T8zk77JF8HI0UN5zOQwNsKu4cYF1cpErQa-OloWSNfx9tm"/>
+<div>
+<div class="font-semibold text-text-primary flex items-center gap-1.5">
+                                        Marian Ortega <span class="text-[10px] text-text-muted bg-slate-100 px-1 rounded">(you)</span>
+</div>
+<div class="text-xs text-text-muted">marian@clawe.app</div>
+</div>
+</div>
+</td>
+<td class="p-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-light text-brand uppercase">Owner</span>
+</td>
+<td class="p-3">
+<span class="text-xs text-text-muted">Active now</span>
+</td>
+<td class="p-3 text-right">
+<div class="group relative inline-block">
+<button class="text-xs font-medium text-slate-400 cursor-not-allowed px-2 py-1" disabled="">Leave project</button>
+<div class="absolute bottom-full right-0 mb-2 w-48 hidden group-hover:block bg-slate-800 text-white text-[10px] p-2 rounded shadow-lg z-10">
+                                    Promote another member to owner first.
+                                </div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="p-3"><input checked="" class="rounded border-slate-300 text-brand focus:ring-brand" type="checkbox"/></td>
+<td class="p-3">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP_pvN5T7_EFnjtukX3qt5rIYjf6MBaldwCvUVXUCnRDAXNOSGKFA8F3MB6d6Q_wzkZFPGI7zocsUqIDw2-lwfCRAYTXq-jgb1Olra-Bs0DO7EMe3S2BLEqv6jfRip-DdC6UqpYdMRiuMWm6RO9r9USWoDZI9FgYepRXjd-QAPcz-226cI-ZOePw8aK14i0EXTGqyygxa-QmkIaOTXvdk91K0nhqSfaYF7AbGfsvDM0AnckGYjfGt841gEppJw4kvvuojcx2IwwvgK"/>
+<div>
+<div class="font-semibold text-text-primary">Juan Pérez</div>
+<div class="text-xs text-text-muted">juan@clawe.app</div>
+</div>
+</div>
+</td>
+<td class="p-3">
+<select class="text-xs border-none bg-transparent hover:bg-slate-100 rounded focus:ring-0 p-1 font-medium cursor-pointer">
+<option>Editor</option>
+<option>Viewer</option>
+<option class="text-slate-300" disabled="">Owner (Transfer)</option>
+</select>
+</td>
+<td class="p-3 text-xs text-text-muted">Active 2 minutes ago</td>
+<td class="p-3 text-right">
+<button class="text-xs font-medium text-text-muted hover:text-slate-900 px-2 py-1">Remove</button>
+</td>
+</tr>
+<tr>
+<td class="p-3"><input class="rounded border-slate-300 text-brand focus:ring-brand" type="checkbox"/></td>
+<td class="p-3">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0Y9XDROflKg6djDTd2qgOFJTAnnkkcI_HvuYZIU9XXQcIgiCIP7TNu_AuY377QBu1pxfC7Sqgj2-dZUmvyep0TqNQnhB55AxwBeswynJYoiKNjEU0gaHAfHoK-vPDuNsKVNJ-127Mn6_1yXkUg3vpPqJpEpPvhBrGupZz4dumlTwmiuLtrdd7tw90AIZIJgEM7ort_IbcbQu52ZI3qCebYx5AuKFnvt1GTsNUv3xtkHn7P8703-N5jO2-gOZ3LIeHVrOink7LZiJ1"/>
+<div>
+<div class="font-semibold text-text-primary">Ana López</div>
+<div class="text-xs text-text-muted">ana@clawe.app</div>
+</div>
+</div>
+</td>
+<td class="p-3">
+<select class="text-xs border-none bg-transparent hover:bg-slate-100 rounded focus:ring-0 p-1 font-medium cursor-pointer">
+<option>Viewer</option>
+<option>Editor</option>
+</select>
+</td>
+<td class="p-3 text-xs text-text-muted">Active yesterday</td>
+<td class="p-3 text-right">
+<button class="text-xs font-medium text-text-muted hover:text-slate-900 px-2 py-1">Remove</button>
+</td>
+</tr>
+<tr class="bg-slate-50/40">
+<td class="p-3"><input class="rounded border-slate-300 text-brand focus:ring-brand" type="checkbox"/></td>
+<td class="p-3">
+<div class="flex items-center gap-3 opacity-60">
+<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-500">DS</div>
+<div>
+<div class="font-semibold text-text-primary italic">Diego Soto</div>
+<div class="text-[10px] text-text-muted">Pending invite (2 days ago)</div>
+</div>
+</div>
+</td>
+<td class="p-3">
+<span class="text-[10px] text-slate-500 font-bold uppercase">Pending Editor</span>
+</td>
+<td class="p-3">
+<span class="text-xs text-slate-400 italic">Never seen</span>
+</td>
+<td class="p-3 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="text-xs font-semibold text-brand hover:underline">Resend</button>
+<button class="text-xs font-medium text-text-muted hover:text-slate-900">Cancel</button>
+</div>
+</td>
+</tr>
+<tr class="bg-slate-50/20">
+<td class="p-3"><input class="rounded border-slate-300 text-brand focus:ring-brand" type="checkbox"/></td>
+<td class="p-3">
+<div class="flex items-center gap-3 grayscale opacity-50">
+<div class="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-600">KM</div>
+<div>
+<div class="font-semibold text-text-primary">Karla Miller</div>
+<div class="text-xs text-text-muted">karla@oldteam.com</div>
+</div>
+</div>
+</td>
+<td class="p-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-500 uppercase">Deactivated</span>
+</td>
+<td class="p-3 text-xs text-text-muted opacity-50">3 weeks ago</td>
+<td class="p-3 text-right">
+<button class="text-xs font-medium text-text-muted hover:text-slate-900 px-2 py-1">Remove</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 border-t border-border flex items-center justify-between">
+<p class="text-xs text-text-muted">Showing 5 of 30 members</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-border rounded text-xs font-medium hover:bg-slate-50 disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 border border-border rounded text-xs font-medium hover:bg-slate-50">Next</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-6 bg-slate-900 text-white px-6 py-3 rounded-full shadow-subtle-lg transition-all duration-300 transform translate-y-0">
+<div class="flex items-center gap-2 border-r border-slate-700 pr-6">
+<span class="bg-brand w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
+<span class="text-sm font-medium">selected</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-sm font-medium hover:text-brand-light transition-colors">
+<span class="material-symbols-outlined !text-lg">edit</span> Change role
+        </button>
+<button class="flex items-center gap-1.5 text-sm font-medium hover:text-red-400 transition-colors">
+<span class="material-symbols-outlined !text-lg">person_remove</span> Remove
+        </button>
+</div>
+<button class="ml-4 material-symbols-outlined text-slate-400 hover:text-white">close</button>
+</div>
+<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[100] flex items-center justify-center hidden">
+<div class="bg-white w-full max-w-lg rounded-lg shadow-subtle-lg overflow-hidden">
+<div class="p-6">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold">Invite new members</h2>
+<button class="material-symbols-outlined text-slate-400">close</button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-text-muted uppercase mb-1.5">Email addresses</label>
+<input autofocus="" class="w-full border-slate-200 rounded-md focus:ring-brand focus:border-brand p-2 text-sm" placeholder="name@company.com, separate with commas" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-text-muted uppercase mb-1.5">Role</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="border border-brand bg-brand-light text-brand px-3 py-2 rounded text-xs font-semibold">Editor</button>
+<button class="border border-slate-200 hover:bg-slate-50 px-3 py-2 rounded text-xs font-semibold">Viewer</button>
+<button class="border border-slate-200 hover:bg-slate-50 px-3 py-2 rounded text-xs font-semibold">Admin</button>
+</div>
+</div>
+<div class="pt-4">
+<label class="block text-[11px] font-bold text-text-muted uppercase mb-3">Recently invited colleagues</label>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded cursor-pointer group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[9px] font-bold">LW</div>
+<span class="text-sm">Liam Wilson</span>
+</div>
+<span class="text-[10px] font-bold text-brand hidden group-hover:block">+ Add</span>
+</div>
+<div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded cursor-pointer group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[9px] font-bold">SH</div>
+<span class="text-sm">Sarah Hudson</span>
+</div>
+<span class="text-[10px] font-bold text-brand hidden group-hover:block">+ Add</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-slate-50 p-4 flex justify-end gap-3 border-t">
+<button class="px-4 py-2 text-sm font-semibold text-text-muted hover:text-text-primary">Cancel</button>
+<button class="px-4 py-2 text-sm font-semibold bg-brand text-white rounded-md shadow-sm">Send Invites</button>
+</div>
+</div>
+</div>
+
+</body></html>

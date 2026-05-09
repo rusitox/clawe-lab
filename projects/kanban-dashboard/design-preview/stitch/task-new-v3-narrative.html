@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban - Create Task</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: "#3b5bdb",
+                        brandHover: "#2f49b8",
+                        brandActive: "#25399a",
+                        surface: "#ffffff",
+                        pageBg: "#f7f8fb",
+                        border: "#e3e6ec",
+                        textPrimary: "#14171f",
+                        textMuted: "#5b6477",
+                        success: "#15803d",
+                        warning: "#b45309",
+                        danger: "#b91c1c",
+                        info: "#0369a1"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "4px",
+                        "sm": "4px",
+                        "md": "8px",
+                        "lg": "12px",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "system-ui", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 18px;
+        }
+        .scrim-overlay {
+            background-color: rgba(20, 23, 31, 0.45);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e3e6ec;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-pageBg font-sans text-textPrimary antialiased overflow-hidden">
+<div class="fixed inset-0 flex flex-col opacity-35 select-none pointer-events-none">
+<header class="bg-white border-b border-border h-14 px-6 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="text-lg font-bold text-textPrimary flex items-center gap-2">Clawe Kanban</span>
+<nav class="flex gap-4">
+<span class="text-sm font-semibold border-b-2 border-brand pb-1">Projects</span>
+<span class="text-sm text-textMuted">My Tasks</span>
+<span class="text-sm text-textMuted">Activity</span>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-textMuted">notifications</span>
+<div class="w-8 h-8 rounded-full bg-gray-200"></div>
+</div>
+</header>
+<div class="flex flex-1">
+<aside class="w-64 border-r border-border p-4 bg-pageBg space-y-2">
+<div class="bg-border/50 rounded-md p-2 flex items-center gap-3">
+<span class="material-symbols-outlined text-brand">dashboard</span>
+<span class="text-xs font-medium">Dashboard</span>
+</div>
+<div class="p-2 flex items-center gap-3 text-textMuted">
+<span class="material-symbols-outlined">view_kanban</span>
+<span class="text-xs font-medium">Board</span>
+</div>
+</aside>
+<main class="flex-1 p-6 flex gap-6 overflow-hidden">
+<div class="w-72 flex-shrink-0">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-semibold uppercase tracking-wider text-textMuted">Todo</span>
+</div>
+<div class="space-y-3">
+<div class="bg-white border-l-4 border-l-brand p-3 rounded shadow-sm border border-border">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold">T</span>
+<span class="text-[10px] font-medium text-textMuted">AUTH-102</span>
+</div>
+<div class="text-sm font-medium">Update session provider</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<div class="fixed inset-0 scrim-overlay flex items-center justify-center p-4 z-50">
+<div class="bg-white w-full max-w-[560px] max-h-[921px] rounded-lg shadow-lg flex flex-col overflow-hidden border border-border">
+<div class="flex items-center justify-between px-6 py-3 border-b border-border">
+<div class="flex items-center gap-2">
+<h2 class="text-[14px] font-semibold text-textPrimary">New</h2>
+<span class="text-[11px] text-textMuted/60 font-mono">ID: TBD</span>
+</div>
+<button class="text-textMuted hover:text-textPrimary transition-colors flex items-center gap-1.5">
+<span class="text-[11px] font-medium opacity-50">Esc</span>
+<span class="material-symbols-outlined !text-[18px]">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
+<div class="space-y-2">
+<div class="flex p-1 bg-pageBg border border-border rounded-md">
+<button class="group flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-sm transition-all hover:bg-white hover:shadow-sm">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="w-4 h-4 rounded-full bg-gray-200 text-[9px] flex items-center justify-center text-textMuted font-bold">T</span>
+<span class="text-[12px] font-medium text-textMuted group-hover:text-textPrimary">Task</span>
+</div>
+<span class="text-[10px] text-textMuted/60 font-normal">Standard work item</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-sm bg-white shadow-sm border border-brand/20 ring-1 ring-brand/5">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="w-4 h-4 rounded-full bg-danger text-[9px] flex items-center justify-center text-white font-bold">B</span>
+<span class="text-[12px] font-semibold text-brand">Bug</span>
+</div>
+<span class="text-[10px] text-brand/70 font-normal">Structured repro steps</span>
+</button>
+<button class="group flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-sm transition-all hover:bg-white hover:shadow-sm">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="w-4 h-4 rounded-full bg-info text-[9px] flex items-center justify-center text-white font-bold">P</span>
+<span class="text-[12px] font-medium text-textMuted group-hover:text-textPrimary">Proposal</span>
+</div>
+<span class="text-[10px] text-textMuted/60 font-normal">Discussion-first</span>
+</button>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex items-baseline justify-between">
+<label class="text-[11px] font-semibold text-textMuted uppercase tracking-wider">Title</label>
+<span class="text-[10px] text-textMuted/40 italic">e.g. Login throws 500 on Safari 17</span>
+</div>
+<input class="w-full bg-transparent text-[16px] font-medium border-b border-border p-0 pb-1 focus:ring-0 focus:border-brand placeholder:text-textMuted/30 transition-colors" placeholder="Summarize the issue..." type="text"/>
+<p class="text-[11px] text-danger mt-1 hidden">Title is required</p>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="space-y-1.5">
+<label class="text-[10px] font-semibold text-textMuted uppercase tracking-wider">Column</label>
+<button class="w-full flex items-center justify-between px-2 py-1.5 bg-white border border-border rounded text-[12px] hover:border-brand/30 transition-colors">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+<span>Todo</span>
+</div>
+<span class="material-symbols-outlined text-textMuted !text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-semibold text-textMuted uppercase tracking-wider">Priority</label>
+<button class="w-full flex items-center justify-between px-2 py-1.5 bg-white border border-border rounded text-[12px] hover:border-brand/30 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-danger !text-[14px]" style="font-variation-settings: 'FILL' 1;">signal_cellular_4_bar</span>
+<span>P0</span>
+</div>
+<span class="material-symbols-outlined text-textMuted !text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-semibold text-textMuted uppercase tracking-wider">Assignee</label>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[9px] font-bold text-white uppercase">MO</div>
+<button class="w-6 h-6 rounded-full border border-dashed border-border flex items-center justify-center hover:bg-pageBg transition-colors">
+<span class="material-symbols-outlined !text-[14px] text-textMuted">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="space-y-0 border border-border rounded-md overflow-hidden bg-white">
+<div class="flex items-center justify-between px-3 py-1.5 bg-pageBg/50 border-b border-border">
+<div class="flex p-0.5 bg-border/40 rounded-sm">
+<button class="px-3 py-0.5 text-[11px] font-bold bg-white text-textPrimary rounded shadow-sm">Write</button>
+<button class="px-3 py-0.5 text-[11px] font-medium text-textMuted hover:text-textPrimary transition-colors">Preview</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-textMuted/60 font-mono">Markdown enabled</span>
+<span class="material-symbols-outlined !text-[14px] text-textMuted cursor-pointer hover:text-brand">open_in_full</span>
+</div>
+</div>
+<textarea class="w-full font-mono text-[13px] bg-white border-none p-4 focus:ring-0 resize-none leading-relaxed text-textPrimary placeholder:text-textMuted/30" rows="8" spellcheck="false">## Steps
+1. 
+## Expected
+Behavior should be...
+## Actual
+Instead it...</textarea>
+<div class="px-3 py-1.5 bg-pageBg/30 border-t border-border flex items-center justify-between">
+<p class="text-[10px] text-textMuted font-medium">
+                            Markdown: <span class="font-mono bg-border/20 px-1 rounded">**bold**</span> <span class="font-mono italic bg-border/20 px-1 rounded">_italic_</span> <span class="font-mono bg-border/20 px-1 rounded">`code`</span> <span class="mx-1 opacity-40">—</span> <span class="text-brand/80">preview to check</span>
+</p>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[11px] font-semibold text-textMuted uppercase tracking-wider">Attachments</label>
+<div class="grid grid-cols-2 gap-3">
+<div class="border-2 border-dashed border-border rounded-md p-4 bg-pageBg/30 flex flex-col items-center justify-center group hover:border-brand/40 hover:bg-pageBg transition-all cursor-pointer">
+<span class="material-symbols-outlined text-textMuted/60 group-hover:text-brand mb-1 !text-[20px]">upload_file</span>
+<p class="text-[11px] text-textMuted text-center">
+<span class="font-medium text-brand">Click to upload</span> or paste screenshot
+                            </p>
+</div>
+<div class="flex items-center gap-3 p-2 bg-white border border-border rounded-md group relative hover:border-brand/30 transition-all">
+<div class="w-[48px] h-[48px] bg-gray-100 rounded border border-border overflow-hidden flex-shrink-0">
+<div class="w-full h-full bg-indigo-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-brand !text-[20px]">image</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0 pr-6">
+<span class="text-[12px] font-medium truncate">screenshot.png</span>
+<span class="text-[10px] text-textMuted">142 KB • JPEG</span>
+</div>
+<button class="absolute top-2 right-2 p-0.5 text-textMuted hover:text-danger hover:bg-danger/5 rounded transition-colors">
+<span class="material-symbols-outlined !text-[16px]">close</span>
+</button>
+</div>
+</div>
+<p class="text-[10px] text-warning flex items-center gap-1 mt-1 hidden">
+<span class="material-symbols-outlined !text-[12px]">warning</span>
+                        Attachment exceeds 10MB.
+                    </p>
+</div>
+</div>
+<div class="px-6 py-4 bg-pageBg/50 border-t border-border flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex h-1.5 w-1.5 rounded-full bg-brand/60 animate-pulse"></span>
+<span class="text-[11px] text-textMuted font-medium">You have unsaved changes</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="group flex items-center gap-2 text-[13px] font-medium text-textMuted hover:text-textPrimary transition-colors">
+                        Cancel
+                        <span class="px-1 py-0.5 rounded border border-border text-[9px] group-hover:bg-white">Esc</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2 bg-brand hover:bg-brandHover active:bg-brandActive text-white text-[13px] font-semibold rounded shadow-sm transition-all">
+                        Create
+                        <span class="px-1 py-0.5 rounded bg-white/20 text-[9px] font-normal tracking-tight">⌘ Enter</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

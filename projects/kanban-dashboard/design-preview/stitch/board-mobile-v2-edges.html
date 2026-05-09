@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<title>Clawe Kanban v2 - Mobile Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+  :root {
+    --brand: #3b5bdb;
+    --brand-hover: #2f49b8;
+    --brand-soft: #edf2ff;
+    --surface: #ffffff;
+    --page: #f8f9fa;
+    --border: #e9ecef;
+    --text-main: #1a1c23;
+    --text-muted: #64748b;
+    --danger-bg: #fff5f5;
+    --danger-border: #fa5252;
+    --danger-text: #e03131;
+  }
+  body { 
+    font-family: 'Inter', sans-serif; 
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--page);
+  }
+  .material-symbols-outlined { 
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; 
+    font-size: 20px; 
+  }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }.pb-safe { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-[var(--text-main)] flex flex-col min-h-screen">
+<header class="sticky top-0 z-50 bg-white border-b border-[var(--border)] flex justify-between items-center px-4 h-14 w-full">
+<button aria-label="Menu" class="flex items-center justify-center w-11 h-11 -ml-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<button aria-label="Switch project" class="flex items-center gap-1.5 font-semibold text-sm">
+<span>Clawe HQ</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<button class="w-11 h-11 -mr-2 flex items-center justify-center">
+<div class="w-8 h-8 rounded-full border border-[var(--border)] overflow-hidden bg-slate-100 flex items-center justify-center text-[10px] font-bold text-[var(--brand)]">
+      MO
+    </div>
+</button>
+</header>
+<nav class="sticky top-14 z-40 bg-white border-b border-[var(--border)] flex items-center px-4 overflow-x-auto hide-scrollbar h-12 gap-1.5" role="tablist">
+<button aria-selected="false" class="relative flex-shrink-0 whitespace-nowrap px-4 py-2 text-xs font-medium text-[var(--text-muted)]" role="tab">
+    Backlog · 4
+    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[var(--brand)] rounded-full border border-white"></span>
+</button>
+<button aria-selected="true" class="flex-shrink-0 whitespace-nowrap px-4 py-1.5 text-xs font-semibold bg-[var(--brand)] text-white rounded-full" role="tab">
+    Todo · 3
+  </button>
+<button aria-selected="false" class="flex-shrink-0 whitespace-nowrap px-4 py-2 text-xs font-medium text-[var(--text-muted)]" role="tab">
+    In progress · 2
+  </button>
+<button aria-selected="false" class="relative flex-shrink-0 whitespace-nowrap px-4 py-2 text-xs font-medium text-[var(--text-muted)]" role="tab">
+    Done · 12
+    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[var(--brand)] rounded-full border border-white"></span>
+</button>
+</nav>
+<div class="flex items-center justify-between px-4 py-3 bg-[var(--page)] border-b border-[var(--border)]/50">
+<div class="flex gap-2">
+<button class="flex items-center gap-1.5 h-9 px-3 bg-white border border-[var(--border)] rounded-lg text-xs font-medium shadow-sm">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+      Filters
+    </button>
+<button class="h-9 px-3 bg-white border border-[var(--border)] rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[var(--brand)]"></span>
+      Mine
+    </button>
+</div>
+<button class="w-9 h-9 flex items-center justify-center bg-white border border-[var(--border)] rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</button>
+</div>
+<main class="flex-1 px-4 py-2 flex flex-col gap-3 overflow-y-auto pb-32">
+<div class="flex justify-center items-center py-2 h-10 opacity-40">
+<span class="material-symbols-outlined animate-bounce">arrow_downward</span>
+</div>
+<article class="bg-[var(--danger-bg)] border-2 border-[var(--danger-border)] rounded-lg p-3 shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-[var(--danger-border)]"></div>
+<header class="flex items-center gap-2 mb-2">
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-[var(--danger-border)] text-white rounded text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">error</span>
+        P0
+      </div>
+<span class="text-[11px] font-mono font-semibold text-[var(--danger-text)]">CLW-104</span>
+</header>
+<h3 class="text-[14px] font-semibold text-[var(--text-main)] leading-snug line-clamp-2 mb-4 h-10">
+      Login throws 500 on Safari 17 after the recent session provider migration
+    </h3>
+<footer class="flex items-center justify-between">
+<button aria-label="Assignees" class="w-11 h-11 -ml-1.5 flex items-center justify-center">
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDerauThktpd52bKRA5cOw_cQMbo62oqiPCdemzUa_uD1vqNIVxi1T0lr6PgzwHCZYqwJjObCOa4xy6l-Hj4bGZRMk9FmNOwEeHkZ7y6SNqEe9v0gfHZHXcneUHe35EyQfHr1XTgbEWx5u5p0AjKe5CpnxssioafZTnQS-U0xZsjE_niV212zWHN-zFgyIf0oorxHOWyMJH2h7v2skX8VtLmrvjJs71VEOy1frxq1Tm6WRxPNh7SvLB5BWgL9e6J3XmmufLckK5WofX"/>
+</div>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-3 mr-2 text-[var(--text-muted)] text-[11px] font-medium">
+<span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[16px]">attach_file</span> 1</span>
+<span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 3</span>
+</div>
+<button aria-label="Quick Move" class="h-11 px-3 -mr-2 flex items-center gap-1 text-[var(--brand)] text-[12px] font-bold active:opacity-60">
+          MOVE
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</footer>
+</article>
+<article class="bg-white border border-[var(--border)] rounded-lg p-3 shadow-sm border-l-4 border-l-[#0d9488]">
+<header class="flex items-center gap-2 mb-2">
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase">
+        Task
+      </div>
+<span class="text-[11px] font-mono font-medium text-[var(--text-muted)]">CLW-215</span>
+</header>
+<h3 class="text-[14px] font-medium text-[var(--text-main)] leading-snug line-clamp-2 mb-4 h-10">
+      Wire activity feed polling for enterprise dashboard real-time updates
+    </h3>
+<footer class="flex items-center justify-between">
+<button aria-label="Assignees: 6 people" class="flex items-center h-11 -ml-1">
+<div class="flex -space-x-2.5">
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFJ7U5MGmWxp7oEbfwvWBxi72wJg7geEAi8XqACE3ID3VtmfQ5UL_a1c6eD1YmJsoSMdylbBQMsOdpLNlP_yjvfgUaIdJUixOVznjYORQ6BOupB0uQtmZ8TEqqYL5mNMEp4oh3mTfRc3vFdZ5IFBzV_OC0pc02W9W6KI-vuISl9lRn8-bSvQmhp1ofDuimXLlyfOutw31Vm1VdmskHlSw03vaKmxAzx5QN4PF1Gpy5VKtMf77IuiB3oDRix21vLkRe5zxj2QNN7egO"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAHjapFHuRdWbnFuBJcqGRJH4BA1PFMEzQmtnryWf15SZq0ZlX441dH0o9JZ0r_BPtzBQqUQQSlH2NPa-v9lyXBPbCr2CPrv4oXhewK4GAQrKqQZh7SrRC4I4Q0hhJ0OxGnQJSLu9divWbvTUWJQrZ6rVgdOfY-g581ksBjFrlpWdiJHc0VqfVfGPI-7NkpabpMYGvMF9dcbocwtAzJGp0wib1jdqnXXGF1EkssaQq_w2aA4V_zHibcZZ0f25USO8N09ypXm-cJEGw"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxdxwW0Un-V0PHCCH2ROcQuS8Ifo61X0YiUPNoMDwfSTh-tlUH1k_1H-5JUs1J1YulvAuDs_FM3t9W-BgflcK6SMxhsOYtoQbssteeEVjusy3p7lY3DX3iiB4ckfa51QZYUb1uf4BKHTt8R0X9MCBNQAWvtdkkWOvmWDrLd2Mf1lsVpj9JHsS7PC3ro26_RsEQZZ4BGjm2ZJ-seb99VC4XpPwH7BlDWg7zotLylXwX6JQ8l--SwY0P5NZcxAHIRm5h52o6rbwTbE4r"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy3ANK1npQcg8bhF4G5bCdaJWmFTgTzCZTYuXDart7MtsOZmMnpMZFcyZH8xbMbNjIDUXlYMhXLcWIztv-hhQ8vO5BuAAvoiK_yxcuZJEw3ZeID7GGWGw_I6wvE3SM59u7dDJfk8QpcWCcUiEq2AZSI1L-vhDPjW36NRgIYjPG3oftR7PoGpxfKcTmSF-LbS-YS9wkAfbeWNFckS6Y2bphue3_qhtinV3tl8THxFO6dToUYRnYH_wfr4f8ORx593VUvuL2P6RcgDel"/>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[9px] font-bold text-slate-500">
+            +2
+          </div>
+</div>
+</button>
+<button class="h-11 px-3 -mr-2 flex items-center gap-1 text-[var(--brand)] text-[12px] font-bold active:opacity-60">
+        MOVE
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</footer>
+</article>
+<article class="bg-white border border-[var(--border)] rounded-lg p-3 shadow-sm border-l-4 border-l-[#d97706]">
+<header class="flex items-center gap-2 mb-2">
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase">
+        Task
+      </div>
+<span class="text-[11px] font-mono font-medium text-[var(--text-muted)]">CLW-088</span>
+</header>
+<h3 class="text-[14px] font-medium text-[var(--text-main)] leading-snug line-clamp-2 mb-4 h-10">
+      Configure email allow-list for external consultant domain access and ensure the security protocol is followed strictly across all staging environments and production nodes
+    </h3>
+<footer class="flex items-center justify-between">
+<button class="w-11 h-11 -ml-1.5 flex items-center justify-center">
+<div class="w-7 h-7 rounded-full border-2 border-white overflow-hidden bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500">
+          JP
+        </div>
+</button>
+<button class="h-11 px-3 -mr-2 flex items-center gap-1 text-[var(--brand)] text-[12px] font-bold active:opacity-60">
+        MOVE
+        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</footer>
+</article>
+</main>
+<div class="fixed bottom-0 left-0 right-0 pointer-events-none pb-safe px-6">
+<div class="flex justify-end pb-6 pr-2">
+<button class="pointer-events-auto h-14 px-6 bg-[var(--brand)] text-white rounded-full shadow-xl flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">add</span>
+<span class="font-semibold text-sm">New Task</span>
+</button>
+</div>
+</div>
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900/80 text-white text-[10px] rounded-full backdrop-blur-sm opacity-60">
+  Swipe card right to complete • Long press to move
+</div>
+
+</body></html>

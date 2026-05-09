@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban v2 - Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#3b5bdb',
+                            hover: '#2f49b8',
+                            active: '#25399a',
+                        },
+                        surface: '#ffffff',
+                        page: '#f7f8fb',
+                        border: '#e3e6ec',
+                        text: {
+                            primary: '#14171f',
+                            muted: '#5b6477',
+                        }
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        headline: ["Inter", "sans-serif"],
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                        label: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; background-color: #f7f8fb; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+        .volume-bar { @apply h-1.5 rounded-full overflow-hidden flex gap-0.5; }
+        .vol-backlog { @apply bg-slate-200; }
+        .vol-todo { @apply bg-amber-200; }
+        .vol-progress { @apply bg-blue-400; }
+        .vol-done { @apply bg-emerald-400; }
+        .role-chip { @apply px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border; }
+        .role-owner { @apply bg-brand/5 border-brand/20 text-brand; }
+        .role-editor { @apply bg-slate-100 border-slate-200 text-slate-600; }
+        .role-viewer { @apply bg-transparent border-slate-200 text-slate-400; }
+    </style>
+</head>
+<body class="text-text-primary antialiased">
+<header class="sticky top-0 flex items-center justify-between px-6 h-14 w-full bg-white border-b border-[#e3e6ec] z-50 shadow-sm text-sm antialiased">
+<div class="flex items-center gap-4">
+<span class="text-lg font-semibold text-[#14171f] tracking-tight">Clawe 🐾</span>
+<div class="h-4 w-[1px] bg-border mx-2"></div>
+<nav class="flex items-center gap-1 text-[#5b6477]">
+<span class="hover:text-text-primary cursor-pointer transition-colors">Projects</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-text-primary font-medium">Home</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-[240px] h-8 pl-9 pr-3 bg-[#f7f8fb] border-none rounded-md text-xs focus:ring-1 focus:ring-brand transition-all outline-none" placeholder="Search projects…" type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-md hover:bg-[#f7f8fb] text-text-muted transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-[#f7f8fb] text-text-muted transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<img alt="User avatar" class="w-7 h-7 rounded-full border border-border object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmDW2W1WD6NHfGMn3iUHR4n_0lDKjaArNytEMgh1DrJ7LZjk_WqxdzbGk2M06VyD0bhAA6Ty-tzYSeTJFvVJiG_ySLMpDHnDH73zVHpaTOGiSHxrEai0R6X1KXoctGHegWHS99k6FQjup_8kA5qiz10zdkIaGpvvaDIRtPC7Qz25HLorOGeYp_QqzO-AxTNmHb6mgLpeorIuaQrrrxE2xF1Z6F56xlaaDj8rFDyRkA1cg-6REC4c5SFhNnhYDZTz3DY7_oBgKN39ds"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex flex-col h-full py-4 bg-[#f7f8fb] border-r border-[#e3e6ec] fixed left-0 top-14 w-64 text-[13px] font-medium">
+<div class="px-5 mb-6 flex items-center gap-3">
+<div class="w-6 h-6 bg-brand rounded flex items-center justify-center text-white text-[10px]">OC</div>
+<div>
+<div class="text-sm font-bold text-[#14171f] leading-tight">OpenClaw</div>
+<div class="text-[11px] text-text-muted font-normal">Productivity Workspace</div>
+</div>
+</div>
+<div class="flex-1 space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">inbox</span>
+<span>Inbox</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+<span>My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all bg-[#e3e6ec] text-[#14171f]" href="#">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 my-0.5 mx-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+<span>Backlog</span>
+</a>
+</div>
+<div class="mt-auto pt-4 space-y-0.5 border-t border-border mx-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md transition-all text-[#5b6477] hover:bg-[#e3e6ec]" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 md:ml-64 p-8 max-w-6xl">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<h1 class="text-2xl font-bold text-text-primary tracking-tight">Your projects</h1>
+<div class="flex items-center bg-white border border-border rounded-lg p-0.5 shadow-sm">
+<button class="px-3 py-1 text-xs font-medium bg-border rounded-md text-text-primary">List</button>
+<button class="px-3 py-1 text-xs font-medium text-text-muted hover:text-text-primary">Grid</button>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 mr-4 bg-white border border-border rounded-lg px-2 h-9 text-xs font-medium text-text-muted">
+<span class="material-symbols-outlined text-[16px]">sort</span>
+<select class="bg-transparent border-none focus:ring-0 p-0 text-xs pr-6">
+<option>Recently active</option>
+<option>Alphabetical</option>
+<option>Assigned to me</option>
+</select>
+</div>
+<button class="bg-brand hover:bg-brand-hover active:bg-brand-active text-white px-4 h-9 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>New project</span>
+</button>
+</div>
+</div>
+<div class="mb-8 hidden">
+<div class="bg-white border border-brand p-4 rounded-xl shadow-lg ring-4 ring-brand/5">
+<div class="flex items-center gap-4">
+<div class="flex-1">
+<input autofocus="" class="w-full border-none focus:ring-0 font-semibold text-lg p-0" placeholder="Project name..." type="text"/>
+<input class="w-full border-none focus:ring-0 text-xs text-text-muted p-0 mt-1" placeholder="project-slug" type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-sm font-medium text-text-muted hover:bg-page rounded-lg">Cancel</button>
+<button class="px-4 py-2 text-sm font-medium bg-brand text-white rounded-lg">Create</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-10">
+<div class="flex items-center gap-2 mb-4 text-xs font-bold text-text-muted uppercase tracking-widest">
+<span class="material-symbols-outlined text-[16px] fill-1 text-brand">push_pin</span>
+                Pinned Projects
+            </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer relative">
+<div class="flex items-start justify-between mb-3">
+<div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-brand">
+<span class="material-symbols-outlined text-[20px]">corporate_fare</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-brand/20 group-hover:text-brand cursor-pointer">push_pin</span>
+</div>
+<h3 class="text-sm font-semibold mb-2 truncate">Clawe HQ</h3>
+<div class="volume-bar mb-3">
+<div class="vol-backlog w-[30%]"></div>
+<div class="vol-todo w-[25%]"></div>
+<div class="vol-progress w-[15%]"></div>
+<div class="vol-done w-[30%]"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-text-muted">47 tasks • 3 members</span>
+<div class="role-chip role-owner">Owner</div>
+</div>
+</div>
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-3">
+<div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-brand/20 group-hover:text-brand cursor-pointer">push_pin</span>
+</div>
+<h3 class="text-sm font-semibold mb-2 truncate">Kanban v2</h3>
+<div class="volume-bar mb-3">
+<div class="vol-backlog w-[15%]"></div>
+<div class="vol-todo w-[35%]"></div>
+<div class="vol-progress w-[40%]"></div>
+<div class="vol-done w-[10%]"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-text-muted">18 tasks • 2 members</span>
+<div class="role-chip role-editor">Editor</div>
+</div>
+</div>
+<div class="group bg-white border border-border rounded-xl p-4 shadow-sm hover:border-brand transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-3">
+<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-brand">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-brand/20 group-hover:text-brand cursor-pointer">push_pin</span>
+</div>
+<h3 class="text-sm font-semibold mb-2 truncate">OpenClaw</h3>
+<div class="volume-bar mb-3">
+<div class="vol-backlog w-[50%]"></div>
+<div class="vol-todo w-[30%]"></div>
+<div class="vol-progress w-[10%]"></div>
+<div class="vol-done w-[10%]"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-text-muted">12 tasks • 1 member</span>
+<div class="role-chip role-owner">Owner</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-4 text-xs font-bold text-text-muted uppercase tracking-widest">
+                All Projects
+            </div>
+<div class="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
+<div class="flex items-center px-4 py-2 border-b border-border bg-page/50 text-[11px] font-bold text-text-muted uppercase tracking-tight">
+<div class="w-[30%]">Project Name</div>
+<div class="w-[20%]">Task Distribution</div>
+<div class="w-[15%] text-center">Role</div>
+<div class="w-[25%]">Recent Activity</div>
+<div class="w-[10%] text-right">Members</div>
+</div>
+<div class="flex items-center px-4 py-3 border-b border-border hover:bg-page transition-colors cursor-pointer group">
+<div class="w-[30%] flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted text-[18px] group-hover:text-brand transition-colors">corporate_fare</span>
+<span class="font-semibold text-sm truncate">Clawe HQ</span>
+</div>
+<div class="w-[20%]">
+<div class="volume-bar w-32">
+<div class="vol-backlog w-[30%]" title="Backlog"></div>
+<div class="vol-todo w-[25%]" title="Todo"></div>
+<div class="vol-progress w-[15%]" title="In Progress"></div>
+<div class="vol-done w-[30%]" title="Done"></div>
+</div>
+</div>
+<div class="w-[15%] flex justify-center">
+<div class="role-chip role-owner">Owner</div>
+</div>
+<div class="w-[25%] text-[12px] text-text-muted italic">
+                        3 new bugs reported today
+                    </div>
+<div class="w-[10%] flex justify-end -space-x-1.5">
+<div class="w-5 h-5 rounded-full border border-white bg-slate-200 text-[8px] flex items-center justify-center font-bold">MO</div>
+<div class="w-5 h-5 rounded-full border border-white bg-slate-300 text-[8px] flex items-center justify-center font-bold">JD</div>
+<div class="w-5 h-5 rounded-full border border-white bg-slate-400 text-[8px] flex items-center justify-center font-bold">ML</div>
+</div>
+</div>
+<div class="flex items-center px-4 py-3 border-b border-border hover:bg-page transition-colors cursor-pointer group">
+<div class="w-[30%] flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted text-[18px] group-hover:text-brand transition-colors">code</span>
+<span class="font-semibold text-sm truncate">OpenClaw Engineering Workspace Project A</span>
+</div>
+<div class="w-[20%]">
+<div class="volume-bar w-32">
+<div class="vol-backlog w-[50%]"></div>
+<div class="vol-todo w-[30%]"></div>
+<div class="vol-progress w-[10%]"></div>
+<div class="vol-done w-[10%]"></div>
+</div>
+</div>
+<div class="w-[15%] flex justify-center">
+<div class="role-chip role-owner">Owner</div>
+</div>
+<div class="w-[25%] text-[12px] text-text-muted italic">
+                        PR #42 merged 4h ago
+                    </div>
+<div class="w-[10%] flex justify-end">
+<div class="w-5 h-5 rounded-full border border-white bg-slate-200 text-[8px] flex items-center justify-center font-bold">MO</div>
+</div>
+</div>
+<div class="flex items-center px-4 py-3 border-b border-border hover:bg-page transition-colors cursor-pointer group">
+<div class="w-[30%] flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted text-[18px] group-hover:text-brand transition-colors">dashboard</span>
+<span class="font-semibold text-sm truncate">Kanban v2</span>
+</div>
+<div class="w-[20%]">
+<div class="volume-bar w-32">
+<div class="vol-backlog w-[15%]"></div>
+<div class="vol-todo w-[35%]"></div>
+<div class="vol-progress w-[40%]"></div>
+<div class="vol-done w-[10%]"></div>
+</div>
+</div>
+<div class="w-[15%] flex justify-center">
+<div class="role-chip role-editor">Editor</div>
+</div>
+<div class="w-[25%] text-[12px] text-amber-600 font-medium">
+                        Project stalling: 12 cards in progress
+                    </div>
+<div class="w-[10%] flex justify-end -space-x-1.5">
+<div class="w-5 h-5 rounded-full border border-white bg-slate-200 text-[8px] flex items-center justify-center font-bold">MO</div>
+<div class="w-5 h-5 rounded-full border border-white bg-indigo-200 text-[8px] flex items-center justify-center font-bold text-indigo-700">AK</div>
+</div>
+</div>
+<div class="flex items-center px-4 py-3 border-b border-border hover:bg-page transition-colors cursor-pointer group">
+<div class="w-[30%] flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted text-[18px] group-hover:text-brand transition-colors">home</span>
+<span class="font-semibold text-sm truncate">Familyhub</span>
+</div>
+<div class="w-[20%]">
+<div class="volume-bar w-32">
+<div class="vol-backlog w-[5%]"></div>
+<div class="vol-todo w-[5%]"></div>
+<div class="vol-progress w-[5%]"></div>
+<div class="vol-done w-[85%]"></div>
+</div>
+</div>
+<div class="w-[15%] flex justify-center">
+<div class="role-chip role-viewer">Viewer</div>
+</div>
+<div class="w-[25%] text-[12px] text-text-muted italic">
+                        No activity in 2 weeks
+                    </div>
+<div class="w-[10%] flex justify-end -space-x-1.5">
+<div class="w-5 h-5 rounded-full border border-white bg-orange-100 text-[8px] flex items-center justify-center font-bold text-orange-600">JD</div>
+<div class="w-5 h-5 rounded-full border border-white bg-slate-200 text-[8px] flex items-center justify-center font-bold">MO</div>
+</div>
+</div>
+<div class="flex items-center px-4 py-3 hover:bg-page transition-colors cursor-pointer group">
+<div class="w-[30%] flex items-center gap-3">
+<span class="material-symbols-outlined text-text-muted text-[18px] group-hover:text-brand transition-colors">person</span>
+<span class="font-semibold text-sm truncate">Personal</span>
+</div>
+<div class="w-[20%]">
+<div class="volume-bar w-32">
+<div class="vol-backlog w-[100%]"></div>
+</div>
+</div>
+<div class="w-[15%] flex justify-center">
+<div class="role-chip role-owner">Owner</div>
+</div>
+<div class="w-[25%] text-[12px] text-text-muted italic">
+                        7 tasks pending backlog
+                    </div>
+<div class="w-[10%] flex justify-end">
+<div class="w-5 h-5 rounded-full border border-white bg-slate-200 text-[8px] flex items-center justify-center font-bold">MO</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hidden flex flex-col items-center justify-center min-h-[400px] text-center">
+<div class="w-20 h-20 bg-brand text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-brand/20">
+<span class="material-symbols-outlined text-[40px]">token</span>
+</div>
+<h2 class="text-2xl font-bold text-text-primary mb-2">Welcome to Clawe 🐾</h2>
+<p class="text-text-muted mb-8 max-w-sm mx-auto">Create your first project to start organizing tasks and collaborating with your team.</p>
+<div class="w-full max-w-md bg-white border border-border p-6 rounded-2xl shadow-sm">
+<div class="space-y-4">
+<div class="text-left">
+<label class="block text-[11px] font-bold text-text-muted uppercase mb-1">Project Name</label>
+<input class="w-full border-border rounded-lg focus:ring-brand focus:border-brand" placeholder="e.g. Apollo Missions" type="text"/>
+</div>
+<div class="text-left">
+<label class="block text-[11px] font-bold text-text-muted uppercase mb-1">Slug</label>
+<div class="flex">
+<span class="bg-page border border-r-0 border-border px-3 py-2 rounded-l-lg text-sm text-text-muted">clawe.app/</span>
+<input class="w-full border-border rounded-r-lg focus:ring-brand focus:border-brand text-sm" placeholder="apollo-missions" type="text"/>
+</div>
+</div>
+<button class="w-full bg-brand hover:bg-brand-hover text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-brand/20">
+                        Create your first project
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

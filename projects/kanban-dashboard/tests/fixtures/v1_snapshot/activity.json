@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "ts": 1760431200000,
+      "agent": "Clawe",
+      "type": "info",
+      "text": "Activity feed habilitado (placeholder)."
+    },
+    {
+      "ts": 1760435000000,
+      "agent": "Rusitox",
+      "type": "info",
+      "text": "Started exporting to v2."
+    }
+  ]
+}

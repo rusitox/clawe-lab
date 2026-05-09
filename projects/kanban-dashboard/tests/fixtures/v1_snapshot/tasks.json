@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "t-fixture-1",
+      "title": "First imported task",
+      "desc": "Originally lived in v1.\n\nWith **markdown** even.",
+      "col": "done",
+      "prio": "P1",
+      "team": "General",
+      "agent": "Clawe",
+      "createdAt": 1760430000000,
+      "updatedAt": 1760430000000
+    },
+    {
+      "id": "t-fixture-2",
+      "title": "Second task — in progress",
+      "desc": "Repro plain text.",
+      "col": "inprogress",
+      "prio": "P0",
+      "team": "Engineering",
+      "agent": "SE-Lead",
+      "createdAt": 1760431000000,
+      "updatedAt": 1760432000000
+    },
+    {
+      "id": "t-fixture-3",
+      "title": "Third task without team",
+      "desc": "",
+      "col": "backlog",
+      "prio": "P3",
+      "createdAt": 1760433000000,
+      "updatedAt": 1760433000000
+    }
+  ]
+}

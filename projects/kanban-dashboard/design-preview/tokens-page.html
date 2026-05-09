@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>API tokens — Clawe Kanban</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban</span>
+    <span class="breadcrumb"><span class="sep">/</span> Settings <span class="sep">/</span> API tokens</span>
+    <span class="spacer"></span>
+    <span class="avatar avatar-sm">MO</span>
+  </header>
+  <main>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--space-4);">
+      <h1 class="page-title" style="margin:0;">API tokens</h1>
+      <button class="btn btn-primary">+ New token</button>
+    </div>
+    <p class="muted" style="margin: 0 0 var(--space-6); max-width: 60ch;">
+      Personal tokens act on your behalf. They carry your identity and permissions across all projects you're a member of. Treat them like passwords.
+    </p>
+    <div class="list">
+      <div class="list-row">
+        <div class="grow">
+          <div><strong>openclaw-prod</strong></div>
+          <div class="token-prefix">kbn_a1b2…  ·  created 2 days ago  ·  last used 4 min ago</div>
+        </div>
+        <button class="btn btn-sm btn-danger">Revoke</button>
+      </div>
+      <div class="list-row">
+        <div class="grow">
+          <div><strong>local-dev</strong></div>
+          <div class="token-prefix">kbn_c3d4…  ·  created last week  ·  never used</div>
+        </div>
+        <button class="btn btn-sm btn-danger">Revoke</button>
+      </div>
+    </div>
+
+    <h2 class="section-title">Reveal modal (post-create)</h2>
+    <div class="card" style="max-width: 520px;">
+      <h3 class="card-h">Token created</h3>
+      <p class="muted" style="margin: 0 0 var(--space-3); font-size: var(--font-sm);">Copy your token now — you won't see it again.</p>
+      <div class="token-prefix" style="background: var(--color-bg); padding: var(--space-3); border-radius: var(--radius-md); user-select: all; word-break: break-all;">
+        kbn_a1b2c3d4e5f6g7h8i9j0K1L2M3N4O5P6Q7R8S9T0u1v2w3x4y5z6
+      </div>
+      <div style="display:flex; gap: var(--space-2); margin-top: var(--space-3); justify-content: flex-end;">
+        <button class="btn">Copy</button>
+        <button class="btn btn-primary">Done</button>
+      </div>
+    </div>
+    <p style="margin-top: var(--space-12);"><a href="./index.html" class="muted">← back to preview index</a></p>
+  </main>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

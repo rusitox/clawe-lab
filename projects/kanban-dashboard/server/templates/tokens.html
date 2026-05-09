@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}API tokens — Clawe Kanban{% endblock %}
+{% block body %}
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</a>
+    <span class="breadcrumb">
+      <span class="sep">/</span> Settings
+      <span class="sep">/</span> <strong>API tokens</strong>
+    </span>
+    <span class="spacer"></span>
+    <span class="avatar" aria-hidden="true">{{ user_initials }}</span>
+  </header>
+
+  <main id="tokens-main">
+    <p class="banner" style="background: var(--color-brand-50); color: var(--color-brand-700); border-color: rgba(59,91,219,.2);">
+      Tokens never expire automatically. Rotate every 90 days for high-value automation.
+    </p>
+
+    <section class="page-header">
+      <h1 class="page-title">API tokens</h1>
+      <button class="btn btn-primary" id="new-token-btn" data-testid="new-token-btn">+ New token</button>
+    </section>
+    <p class="muted">Personal tokens act on your behalf and inherit your role across every project. Treat them like passwords.</p>
+
+    <section id="tokens-list" class="list" data-testid="tokens-list" aria-busy="true"></section>
+
+    <dialog id="new-token-dialog" data-testid="new-token-dialog">
+      <form id="new-token-form">
+        <h2>New token</h2>
+        <div class="field">
+          <label for="nt-name">Name</label>
+          <input id="nt-name" class="input" type="text" required maxlength="120" autocomplete="off" placeholder="e.g. openclaw-prod" />
+        </div>
+        <p id="nt-error" class="banner banner-error" role="alert" hidden></p>
+        <footer>
+          <button type="button" class="btn" data-action="close">Cancel</button>
+          <button type="button" class="btn btn-primary" id="nt-create">Create</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="token-reveal-dialog" data-testid="token-reveal-dialog">
+      <h2>✓ Token created</h2>
+      <p class="token-warning" role="alert">Copy your token now — you won't see it again.</p>
+      <pre id="token-plain" class="token-plain" data-testid="token-plain"></pre>
+      <p class="muted" style="font-size: var(--font-xs); margin-top: var(--space-2);">
+        After this, only the prefix will be visible to identify the token.
+      </p>
+      <footer style="display:flex; justify-content:flex-end; gap: var(--space-2); margin-top: var(--space-3);">
+        <button class="btn" id="token-copy" data-testid="token-copy">Copy</button>
+        <button class="btn btn-primary" id="token-done">Done</button>
+      </footer>
+    </dialog>
+  </main>
+</div>
+<script type="module" src="/static/js/tokens.js"></script>
+{% endblock %}

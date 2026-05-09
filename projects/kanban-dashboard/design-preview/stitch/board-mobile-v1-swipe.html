@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<title>Clawe Kanban v2 - Project Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: '#3b5bdb',
+                hover: '#2f49b8',
+                active: '#25399a',
+              },
+              surface: '#ffffff',
+              page: '#f7f8fb',
+              border: '#e3e6ec',
+              text: {
+                primary: '#14171f',
+                muted: '#5b6477',
+              },
+              semantic: {
+                success: '#15803d',
+                warning: '#b45309',
+                danger: '#b91c1c',
+                info: '#0369a1',
+              }
+            },
+            borderRadius: {
+              "sm": "0.25rem",
+              "md": "0.5rem",
+              "lg": "0.75rem",
+              "full": "9999px"
+            }
+          }
+        }
+      }
+    </script>
+<style type="text/tailwindcss">
+    @layer base {
+      body { 
+        font-family: 'Inter', sans-serif; 
+        -webkit-tap-highlight-color: transparent; 
+        background-color: #f7f8fb;
+        color: #14171f;
+      }
+      .material-symbols-outlined { 
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; 
+        font-size: 20px; 
+      }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    }
+    .swipe-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .swipe-action-left {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background-color: #3b5bdb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 0;
+    }
+    .swipe-action-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background-color: #15803d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 0;
+    }
+    .card-content {
+      position: relative;
+      z-index: 10;
+      background: white;
+      transition: transform 0.2s ease;
+    }.swiped-right .card-content {
+      transform: translateX(80px);
+    }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-50 bg-white border-b border-[#e3e6ec] flex justify-between items-center px-4 h-14 w-full">
+<button aria-label="Open menu" class="flex items-center justify-center min-w-[44px] min-h-[44px] text-[#14171f]">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<button aria-label="Switch project" class="flex items-center gap-1 font-semibold text-sm tracking-tight text-[#14171f] min-h-[44px]">
+<span>Clawe HQ</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<div class="flex items-center justify-center w-8 h-8 rounded-full bg-brand text-white text-[10px] font-bold border-2 border-white shadow-sm overflow-hidden">
+<img alt="MO" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGOdiN4135KWjPAOiw3RKF7n1qA0Hk1168mfU3BB71QUUinoAMQbNH0LJf38Pls20FhZcKXLUXNx4jB_WdbRHbX4SxugRSHzxxg3QwRwWGUPQjn9xt5YMjm-I12lfeZRWmnd6Erv2wtWRvW1hkQxilEp7MfDlP833ifF_Z-1ndz0LZqK-sJAJ25XwR95jBTARbcZC54ul8Fpa9h4uH5VTT5Z0YcpB8LL9YuZZzOGi4EByJV_02DOAlmgomeprK4XPwF1BKBrCiEygb"/>
+</div>
+</header>
+<div class="flex justify-center items-center py-2 text-[#5b6477]">
+<span class="material-symbols-outlined text-[18px] animate-bounce">arrow_downward</span>
+</div>
+<nav class="sticky top-14 z-40 bg-white border-b border-[#e3e6ec] flex items-center px-4 overflow-x-auto hide-scrollbar h-14 gap-2" role="tablist">
+<button aria-selected="false" class="flex items-center gap-1.5 whitespace-nowrap px-4 py-2 text-sm font-medium text-[#5b6477] bg-[#f7f8fb] rounded-full min-h-[40px]" role="tab">
+        Backlog <span class="text-[10px] px-1.5 py-0.5 bg-gray-200 rounded-full text-gray-600">4</span>
+</button>
+<button aria-selected="true" class="flex items-center gap-1.5 whitespace-nowrap px-4 py-2 text-sm font-semibold bg-brand text-white rounded-full shadow-sm min-h-[40px]" role="tab">
+        Todo <span class="text-[10px] px-1.5 py-0.5 bg-white/20 rounded-full text-white">3</span>
+</button>
+<button aria-selected="false" class="flex items-center gap-1.5 whitespace-nowrap px-4 py-2 text-sm font-medium text-[#5b6477] bg-[#f7f8fb] rounded-full min-h-[40px]" role="tab">
+        In progress <span class="text-[10px] px-1.5 py-0.5 bg-gray-200 rounded-full text-gray-600">2</span>
+<div class="w-1.5 h-1.5 rounded-full bg-brand"></div> 
+</button>
+<button aria-selected="false" class="flex items-center gap-1.5 whitespace-nowrap px-4 py-2 text-sm font-medium text-[#5b6477] bg-[#f7f8fb] rounded-full min-h-[40px]" role="tab">
+        Done <span class="text-[10px] px-1.5 py-0.5 bg-gray-200 rounded-full text-gray-600">12</span>
+</button>
+</nav>
+<div class="flex items-center justify-between px-4 py-3 bg-[#f7f8fb] border-b border-[#e3e6ec]">
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-3 py-0 bg-white border border-[#e3e6ec] rounded-md text-[13px] font-semibold text-[#14171f] min-h-[36px]">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+            Filter
+        </button>
+<button class="flex items-center gap-2 px-3 py-0 bg-white border border-[#e3e6ec] rounded-md text-[13px] font-medium text-[#5b6477] min-h-[36px]">
+            Mine
+        </button>
+</div>
+<button aria-label="Search" class="flex items-center justify-center min-w-[36px] min-h-[36px] bg-white border border-[#e3e6ec] rounded-md text-[#5b6477]">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+</div>
+<main class="flex-1 px-4 py-3 flex flex-col gap-3 pb-24">
+<div class="swipe-container rounded-md overflow-hidden shadow-sm">
+<div class="swipe-action-left"><span class="material-symbols-outlined">east</span></div>
+<article class="card-content border-2 border-red-500 bg-red-50 p-3 flex flex-col gap-3">
+<header class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div aria-label="Bug" class="w-5 h-5 rounded-full bg-[#b91c1c] text-white flex items-center justify-center text-[10px] font-black">B</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-[#b91c1c] text-white rounded-sm text-[10px] font-bold">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">report</span>
+                        P0
+                    </div>
+<span class="text-[11px] font-mono font-medium text-[#b91c1c]/70 uppercase tracking-tight">CLW-104</span>
+</div>
+</header>
+<h3 class="text-[15px] font-semibold text-[#14171f] leading-tight line-clamp-2">
+                CRITICAL: Login throws 500 on Safari 17 after the recent deployment
+            </h3>
+<footer class="flex items-center justify-between">
+<div class="flex -space-x-1.5 min-w-[44px] min-h-[44px] items-center">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200 shadow-sm">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1mqfO22gNhUE5pbdZTPJpKFZ9YuX_04YPP-PTxFEi63uI-DFp2MErKU3Wte4BvAOR-CQg5YpIWXQbXaNNs-LFTHMGXHwVNHiSrhb3aXHiH6KfwM8V_JCkqh0mP_KzMMf4x41mSCnKoX2VSM27XlI0iwyMWDXpQhelY0kqfTuCvCMotxylaUg66bKi5k3eevk1l0DPrYaxQ-UL_hoh3X3EPcCD3a1EOn6sUdVABP-le6IqmfFl8TTNxwCgnzu9z5m3VoZWldwKibXs"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-100 flex items-center justify-center text-[10px] font-bold text-gray-500 shadow-sm">+2</div>
+</div>
+<div class="flex items-center gap-3 text-[#5b6477]">
+<span class="flex items-center gap-1 text-[12px] min-h-[44px] px-1">
+<span class="material-symbols-outlined text-[16px]">attach_file</span> 1
+                    </span>
+<span class="flex items-center gap-1 text-[12px] min-h-[44px] px-1">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> 3
+                    </span>
+<div class="text-[10px] text-gray-400 font-medium px-2 py-1 bg-gray-100 rounded">Swipe for actions</div>
+</div>
+</footer>
+</article>
+</div>
+<div class="swipe-container rounded-md overflow-hidden shadow-sm">
+<div class="swipe-action-left"><span class="material-symbols-outlined">east</span></div>
+<article class="card-content bg-white border border-[#e3e6ec] border-l-4 border-l-[#0d9488] p-3 flex flex-col gap-3">
+<header class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div aria-label="Task" class="w-5 h-5 rounded-full bg-gray-100 text-[#5b6477] flex items-center justify-center text-[10px] font-black">T</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-[#fef3c7] text-[#b45309] rounded-sm text-[10px] font-bold">P1</div>
+<span class="text-[11px] font-mono font-medium text-[#5b6477]">CLW-215</span>
+</div>
+</header>
+<h3 class="text-[15px] font-medium text-[#14171f] leading-tight line-clamp-2">
+                Wire activity feed polling for the real-time notification system
+            </h3>
+<footer class="flex items-center justify-between">
+<div class="min-w-[44px] min-h-[44px] flex items-center">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOFEudKNcotSNbGAWlZjHxBq9WNMmc8ZapLOZZLbRfDdU6OqnYm7usNUtWEZzu0RIeOn6vZJwXYzWxhc3ymiQsW0UQLpO__tvEBqGNxDKBfT7iTdX5XINAvy1znTHyhiv7ZeEWmhkMv1CQW_GSGtgM9XIaBMcnUS6waoIrHRK9wtU9MUyPjtjpd282wlr-OJ70n-kn07qG8ctbqQRY4dpmOFC8_LjzNanyhHkwqgyXMihc-jMuSeJslS1uoU-4nkzGpI-bjS_EVTE3"/>
+</div>
+</div>
+<div class="flex items-center gap-1 text-[#5b6477] text-[12px] min-h-[44px] px-1">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> 0
+                </div>
+</footer>
+</article>
+</div>
+<div class="swipe-container rounded-md overflow-hidden shadow-sm">
+<div class="swipe-action-left"><span class="material-symbols-outlined text-white">east</span></div>
+<article class="card-content bg-white border border-[#e3e6ec] border-l-4 border-l-[#d97706] p-3 flex flex-col gap-3">
+<header class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div aria-label="Task" class="w-5 h-5 rounded-full bg-gray-100 text-[#5b6477] flex items-center justify-center text-[10px] font-black">T</div>
+<span class="text-[11px] font-mono font-medium text-[#5b6477]">CLW-088</span>
+</div>
+</header>
+<h3 class="text-[15px] font-medium text-[#14171f] leading-tight line-clamp-2">
+                Email allow-list configuration for enterprise accounts
+            </h3>
+<footer class="flex items-center justify-between">
+<div class="min-w-[44px] min-h-[44px] flex items-center">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI1n7-ZwiWqwA0rMhXzwNiXFXXy7Ay_XtvcRFya-HqKKKxeYrbqZoLsmVbN74gdNDQgY9qhZHIDT2at4n74MPlRRpV31udVygM8anpwB6UY1aAqLypMYTbUZjHmWpRBmnxq2YQEcft5nvAn4dWPt9CxrSK896fVFU0MUpuqsgjVuS2anWyqBq-qKX5eF7pGog3LS46sTBvUqaM0L1VRJ7YAIx6NABXVIFIZdASnAs3NyVeiXLybFzxKmt6MBdQRWu2UCsDWF9Z4fIu"/>
+</div>
+</div>
+<div class="flex items-center gap-1 text-[#5b6477] text-[12px] min-h-[44px] px-1">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> 1
+                </div>
+</footer>
+</article>
+</div>
+</main>
+<div class="fixed bottom-6 right-6 z-[60]">
+<button class="flex items-center justify-center w-14 h-14 bg-brand text-white rounded-full shadow-2xl active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+</div>
+<div class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white border-r border-[#e3e6ec] shadow-2xl w-[280px] -translate-x-full transition-transform duration-300" id="drawer">
+<div class="p-4 flex flex-col gap-4 border-b border-[#e3e6ec]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-brand flex items-center justify-center text-white">
+<span class="material-symbols-outlined">grid_view</span>
+</div>
+<div>
+<h2 class="text-sm font-semibold text-[#14171f]">Clawe User</h2>
+<p class="text-[11px] text-[#5b6477]">OpenClaw Team</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 p-2 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-3 bg-[#f7f8fb] text-[#3b5bdb] font-semibold rounded-md" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-[#5b6477] hover:bg-[#f7f8fb] rounded-md" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="text-sm font-medium">My Tasks</span>
+</a>
+</nav>
+</div>
+
+</body></html>

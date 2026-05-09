@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Members Management - Clawe HQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: "#3b5bdb",
+                hover: "#2f49b8",
+                active: "#25399a",
+                light: "#eef1ff"
+              },
+              surface: "#ffffff",
+              page: "#f7f8fb",
+              border: "#e3e6ec",
+              text: {
+                primary: "#14171f",
+                muted: "#5b6477"
+              },
+              semantic: {
+                success: "#15803d",
+                warning: "#b45309",
+                danger: "#b91c1c",
+                info: "#0369a1"
+              }
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "sm": "4px",
+              "md": "8px",
+              "lg": "12px",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"]
+            },
+            boxShadow: {
+              'subtle-sm': '0 1px 2px rgba(0,0,0,.04)',
+              'subtle-md': '0 2px 6px rgba(0,0,0,.06)',
+              'subtle-lg': '0 12px 32px rgba(0,0,0,.10)',
+            }
+          },
+        },
+      }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; background-color: #f7f8fb; color: #14171f; }
+        .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
+        .tooltip-trigger:hover .tooltip { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand/10">
+<header class="flex items-center justify-between w-full px-4 h-12 sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-slate-900 flex items-center gap-1.5">
+<span class="text-brand">🐾</span> Clawe Kanban v2
+        </span>
+<nav class="hidden md:flex items-center gap-4 ml-6 font-sans text-sm font-medium tracking-tight">
+<a class="text-slate-500 hover:text-brand transition-all cursor-pointer" href="#">Workspace</a>
+<a class="text-slate-500 hover:text-brand transition-all cursor-pointer" href="#">OpenClaw</a>
+<a class="text-slate-900 font-semibold cursor-pointer" href="#">Members</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-slate-500 hover:text-brand transition-all" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-brand transition-all" data-icon="help_outline">help_outline</button>
+<div class="w-7 h-7 rounded-full bg-brand text-white flex items-center justify-center text-[10px] font-bold border-2 border-white shadow-sm overflow-hidden">
+<img alt="Marian Ortega" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeW6f7nSMqpd6F6nUvUCXvcARurrJK4RKztOCblD8KJnS5tF4xIMjbJ5bhUmLppYT5wixmjxdeh57PyCN6wcVSW8L7JQjftsviSNdubK3HjXruwJwWqWEX9wwIaaAKK2cKxW2Zc2Y6NPaDirKDDGsGJ047O5zRDI_hIMLsJbu-Vx0m4LUWw_PQgNec0uHpv-NxNr188n7cwAfvUqiAbDQUDKqEMmTvi68YAZ-IudQqFdDIs0wl0Lzek4xE1AvUBCAcOCLCbE69ivpC"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen">
+<aside class="fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 border-r border-slate-200 bg-slate-50/50 flex flex-col p-3 gap-y-1">
+<div class="px-3 py-4 mb-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded-md bg-brand flex items-center justify-center text-white font-bold text-lg shadow-sm">O</div>
+<div>
+<h2 class="text-base font-bold text-slate-900 leading-none">OpenClaw</h2>
+<p class="text-[11px] text-slate-500 mt-1 uppercase tracking-wider font-semibold">Workspace</p>
+</div>
+</div>
+<nav class="flex flex-col gap-0.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md font-sans text-[13px] font-medium text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span> Projects
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md font-sans text-[13px] font-medium text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span> My Tasks
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md font-sans text-[13px] font-medium text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">pulse_alert</span> Activity
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md font-sans text-[13px] font-medium bg-white text-brand shadow-sm border border-slate-200" href="#">
+<span class="material-symbols-outlined">group</span> Members
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md font-sans text-[13px] font-medium text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+</aside>
+<main class="ml-64 flex-1 p-8 max-w-5xl">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-text-muted mb-6">
+<span>Projects</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Clawe HQ</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-text-primary font-medium">Members</span>
+</nav>
+<div class="flex items-end justify-between mb-8">
+<div>
+<h1 class="text-2xl font-bold text-text-primary tracking-tight mb-1">Members</h1>
+<p class="text-sm text-text-muted">Showing 6 of 32 members · 1 owner, 3 editors, 2 viewers.</p>
+</div>
+<button class="bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-subtle-sm transition-all">
+<span class="material-symbols-outlined">add</span> Invite member
+            </button>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<div class="flex-1 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border border-border rounded-md text-sm focus:ring-1 focus:ring-brand focus:border-brand outline-none transition-all" placeholder="Search by name or email..." type="text"/>
+</div>
+<select class="bg-white border border-border rounded-md text-sm px-3 py-2 focus:ring-1 focus:ring-brand focus:border-brand outline-none cursor-pointer">
+<option>All Roles</option>
+<option>Owners</option>
+<option>Editors</option>
+<option>Viewers</option>
+</select>
+</div>
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] bg-text-primary text-white px-6 py-3 rounded-full flex items-center gap-6 shadow-subtle-lg transition-all transform translate-y-0 scale-100 hidden">
+<span class="text-sm font-medium">3 selected</span>
+<div class="h-4 w-[1px] bg-white/20"></div>
+<div class="flex items-center gap-4">
+<button class="text-sm hover:text-slate-300 transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">edit</span> Change role
+                </button>
+<button class="text-sm hover:text-red-400 transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">delete</span> Remove
+                </button>
+</div>
+<button class="ml-2 hover:bg-white/10 rounded-full p-1">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="border border-border rounded-md bg-surface shadow-subtle-sm">
+<div class="flex items-center justify-between p-4 border-b border-border hover:bg-slate-50/50 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border border-border overflow-hidden">
+<img alt="Marian Ortega" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATYBmLdZ-bX0N17OgA3PuXrHOnELAY1r4hlU1vAD7naZhtOP8zEhgQPO5Raz0RMQ9KeA1VeE0mcNUt5BkJTaVvu6jT8rBSfwjwiXlyVzJil_Us4CGtga17yBtOa22ORmIFZPlAkYDq2fMza4_vFW5oUsyC2AEZvWbLFqHIxyCQacse9Sap_u21TWkUkmCSMYujU84zX5Ii_y05M6WB89jfD9N43iEEA4T8zk77JF8HI0UN5zOQwNsKu4cYF1cpErQa-OloWSNfx9tm"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-sm font-semibold text-text-primary leading-tight">Marian Ortega <span class="text-text-muted font-normal text-xs">(you)</span></h3>
+<span class="bg-brand-light text-brand text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-tight">Owner</span>
+</div>
+<p class="text-xs text-text-muted">marian@clawe.app • <span class="text-[10px]">Active now</span></p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex items-center gap-2">
+<div class="relative tooltip-trigger">
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium border border-border bg-slate-50 text-slate-400 cursor-not-allowed" disabled="">
+                                Owner <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<div class="tooltip invisible opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-text-primary text-white text-[10px] rounded shadow-lg transition-all z-10 text-center">
+                                You cannot change your role. You are the last owner of this project.
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-text-primary"></div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 cursor-not-allowed" disabled="">
+                            Leave project
+                        </button>
+</div>
+<p class="text-[10px] text-brand/70 italic font-medium">Promote another member to owner first.</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-border hover:bg-slate-50/50 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border border-border overflow-hidden">
+<img alt="Juan Pérez" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP_pvN5T7_EFnjtukX3qt5rIYjf6MBaldwCvUVXUCnRDAXNOSGKFA8F3MB6d6Q_wzkZFPGI7zocsUqIDw2-lwfCRAYTXq-jgb1Olra-Bs0DO7EMe3S2BLEqv6jfRip-DdC6UqpYdMRiuMWm6RO9r9USWoDZI9FgYepRXjd-QAPcz-226cI-ZOePw8aK14i0EXTGqyygxa-QmkIaOTXvdk91K0nhqSfaYF7AbGfsvDM0AnckGYjfGt841gEppJw4kvvuojcx2IwwvgK"/>
+</div>
+<div>
+<div class="flex items-center gap-2 leading-tight">
+<h3 class="text-sm font-semibold text-text-primary">Juan Pérez</h3>
+</div>
+<p class="text-xs text-text-muted">juan@clawe.app • <span class="text-[10px]">Active 12m ago</span></p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium border border-border bg-white text-text-primary hover:bg-slate-50 transition-all">
+                        Editor <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-text-muted hover:text-text-primary transition-colors">
+                        Remove
+                    </button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-border hover:bg-slate-50/50 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border border-border overflow-hidden">
+<img alt="Ana López" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0Y9XDROflKg6djDTd2qgOFJTAnnkkcI_HvuYZIU9XXQcIgiCIP7TNu_AuY377QBu1pxfC7Sqgj2-dZUmvyep0TqNQnhB55AxwBeswynJYoiKNjEU0gaHAfHoK-vPDuNsKVNJ-127Mn6_1yXkUg3vpPqJpEpPvhBrGupZz4dumlTwmiuLtrdd7tw90AIZIJgEM7ort_IbcbQu52ZI3qCebYx5AuKFnvt1GTsNUv3xtkHn7P8703-N5jO2-gOZ3LIeHVrOink7LZiJ1"/>
+</div>
+<div>
+<div class="flex items-center gap-2 leading-tight">
+<h3 class="text-sm font-semibold text-text-primary">Ana López</h3>
+</div>
+<p class="text-xs text-text-muted">ana@clawe.app • <span class="text-[10px]">Active 3 days ago</span></p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium border border-border bg-white text-text-primary hover:bg-slate-50 transition-all">
+                        Viewer <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-text-muted hover:text-text-primary transition-colors">
+                        Remove
+                    </button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-border hover:bg-slate-50/50 transition-colors bg-slate-50/30 group">
+<div class="flex items-center gap-4 opacity-50">
+<div class="w-10 h-10 rounded-full border border-dashed border-border bg-slate-200 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
+                        RL
+                    </div>
+<div>
+<div class="flex items-center gap-2 leading-tight">
+<h3 class="text-sm font-semibold text-text-primary">Robert Lee</h3>
+<span class="bg-slate-200 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-tight">Deactivated</span>
+</div>
+<p class="text-xs text-text-muted">robert.l@ex-member.com • <span class="text-[10px]">Last seen Oct 2023</span></p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-text-muted hover:text-semantic-danger hover:bg-red-50 transition-all">
+                        Remove permanently
+                    </button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-border hover:bg-slate-50/50 transition-colors bg-blue-50/20 group">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="w-10 h-10 rounded-full border border-border bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-xs uppercase">
+                            DS
+                        </div>
+<div class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 border border-border shadow-sm">
+<span class="material-symbols-outlined text-[12px] text-text-muted">schedule</span>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 leading-tight">
+<h3 class="text-sm font-semibold text-text-muted italic">Diego Soto</h3>
+<span class="bg-slate-200 text-slate-600 text-[10px] font-medium px-1.5 py-0.5 rounded-full uppercase tracking-tight">Pending</span>
+</div>
+<p class="text-xs text-text-muted">Pending invite (sent 2 days ago)</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-xs font-semibold text-brand hover:underline transition-all">
+                        Resend
+                    </button>
+<button class="px-3 py-1.5 rounded-md text-xs font-medium text-text-muted hover:text-text-primary transition-colors">
+                        Cancel
+                    </button>
+</div>
+</div>
+</div>
+<div class="mt-6 flex flex-col items-center">
+<button class="w-full py-3 bg-white border border-border border-dashed rounded-md text-sm font-medium text-text-muted hover:bg-slate-50 hover:text-text-primary transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">expand_more</span>
+                Load more members
+            </button>
+<p class="mt-4 text-[11px] text-text-muted uppercase tracking-[0.1em] font-bold flex items-center gap-4">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand"></span> Secured with RBAC</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">verified_user</span> Ownership protected</span>
+</p>
+</div>
+</main>
+</div>
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-text-primary/40 backdrop-blur-sm hidden">
+<div class="bg-white w-full max-w-md rounded-lg shadow-subtle-lg p-6 border border-border">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-bold text-text-primary">Invite member</h2>
+<button class="text-text-muted hover:text-text-primary"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="space-y-4 mb-6">
+<div>
+<label class="block text-xs font-bold text-text-muted uppercase mb-1.5">Email address</label>
+<input autofocus="" class="w-full px-3 py-2 border border-border rounded-md text-sm focus:ring-1 focus:ring-brand focus:border-brand outline-none" placeholder="colleague@clawe.app" type="email"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-text-muted uppercase mb-1.5">Role</label>
+<select class="w-full px-3 py-2 border border-border rounded-md text-sm focus:ring-1 focus:ring-brand focus:border-brand outline-none">
+<option>Editor</option>
+<option>Viewer</option>
+<option>Owner</option>
+</select>
+</div>
+</div>
+<div class="mb-6">
+<h3 class="text-[10px] font-bold text-text-muted uppercase mb-3 tracking-wider">Suggested from workspace</h3>
+<div class="space-y-2">
+<button class="w-full flex items-center justify-between p-2 rounded-md border border-transparent hover:border-border hover:bg-slate-50 transition-all text-left">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold">MK</div>
+<span class="text-sm">Marcus Kim</span>
+</div>
+<span class="material-symbols-outlined text-slate-300">add</span>
+</button>
+<button class="w-full flex items-center justify-between p-2 rounded-md border border-transparent hover:border-border hover:bg-slate-50 transition-all text-left">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold">SL</div>
+<span class="text-sm">Sarah Lee</span>
+</div>
+<span class="material-symbols-outlined text-slate-300">add</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-end gap-3 pt-4 border-t border-border">
+<button class="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary">Cancel</button>
+<button class="px-4 py-2 text-sm font-medium bg-brand text-white rounded-md hover:bg-brand-hover shadow-subtle-sm">Send Invite</button>
+</div>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Board — Clawe HQ</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban</span>
+    <span class="breadcrumb"><span class="sep">/</span> <a href="./projects.html">Projects</a> <span class="sep">/</span> <strong>Clawe HQ</strong> ▾</span>
+    <span class="spacer"></span>
+    <div class="filter-bar">
+      <button class="btn btn-sm">All kinds ▾</button>
+      <button class="btn btn-sm">Mine ▾</button>
+      <button class="btn btn-sm">All teams ▾</button>
+    </div>
+    <div class="avatar-pile">
+      <span class="avatar avatar-sm">MO</span>
+      <span class="avatar avatar-sm">JP</span>
+      <span class="avatar avatar-sm">AL</span>
+    </div>
+    <button class="btn">Activity</button>
+    <button class="btn btn-primary">+ Task</button>
+  </header>
+
+  <main>
+    <div class="board">
+      <!-- Backlog -->
+      <section class="column" aria-label="Backlog column">
+        <header class="column-header"><span>Backlog</span><span class="column-count">4</span></header>
+        <article class="task-card" tabindex="0" role="button" aria-label="task: Refactor task store" style="--team-color: #3b82f6;">
+          <div class="row"><span class="kind-badge kind-task" aria-label="task">T</span><span class="muted" style="font-size:var(--font-xs);">CKB-12</span></div>
+          <div class="title">Refactor the global task store</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span class="muted" style="font-size:var(--font-xs);">📎 2  💬 1</span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #14b8a6;">
+          <div class="row"><span class="kind-badge kind-proposal" aria-label="proposal">P</span><span class="priority priority-P2">P2</span></div>
+          <div class="title">Color-blind safe palette for kinds</div>
+          <div class="footer"><span class="avatar avatar-sm">JP</span><span class="muted" style="font-size:var(--font-xs);">💬 3</span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #a855f7;">
+          <div class="row"><span class="kind-badge kind-task">T</span></div>
+          <div class="title">Add cursor pagination to activity feed</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span></span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #3b82f6;">
+          <div class="row"><span class="kind-badge kind-task">T</span></div>
+          <div class="title">Document deploy runbook</div>
+          <div class="footer"><span class="avatar avatar-sm">AL</span><span></span></div>
+        </article>
+      </section>
+
+      <!-- Todo -->
+      <section class="column" aria-label="Todo column">
+        <header class="column-header"><span>Todo</span><span class="column-count">3</span></header>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #ef4444;">
+          <div class="row"><span class="kind-badge kind-bug" aria-label="bug">B</span><span class="priority priority-P0">P0</span></div>
+          <div class="title">Login throws 500 on Safari 17</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span class="muted" style="font-size:var(--font-xs);">📎 1  💬 3</span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #14b8a6;">
+          <div class="row"><span class="kind-badge kind-task">T</span><span class="priority priority-P1">P1</span></div>
+          <div class="title">Wire activity feed polling</div>
+          <div class="footer"><span class="avatar avatar-sm">JP</span><span></span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #f59e0b;">
+          <div class="row"><span class="kind-badge kind-task">T</span></div>
+          <div class="title">Email allow-list config</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span></span></div>
+        </article>
+      </section>
+
+      <!-- In progress -->
+      <section class="column" aria-label="In progress column">
+        <header class="column-header"><span>In progress</span><span class="column-count">2</span></header>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #3b82f6;">
+          <div class="row"><span class="kind-badge kind-proposal">P</span><span class="priority priority-P1">P1</span></div>
+          <div class="title">Per-team color contrast checker</div>
+          <div class="footer"><span class="avatar-pile"><span class="avatar avatar-sm">MO</span><span class="avatar avatar-sm">JP</span></span><span class="muted" style="font-size:var(--font-xs);">💬 5</span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #ef4444;">
+          <div class="row"><span class="kind-badge kind-bug">B</span></div>
+          <div class="title">Drag preview hidden on Firefox</div>
+          <div class="footer"><span class="avatar avatar-sm">JP</span><span class="muted" style="font-size:var(--font-xs);">📎 2</span></div>
+        </article>
+      </section>
+
+      <!-- Done -->
+      <section class="column" aria-label="Done column">
+        <header class="column-header"><span>Done</span><span class="column-count">12</span></header>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #14b8a6; opacity:.7;">
+          <div class="row"><span class="kind-badge kind-task">T</span></div>
+          <div class="title">Initial Postgres migration</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span></span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #3b82f6; opacity:.7;">
+          <div class="row"><span class="kind-badge kind-task">T</span></div>
+          <div class="title">FastAPI scaffolding</div>
+          <div class="footer"><span class="avatar avatar-sm">MO</span><span></span></div>
+        </article>
+        <article class="task-card" tabindex="0" role="button" style="--team-color: #14b8a6; opacity:.7;">
+          <div class="row"><span class="kind-badge kind-proposal">P</span></div>
+          <div class="title">Switch to PostgreSQL</div>
+          <div class="footer"><span class="avatar avatar-sm">JP</span><span></span></div>
+        </article>
+      </section>
+    </div>
+
+    <p style="margin-top: var(--space-12);"><a href="./index.html" class="muted">← back to preview index</a></p>
+  </main>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+# Local dev / VCS
+.git
+.github
+.gitignore
+.venv
+venv
+.env
+.env.*
+!.env.example
+.vscode
+.idea
+.DS_Store
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.mypy_cache
+.ruff_cache
+.pytest_cache
+
+# Tests, fixtures, design preview, mock JSON data
+tests
+tests-e2e
+design-preview
+specs
+docs
+*.md
+!README.md
+tasks.json
+activity.json
+teams.json
+
+# Build output / artifacts
+dist
+build
+htmlcov
+coverage
+coverage.xml
+.coverage
+playwright-report
+test-results
+
+# Node
+node_modules
+package.json
+package-lock.json
+eslint.config.js
+playwright.config.ts
+
+# v1 legacy
+server.py
+app.js
+index.html
+styles.css
+scripts/reconcile_kanban.py
+scripts/approve_pr.sh
+scripts/log_activity.sh
+
+# .claude
+.claude
+
+# OS
+*.swp
+*~

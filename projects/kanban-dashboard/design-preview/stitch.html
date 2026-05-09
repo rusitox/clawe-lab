@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stitch variants — Clawe Kanban v2</title>
+<link rel="stylesheet" href="./css/styles.css" />
+<style>
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-12);
+  }
+  @media (min-width: 1400px) {
+    .variant-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .variant {
+    display: flex; flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+  }
+  .variant.selected {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 2px var(--color-brand-50);
+  }
+  .variant.locked {
+    border-color: var(--color-success-500);
+    box-shadow: 0 0 0 2px rgba(21, 128, 61, .12);
+  }
+  .variant-header {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .variant-header strong { font-size: var(--font-sm); }
+  .variant-header .pitch { color: var(--color-text-muted); font-size: var(--font-xs); flex: 1; }
+  .variant-header .vote {
+    display: flex; align-items: center; gap: var(--space-1);
+    cursor: pointer;
+    font-size: var(--font-xs);
+    color: var(--color-text-muted);
+  }
+  .variant-header input[type="radio"] { accent-color: var(--color-brand-500); }
+  .variant-header .open-link {
+    font-size: var(--font-xs);
+    color: var(--color-brand-500);
+    text-decoration: none;
+  }
+  .variant-header .open-link:hover { text-decoration: underline; }
+  .variant-header .lock-tag {
+    font-size: var(--font-xs);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-success-500);
+    color: var(--color-text-on-brand);
+    font-weight: var(--weight-semibold);
+  }
+
+  .frame-wrap {
+    position: relative;
+    height: 360px;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+  .frame-wrap.mobile {
+    height: 480px;
+    display: grid;
+    place-items: start center;
+    padding-top: var(--space-3);
+  }
+  .frame-wrap iframe {
+    width: 250%;
+    height: 250%;
+    border: 0;
+    transform: scale(0.4);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .frame-wrap.mobile iframe {
+    width: 390px;
+    height: 1100px;
+    transform: scale(0.42);
+    transform-origin: top center;
+  }
+  .frame-overlay {
+    position: absolute; inset: 0;
+    cursor: zoom-in;
+    background: transparent;
+  }
+  .frame-overlay:hover {
+    background: rgba(59, 91, 219, 0.04);
+  }
+
+  .summary-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+  .summary-card h2 { margin: 0 0 var(--space-3); font-size: var(--font-md); }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-3); }
+  .summary-grid .pick {
+    font-size: var(--font-xs);
+    color: var(--color-text-muted);
+    border-left: 3px solid var(--color-border);
+    padding-left: var(--space-3);
+  }
+  .summary-grid .pick.done { border-left-color: var(--color-success-500); }
+  .summary-grid .pick strong { color: var(--color-text); font-weight: var(--weight-semibold); display: block; font-size: var(--font-sm); }
+  .summary-card .actions {
+    display: flex; align-items: center; gap: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-3);
+  }
+  .summary-card .progress {
+    flex: 1;
+    font-size: var(--font-sm);
+    color: var(--color-text-muted);
+  }
+
+  .toast {
+    position: fixed; bottom: var(--space-6); right: var(--space-6);
+    background: var(--color-text);
+    color: var(--color-text-on-brand);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform var(--motion-base), opacity var(--motion-base);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .round-divider {
+    margin: var(--space-12) 0 var(--space-6);
+    padding: var(--space-4) 0;
+    border-top: 2px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    display: flex; align-items: center; gap: var(--space-3);
+  }
+  .round-divider .badge {
+    background: var(--color-brand-500);
+    color: var(--color-text-on-brand);
+    font-size: var(--font-xs);
+    font-weight: var(--weight-semibold);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+  .round-divider h2 { margin: 0; font-size: var(--font-lg); }
+  .round-divider .meta { color: var(--color-text-muted); font-size: var(--font-sm); margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban — Stitch variants</span>
+    <span class="spacer"></span>
+    <a href="./index.html" class="muted">← preview index</a>
+  </header>
+
+  <main>
+    <h1 class="page-title">Stitch variants — review &amp; pick</h1>
+
+    <div class="summary-card">
+      <h2>Tu selección</h2>
+      <div class="summary-grid">
+        <div class="pick done"><strong>Board ✓</strong> V1 · Priority-first</div>
+        <div class="pick done"><strong>Drawer ✓</strong> V2 · Triage rápido</div>
+        <div class="pick done"><strong>Projects ✓</strong> V3 · Productivity dashboard</div>
+        <div class="pick" id="pick-signin"><strong>Sign-in</strong> <span id="pick-signin-val">—</span></div>
+        <div class="pick" id="pick-task-new"><strong>Task new modal</strong> <span id="pick-task-new-val">—</span></div>
+        <div class="pick" id="pick-board-mobile"><strong>Board mobile</strong> <span id="pick-board-mobile-val">—</span></div>
+        <div class="pick" id="pick-members"><strong>Members</strong> <span id="pick-members-val">—</span></div>
+        <div class="pick" id="pick-tokens"><strong>Tokens</strong> <span id="pick-tokens-val">—</span></div>
+      </div>
+      <div class="actions">
+        <span class="progress" id="progress">3 / 8 selecciones</span>
+        <button class="btn" id="copy-summary">Copy summary</button>
+        <button class="btn btn-ghost" id="clear-votes">Clear (round 2 only)</button>
+      </div>
+    </div>
+
+    <!-- ========== ROUND 1 (locked) ========== -->
+    <div class="round-divider">
+      <span class="badge">Round 1 ✓</span>
+      <h2>Board / Drawer / Projects</h2>
+      <span class="meta">Tu selección quedó bloqueada en el SDD §3.10 — abajo solo para referencia.</span>
+    </div>
+
+    <div class="variant-grid" id="grid-round1-locked">
+      <article class="variant locked">
+        <header class="variant-header">
+          <span class="lock-tag">✓ LOCKED</span>
+          <strong>Board · V1 Priority-first</strong>
+          <a class="open-link" href="./stitch/board-v1-priority-first.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/board-v1-priority-first.html" loading="lazy" title="Board V1"></iframe>
+          <a class="frame-overlay" href="./stitch/board-v1-priority-first.html" target="_blank" rel="noopener" aria-label="Open Board V1 full size"></a>
+        </div>
+      </article>
+      <article class="variant locked">
+        <header class="variant-header">
+          <span class="lock-tag">✓ LOCKED</span>
+          <strong>Drawer · V2 Triage rápido</strong>
+          <a class="open-link" href="./stitch/drawer-v2-triage.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/drawer-v2-triage.html" loading="lazy" title="Drawer V2"></iframe>
+          <a class="frame-overlay" href="./stitch/drawer-v2-triage.html" target="_blank" rel="noopener" aria-label="Open Drawer V2 full size"></a>
+        </div>
+      </article>
+      <article class="variant locked">
+        <header class="variant-header">
+          <span class="lock-tag">✓ LOCKED</span>
+          <strong>Projects · V3 Productivity dashboard</strong>
+          <a class="open-link" href="./stitch/projects-v3-dashboard.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/projects-v3-dashboard.html" loading="lazy" title="Projects V3"></iframe>
+          <a class="frame-overlay" href="./stitch/projects-v3-dashboard.html" target="_blank" rel="noopener" aria-label="Open Projects V3 full size"></a>
+        </div>
+      </article>
+    </div>
+
+    <p class="muted" style="font-size: var(--font-sm); margin-bottom: var(--space-12);">
+      ¿Querés volver a las variantes alternativas de round 1? <a href="./stitch/board-original.html" target="_blank">Board original</a> ·
+      <a href="./stitch/board-v2-filters-collapse.html" target="_blank">Board V2</a> ·
+      <a href="./stitch/board-v3-density.html" target="_blank">Board V3</a> ·
+      <a href="./stitch/drawer-original.html" target="_blank">Drawer original</a> ·
+      <a href="./stitch/drawer-v1-soft-delete.html" target="_blank">Drawer V1</a> ·
+      <a href="./stitch/drawer-v3-collab.html" target="_blank">Drawer V3</a> ·
+      <a href="./stitch/projects-original.html" target="_blank">Projects original</a> ·
+      <a href="./stitch/projects-v1-pinned.html" target="_blank">Projects V1</a> ·
+      <a href="./stitch/projects-v2-list.html" target="_blank">Projects V2</a>.
+    </p>
+
+    <!-- ========== ROUND 2 ========== -->
+    <div class="round-divider">
+      <span class="badge">Round 2</span>
+      <h2>Sign-in · Task modal · Board mobile · Members · Tokens</h2>
+      <span class="meta">Elegí 1 por sección y copiá el resumen al final.</span>
+    </div>
+
+    <!-- Sign-in (4 states) -->
+    <h2 class="section-title">4. Sign-in (4 estados, no son alternativas — son los estados que vamos a implementar)</h2>
+    <p class="muted" style="font-size: var(--font-sm); margin-bottom: var(--space-3);">
+      Stitch generó las 4 pantallas de estado (idle / loading / error / rejection). En vez de elegir una, tenés que decidir si <strong>aprobás los 4 estados como están</strong> o si querés que itere.
+    </p>
+    <div class="variant-grid" id="grid-signin">
+      <article class="variant" data-group="signin" data-id="idle">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="signin" value="approve" data-once="true" /> <strong>Idle</strong></label>
+          <span class="pitch">Estado por defecto</span>
+          <a class="open-link" href="./stitch/signin-idle.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/signin-idle.html" loading="lazy" title="Sign-in idle"></iframe>
+          <a class="frame-overlay" href="./stitch/signin-idle.html" target="_blank" rel="noopener" aria-label="Open Sign-in idle full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="signin" data-id="loading">
+        <header class="variant-header">
+          <strong>Loading</strong>
+          <span class="pitch">Botón con spinner, deshabilitado</span>
+          <a class="open-link" href="./stitch/signin-loading.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/signin-loading.html" loading="lazy" title="Sign-in loading"></iframe>
+          <a class="frame-overlay" href="./stitch/signin-loading.html" target="_blank" rel="noopener" aria-label="Open Sign-in loading full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="signin" data-id="error">
+        <header class="variant-header">
+          <strong>Error</strong>
+          <span class="pitch">Banner danger arriba del botón</span>
+          <a class="open-link" href="./stitch/signin-error.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/signin-error.html" loading="lazy" title="Sign-in error"></iframe>
+          <a class="frame-overlay" href="./stitch/signin-error.html" target="_blank" rel="noopener" aria-label="Open Sign-in error full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="signin" data-id="rejection">
+        <header class="variant-header">
+          <strong>Rejection</strong>
+          <span class="pitch">Allow-list rejection (warning, no error)</span>
+          <a class="open-link" href="./stitch/signin-rejection.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/signin-rejection.html" loading="lazy" title="Sign-in rejection"></iframe>
+          <a class="frame-overlay" href="./stitch/signin-rejection.html" target="_blank" rel="noopener" aria-label="Open Sign-in rejection full size"></a>
+        </div>
+      </article>
+    </div>
+    <div class="card" style="margin-bottom: var(--space-12); display: flex; align-items: center; gap: var(--space-4);">
+      <span><strong>Decisión:</strong></span>
+      <label class="vote"><input type="radio" name="signin-decision" value="approve" /> Approve all 4 states</label>
+      <label class="vote"><input type="radio" name="signin-decision" value="iterate" /> Iterate (decime qué cambiar)</label>
+    </div>
+
+    <!-- Task new modal -->
+    <h2 class="section-title">5. Task creation modal</h2>
+    <div class="variant-grid" id="grid-task-new">
+      <article class="variant" data-group="task-new" data-id="original">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="task-new" value="original" /> <strong>Original</strong></label>
+          <span class="pitch">Spec base, kind switcher + repro template para Bug</span>
+          <a class="open-link" href="./stitch/task-new-original.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/task-new-original.html" loading="lazy" title="Task new original"></iframe>
+          <a class="frame-overlay" href="./stitch/task-new-original.html" target="_blank" rel="noopener" aria-label="Open Task new original full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="task-new" data-id="v1-density">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="task-new" value="v1-density" /> <strong>V1 · Densidad</strong></label>
+          <span class="pitch">Metadata en grid 2x2, editor más arriba, ⌘ Enter / Esc en footer</span>
+          <a class="open-link" href="./stitch/task-new-v1-density.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/task-new-v1-density.html" loading="lazy" title="Task new V1"></iframe>
+          <a class="frame-overlay" href="./stitch/task-new-v1-density.html" target="_blank" rel="noopener" aria-label="Open Task new V1 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="task-new" data-id="v2-validation">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="task-new" value="v2-validation" /> <strong>V2 · Validation</strong></label>
+          <span class="pitch">Estado con error: title required + attachment too large</span>
+          <a class="open-link" href="./stitch/task-new-v2-validation.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/task-new-v2-validation.html" loading="lazy" title="Task new V2"></iframe>
+          <a class="frame-overlay" href="./stitch/task-new-v2-validation.html" target="_blank" rel="noopener" aria-label="Open Task new V2 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="task-new" data-id="v3-narrative">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="task-new" value="v3-narrative" /> <strong>V3 · Narrativa</strong></label>
+          <span class="pitch">Tabs Write/Preview claros, hint row markdown, "unsaved changes"</span>
+          <a class="open-link" href="./stitch/task-new-v3-narrative.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/task-new-v3-narrative.html" loading="lazy" title="Task new V3"></iframe>
+          <a class="frame-overlay" href="./stitch/task-new-v3-narrative.html" target="_blank" rel="noopener" aria-label="Open Task new V3 full size"></a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Board mobile -->
+    <h2 class="section-title">6. Project board (mobile, 390 px)</h2>
+    <div class="variant-grid" id="grid-board-mobile">
+      <article class="variant" data-group="board-mobile" data-id="original">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="board-mobile" value="original" /> <strong>Original</strong></label>
+          <span class="pitch">Tabs por columna, "Move ↕" explícito por card, sticky "+ New task"</span>
+          <a class="open-link" href="./stitch/board-mobile-original.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap mobile">
+          <iframe src="./stitch/board-mobile-original.html" loading="lazy" title="Board mobile original"></iframe>
+          <a class="frame-overlay" href="./stitch/board-mobile-original.html" target="_blank" rel="noopener" aria-label="Open Board mobile original full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="board-mobile" data-id="v1-swipe">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="board-mobile" value="v1-swipe" /> <strong>V1 · Swipe + FAB</strong></label>
+          <span class="pitch">Swipe-right Move / swipe-left Done, "+" pill flotante, P0 con tinte</span>
+          <a class="open-link" href="./stitch/board-mobile-v1-swipe.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap mobile">
+          <iframe src="./stitch/board-mobile-v1-swipe.html" loading="lazy" title="Board mobile V1"></iframe>
+          <a class="frame-overlay" href="./stitch/board-mobile-v1-swipe.html" target="_blank" rel="noopener" aria-label="Open Board mobile V1 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="board-mobile" data-id="v2-edges">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="board-mobile" value="v2-edges" /> <strong>V2 · Edge cases</strong></label>
+          <span class="pitch">Título largo truncado a 2 líneas, pile con +N, dots de actividad por tab, pull-to-refresh</span>
+          <a class="open-link" href="./stitch/board-mobile-v2-edges.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap mobile">
+          <iframe src="./stitch/board-mobile-v2-edges.html" loading="lazy" title="Board mobile V2"></iframe>
+          <a class="frame-overlay" href="./stitch/board-mobile-v2-edges.html" target="_blank" rel="noopener" aria-label="Open Board mobile V2 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="board-mobile" data-id="v3-minimal">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="board-mobile" value="v3-minimal" /> <strong>V3 · Minimal</strong></label>
+          <span class="pitch">Long-press → action sheet, filter trigger único, empty state tipográfico</span>
+          <a class="open-link" href="./stitch/board-mobile-v3-minimal.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap mobile">
+          <iframe src="./stitch/board-mobile-v3-minimal.html" loading="lazy" title="Board mobile V3"></iframe>
+          <a class="frame-overlay" href="./stitch/board-mobile-v3-minimal.html" target="_blank" rel="noopener" aria-label="Open Board mobile V3 full size"></a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Members -->
+    <h2 class="section-title">7. Members management</h2>
+    <div class="variant-grid" id="grid-members">
+      <article class="variant" data-group="members" data-id="original">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="members" value="original" /> <strong>Original</strong></label>
+          <span class="pitch">Lista simple, last-owner block, pending invite con clock</span>
+          <a class="open-link" href="./stitch/members-original.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/members-original.html" loading="lazy" title="Members original"></iframe>
+          <a class="frame-overlay" href="./stitch/members-original.html" target="_blank" rel="noopener" aria-label="Open Members original full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="members" data-id="v1-bulk">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="members" value="v1-bulk" /> <strong>V1 · Bulk admin</strong></label>
+          <span class="pitch">Tabla densa con checkboxes, sticky bulk bar, "Showing 12 of 30", search+filter</span>
+          <a class="open-link" href="./stitch/members-v1-bulk.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/members-v1-bulk.html" loading="lazy" title="Members V1"></iframe>
+          <a class="frame-overlay" href="./stitch/members-v1-bulk.html" target="_blank" rel="noopener" aria-label="Open Members V1 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="members" data-id="v2-invite">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="members" value="v2-invite" /> <strong>V2 · Invite flow</strong></label>
+          <span class="pitch">Modal de invite abierto, suggested colleagues, activity preview por miembro</span>
+          <a class="open-link" href="./stitch/members-v2-invite.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/members-v2-invite.html" loading="lazy" title="Members V2"></iframe>
+          <a class="frame-overlay" href="./stitch/members-v2-invite.html" target="_blank" rel="noopener" aria-label="Open Members V2 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="members" data-id="v3-lifecycle">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="members" value="v3-lifecycle" /> <strong>V3 · Lifecycle</strong></label>
+          <span class="pitch">"(you)" + Leave project, deactivated row dimmed, Load more, dropdown bloqueado en demote</span>
+          <a class="open-link" href="./stitch/members-v3-lifecycle.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/members-v3-lifecycle.html" loading="lazy" title="Members V3"></iframe>
+          <a class="frame-overlay" href="./stitch/members-v3-lifecycle.html" target="_blank" rel="noopener" aria-label="Open Members V3 full size"></a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Tokens -->
+    <h2 class="section-title">8. API tokens</h2>
+    <div class="variant-grid" id="grid-tokens">
+      <article class="variant" data-group="tokens" data-id="original">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="tokens" value="original" /> <strong>Original</strong></label>
+          <span class="pitch">Lista simple + reveal modal inline, prefix muted, revoked dimmed</span>
+          <a class="open-link" href="./stitch/tokens-original.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/tokens-original.html" loading="lazy" title="Tokens original"></iframe>
+          <a class="frame-overlay" href="./stitch/tokens-original.html" target="_blank" rel="noopener" aria-label="Open Tokens original full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="tokens" data-id="v1-table">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="tokens" value="v1-table" /> <strong>V1 · Operational table</strong></label>
+          <span class="pitch">Tabla con IP / UA / last-used, "Revoked" como accordion, naming hint dropdown</span>
+          <a class="open-link" href="./stitch/tokens-v1-table.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/tokens-v1-table.html" loading="lazy" title="Tokens V1"></iframe>
+          <a class="frame-overlay" href="./stitch/tokens-v1-table.html" target="_blank" rel="noopener" aria-label="Open Tokens V1 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="tokens" data-id="v2-security">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="tokens" value="v2-security" /> <strong>V2 · Security-first</strong></label>
+          <span class="pitch">Banner top, filter "Unfamiliar IPs", warning icons, Revoke confirm modal</span>
+          <a class="open-link" href="./stitch/tokens-v2-security.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/tokens-v2-security.html" loading="lazy" title="Tokens V2"></iframe>
+          <a class="frame-overlay" href="./stitch/tokens-v2-security.html" target="_blank" rel="noopener" aria-label="Open Tokens V2 full size"></a>
+        </div>
+      </article>
+      <article class="variant" data-group="tokens" data-id="v3-utility">
+        <header class="variant-header">
+          <label class="vote"><input type="radio" name="tokens" value="v3-utility" /> <strong>V3 · Developer utility</strong></label>
+          <span class="pitch">Reveal modal full-overlay, Copy adentro del block, Download .env, naming ghost text</span>
+          <a class="open-link" href="./stitch/tokens-v3-utility.html" target="_blank" rel="noopener">open ↗</a>
+        </header>
+        <div class="frame-wrap">
+          <iframe src="./stitch/tokens-v3-utility.html" loading="lazy" title="Tokens V3"></iframe>
+          <a class="frame-overlay" href="./stitch/tokens-v3-utility.html" target="_blank" rel="noopener" aria-label="Open Tokens V3 full size"></a>
+        </div>
+      </article>
+    </div>
+
+    <p style="margin-top: var(--space-12);"><a href="./index.html" class="muted">← preview index</a></p>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="./js/preview.js"></script>
+<script>
+(() => {
+  const KEY = "kanban-stitch-votes-v2";
+  const labels = {
+    "approve": "Approve all 4 states",
+    "iterate": "Iterate (needs changes)",
+    "original": "Original",
+    "v1-density": "V1 · Densidad",
+    "v2-validation": "V2 · Validation",
+    "v3-narrative": "V3 · Narrativa",
+    "v1-swipe": "V1 · Swipe + FAB",
+    "v2-edges": "V2 · Edge cases",
+    "v3-minimal": "V3 · Minimal",
+    "v1-bulk": "V1 · Bulk admin",
+    "v2-invite": "V2 · Invite flow",
+    "v3-lifecycle": "V3 · Lifecycle",
+    "v1-table": "V1 · Operational table",
+    "v2-security": "V2 · Security-first",
+    "v3-utility": "V3 · Developer utility",
+  };
+
+  const groups = ["task-new", "board-mobile", "members", "tokens"];
+
+  const load = () => JSON.parse(localStorage.getItem(KEY) || "{}");
+  const save = (v) => localStorage.setItem(KEY, JSON.stringify(v));
+
+  const render = () => {
+    const v = load();
+
+    // Sign-in decision
+    const sd = v["signin-decision"];
+    document.getElementById("pick-signin-val").textContent = sd ? labels[sd] : "—";
+    if (sd) document.getElementById("pick-signin").classList.add("done");
+    else document.getElementById("pick-signin").classList.remove("done");
+
+    for (const g of groups) {
+      document.getElementById(`pick-${g}-val`).textContent = v[g] ? labels[v[g]] : "—";
+      const card = document.getElementById(`pick-${g}`);
+      if (v[g]) card.classList.add("done"); else card.classList.remove("done");
+      document.querySelectorAll(`.variant[data-group="${g}"]`).forEach(el => {
+        el.classList.toggle("selected", el.dataset.id === v[g]);
+      });
+      const radio = document.querySelector(`input[name="${g}"][value="${v[g] || ""}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    if (sd) {
+      const sdRadio = document.querySelector(`input[name="signin-decision"][value="${sd}"]`);
+      if (sdRadio) sdRadio.checked = true;
+    }
+
+    const total = 5;
+    const filled = (sd ? 1 : 0) + groups.filter(g => v[g]).length;
+    document.getElementById("progress").textContent =
+      `${3 + filled} / ${3 + total} selecciones (round 1 ya bloqueado)`;
+  };
+
+  document.querySelectorAll('input[type="radio"]').forEach(r => {
+    r.addEventListener("change", () => {
+      const v = load();
+      v[r.name] = r.value;
+      save(v);
+      render();
+    });
+  });
+
+  const showToast = (msg) => {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2400);
+  };
+
+  document.getElementById("copy-summary").addEventListener("click", async () => {
+    const v = load();
+    const sd = v["signin-decision"];
+    const lines = [
+      "Stitch variant picks — Clawe Kanban v2 (rounds 1+2):",
+      "Round 1 (locked):",
+      "- Board: V1 · Priority-first",
+      "- Drawer: V2 · Triage rápido",
+      "- Projects: V3 · Productivity dashboard",
+      "Round 2:",
+      `- Sign-in: ${sd ? labels[sd] : "(no pick)"}`,
+      `- Task new modal: ${v["task-new"] ? labels[v["task-new"]] : "(no pick)"}`,
+      `- Board mobile: ${v["board-mobile"] ? labels[v["board-mobile"]] : "(no pick)"}`,
+      `- Members: ${v["members"] ? labels[v["members"]] : "(no pick)"}`,
+      `- Tokens: ${v["tokens"] ? labels[v["tokens"]] : "(no pick)"}`,
+    ];
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      showToast("Copied — paste back in chat");
+    } catch {
+      showToast("Couldn't copy — see console");
+      console.log(lines.join("\n"));
+    }
+  });
+
+  document.getElementById("clear-votes").addEventListener("click", () => {
+    localStorage.removeItem(KEY);
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    render();
+    showToast("Cleared");
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

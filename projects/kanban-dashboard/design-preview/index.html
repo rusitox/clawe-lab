@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clawe Kanban — design preview</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban — design preview</span>
+    <span class="spacer"></span>
+    <span class="muted">v2 · Phase 0 (review)</span>
+  </header>
+
+  <main>
+    <section class="preview-hero">
+      <h1>🐾 Clawe Kanban v2</h1>
+      <p>Static mockups of the screens proposed in <code>specs/sdd-kanban-v2.md §3</code>. No backend wired. Open each tile to review layout, density, hierarchy, and accessibility before Phase 5 starts. Toggle theme with the button at bottom-right.</p>
+    </section>
+
+    <h2 class="section-title">🎨 Stitch variants — review &amp; pick</h2>
+    <div class="card" style="display:flex; align-items:center; gap: var(--space-6); margin-bottom: var(--space-8); border-color: var(--color-brand-500);">
+      <div style="flex:1;">
+        <strong>12 variantes generadas por Stitch</strong> (board / drawer / projects, 1 original + 3 variants cada uno).<br />
+        <span class="muted" style="font-size: var(--font-sm);">Comparalas lado a lado, votá tu favorita, y copiá el resumen para volcarlo acá.</span>
+      </div>
+      <a class="btn btn-primary" href="./stitch.html">Open variants gallery →</a>
+    </div>
+
+    <h2 class="section-title">Wireframes (originales del SDD §3)</h2>
+    <div class="screen-grid">
+      <a class="screen-tile" href="./login.html"><h3>Sign in</h3><p>Google OAuth landing</p></a>
+      <a class="screen-tile" href="./projects.html"><h3>Project list</h3><p>Home after sign-in</p></a>
+      <a class="screen-tile" href="./board.html"><h3>Board (desktop)</h3><p>Populated kanban</p></a>
+      <a class="screen-tile" href="./board-mobile.html"><h3>Board (mobile)</h3><p>390 px viewport</p></a>
+      <a class="screen-tile" href="./task-drawer.html"><h3>Task detail</h3><p>Right-side drawer</p></a>
+      <a class="screen-tile" href="./task-new.html"><h3>Create task</h3><p>Modal with kind switcher</p></a>
+      <a class="screen-tile" href="./members.html"><h3>Members</h3><p>Roles + last-owner block</p></a>
+      <a class="screen-tile" href="./tokens-page.html"><h3>API tokens</h3><p>Create / list / revoke</p></a>
+      <a class="screen-tile" href="./empty.html"><h3>States</h3><p>Empty / loading / error</p></a>
+      <a class="screen-tile" href="./404.html"><h3>404</h3><p>Error page</p></a>
+    </div>
+
+    <h2 class="section-title">Design tokens reference</h2>
+    <div class="card">
+      <p class="muted" style="margin-top:0">Brand color, type scale, spacing, radii — all defined in <code>css/tokens.css</code> from §3.5 of the SDD.</p>
+      <div style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+        <span class="priority priority-P0">P0</span>
+        <span class="priority priority-P1">P1</span>
+        <span class="priority priority-P2">P2</span>
+        <span class="kind-badge kind-task">T</span>
+        <span class="kind-badge kind-bug">B</span>
+        <span class="kind-badge kind-proposal">P</span>
+        <button class="btn">Default</button>
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <span class="avatar">MO</span>
+        <span class="avatar">JP</span>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

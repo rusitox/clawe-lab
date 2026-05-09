@@ -1,0 +1,19 @@
+{
+  "name": "openclaw-kanban-frontend",
+  "private": true,
+  "type": "module",
+  "version": "2.0.0-alpha.0",
+  "description": "Frontend dev tooling for Clawe Kanban v2 (no runtime deps).",
+  "scripts": {
+    "lint": "eslint static/js",
+    "lint:fix": "eslint static/js --fix",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "test:e2e:debug": "playwright test --debug"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@axe-core/playwright": "^4.10.0",
+    "eslint": "^9.16.0"
+  }
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projects — Clawe Kanban</title>
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark">🐾</span> Clawe Kanban</span>
+    <span class="breadcrumb"><span class="sep">/</span> Projects</span>
+    <span class="spacer"></span>
+    <input class="input" type="search" placeholder="Search projects…" style="width: 240px;" />
+    <span class="avatar">MO</span>
+  </header>
+  <main>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--space-6);">
+      <h1 class="page-title" style="margin:0;">Your projects</h1>
+      <button class="btn btn-primary">+ New project</button>
+    </div>
+    <div class="project-grid">
+      <a class="project-card" href="./board.html">
+        <h3 style="margin:0;">Clawe HQ</h3>
+        <div class="mini-board"><span></span><span style="background: var(--color-brand-500); opacity:.4;"></span><span></span><span style="background: var(--color-success-500); opacity:.5;"></span></div>
+        <div class="card-meta"><span>47 tasks</span><span>3 members</span></div>
+      </a>
+      <a class="project-card" href="./board.html">
+        <h3 style="margin:0;">OpenClaw</h3>
+        <div class="mini-board"><span></span><span style="background: var(--color-brand-500); opacity:.3;"></span><span style="background: var(--color-warning-500); opacity:.4;"></span><span></span></div>
+        <div class="card-meta"><span>12 tasks</span><span>1 member</span></div>
+      </a>
+      <a class="project-card" href="./board.html">
+        <h3 style="margin:0;">Familyhub</h3>
+        <div class="mini-board"><span></span><span></span><span></span><span></span></div>
+        <div class="card-meta"><span>3 tasks</span><span>2 members</span></div>
+      </a>
+    </div>
+    <p style="margin-top: var(--space-12);"><a href="./index.html" class="muted">← back to preview index</a></p>
+  </main>
+</div>
+<script src="./js/preview.js"></script>
+</body>
+</html>

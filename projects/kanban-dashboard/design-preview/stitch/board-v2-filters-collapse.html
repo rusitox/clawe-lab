@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clawe Kanban - Project Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#3b5bdb',
+                            hover: '#2f49b8',
+                            active: '#25399a',
+                        },
+                        surface: {
+                            DEFAULT: '#ffffff',
+                            bg: '#f7f8fb',
+                            border: '#e3e6ec',
+                        },
+                        text: {
+                            primary: '#14171f',
+                            muted: '#5b6477',
+                        },
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    fontSize: {
+                        'xs': '12px',
+                        'sm': '13px',
+                        'base': '14px',
+                        'lg': '16px',
+                    },
+                    boxShadow: {
+                        'sm': '0 1px 2px rgba(0,0,0,.04)',
+                        'md': '0 2px 6px rgba(0,0,0,.06)',
+                        'p0': '0 0 0 2px #ef4444, 0 8px 24px -8px rgba(239, 68, 68, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-[#f7f8fb] text-[#14171f] font-sans h-screen overflow-hidden flex flex-col; }
+        }
+        .kanban-column { min-width: 290px; width: 290px; }
+        .kanban-column-collapsed { min-width: 48px; width: 48px; }
+        .material-symbols-outlined { font-size: 18px; }
+        .kind-badge { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; border-radius: 9999px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .avatar-stack img, .avatar-stack .more { margin-left: -6px; border: 2px solid white; transition: transform 0.1s; }
+        .avatar-stack img:first-child { margin-left: 0; }
+        .avatar-stack:hover img, .avatar-stack:hover .more { transform: translateX(2px); }
+        .task-card-deemphasized { opacity: 0.4; filter: grayscale(40%); }
+    </style>
+</head>
+<body>
+<header class="bg-white border-b border-slate-200 h-11 flex items-center justify-between px-4 z-50 shrink-0">
+<div class="flex items-center gap-5">
+<div class="flex items-center gap-2">
+<span class="text-base font-bold text-slate-900">🐾 Clawe</span>
+<span class="text-slate-300">/</span>
+<div class="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 px-2 py-1 rounded transition-colors group">
+<span class="font-medium text-sm">Clawe HQ</span>
+<span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-slate-600">expand_more</span>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-1">
+<a class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-900 rounded" href="#">Board</a>
+<a class="px-2.5 py-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors" href="#">List</a>
+<a class="px-2.5 py-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors" href="#">Timeline</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center -space-x-1.5 mr-1">
+<img alt="U1" class="h-6 w-6 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy13vACd7dzahe1tzqSPJm_X8_Xls8FHNoLAFDpNy1HFCOBQv1vz8YlsAiB33EcvDpjET7dS0V-JQ43A-LEg8BnwYUauy_3mTX_q-5wokYK2PRV0X8rYH7CgWpRIT7goYIXCmu8P9Gt3mGn1UvV96qI8jBQJOo2AsyO6XguTZTdmfHPVv8Q0XuoVfFUum6VCWS3vqXjkMp2WqbtRg44FWh89zSdpMZ9X9KcQAfq8DxkrdN0ENrUvtc0ijQPnG4MIgNh2RVCgR5W2GP"/>
+<img alt="U2" class="h-6 w-6 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuGpPy6CtBXET0GukGdD-ZTa0OnNnFlU1lImSBlfsUp-KhchgCKrODHupNDSl20q5KuhmUBPQbdIm1UR4QM_Onst7KVyfE-412hvPSaW_aWQo_rIwaFGPLiQ7-18heiXMtl30-192amHvxAzQbRRGUR7D3DWgildfUV57_2wRDwSb0iEEvP03szSY5pogtj480yz9YXSx-rUniWBUR1g3FIvMT27sdRQV0za0JI9Mn0wwCFneXiUFXAfNHR7xhVWU3kyAjy5en4E9m"/>
+<img alt="U3" class="h-6 w-6 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBruidij4sTo_RINM_UdcKtOhRmOoRB3dtL_CvOC85MzZHkonrO95ZwO3-I-ujEvniMvyZVYh-9FZnkhz57gt6NtZAj6GLOoM_Szn4ZPs536ma6-yVSdKjgC6KhiD0pG5gcS9Nu_DwbSq4Tir8TwQL6xCx5f3IgjriQ7kZfjDtgnsAT09OrOwPzCTlStK82DId_WgBZkaeQjBTBxROoGXf-iCDyxvG-QB1fhbk69rq1G_s10lJZF3Xgp8udaEKTKK5zWtb6EJulDg6f"/>
+<div class="h-6 w-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-500">+8</div>
+</div>
+<button class="flex items-center gap-1.5 px-2 py-1 text-slate-500 hover:bg-slate-100 rounded transition-colors">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="text-xs font-medium">Activity</span>
+</button>
+<button class="bg-[#3b5bdb] hover:bg-[#2f49b8] text-white px-3 py-1 rounded font-semibold text-xs flex items-center gap-1.5 transition-all">
+<span class="material-symbols-outlined text-[16px]">add</span>
+            Task <span class="opacity-60 font-normal">⌘N</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<main class="flex-1 flex flex-col overflow-hidden">
+<div class="px-6 py-2.5 flex items-center justify-between border-b border-slate-200 bg-white shrink-0">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-200 rounded cursor-pointer hover:bg-slate-100 transition-colors text-xs font-medium">
+<span class="text-slate-400">Kind:</span>
+<span class="text-slate-700">All</span>
+<span class="material-symbols-outlined text-[14px] text-slate-400">expand_more</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-[#3b5bdb] text-white rounded cursor-pointer hover:bg-[#2f49b8] transition-colors text-xs font-medium">
+<span class="opacity-80">Assignee:</span>
+<span>Mine</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-[#3b5bdb] text-white rounded cursor-pointer hover:bg-[#2f49b8] transition-colors text-xs font-medium">
+<span class="opacity-80">Team:</span>
+<span>Engineering</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</div>
+<div class="h-4 w-px bg-slate-200 mx-1"></div>
+<button class="text-xs font-medium text-[#3b5bdb] hover:underline px-2 py-1 flex items-center gap-1">
+                    Clear all
+                </button>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-[16px]">search</span>
+<input class="pl-8 pr-3 py-1 bg-slate-50 border-slate-200 rounded text-xs focus:ring-1 focus:ring-[#3b5bdb] focus:border-[#3b5bdb] w-48" placeholder="Search tasks..." type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono">/</span>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-x-auto p-6 flex gap-6 scrollbar-hide items-start">
+<div class="kanban-column flex flex-col gap-4">
+<div class="flex items-center justify-between px-1 group">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">Backlog</span>
+<div class="flex items-center gap-2">
+<span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-600">4</span>
+<div class="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600" title="Sort column">
+<span class="material-symbols-outlined text-[14px]">sort</span>
+</button>
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600" title="Column settings">
+<span class="material-symbols-outlined text-[14px]">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors" title="Add task (N)">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<div class="bg-white border-l-[4px] border-l-[#3b82f6] border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer focus:ring-2 focus:ring-[#3b5bdb]" role="listitem" tabindex="0">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-slate-100 text-slate-500">T</div>
+<span class="text-[11px] font-mono text-slate-400">CKB-45</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-50 text-[10px] font-bold text-slate-500 border border-slate-100">P2</div>
+</div>
+<h3 class="text-sm font-medium text-slate-900 mb-3 line-clamp-2 leading-snug">Refactor global task store architecture for improved persistence</h3>
+<div class="flex items-center justify-between">
+<img alt="Assignee" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATd024RehvkZnp60Ek1pvX6IQGMGeLC71DfdpncBNP3QfmNxckbF0NNQOr9Q6ocxcka1kakJURs_VqILzNQa1fWkEGIh__c5EFwQCoeBkl55loU_bfWetFT7LE-g-V0gVgQeToc7PAG17EUOwI2dLL-c4CTJZFratYOALlET97aDhr1xCE5lj_fPcHDf0bMNM2TOliXD50XKZ2wCcEcpINBMtfNiU_Uy_NSUGRP4m9ujammC5APZPJMm2UsYKMo27DBFVLEbKYkDgo"/>
+<div class="flex items-center gap-3 text-slate-400 text-[11px]">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">chat_bubble</span> 1</div>
+</div>
+</div>
+</div>
+<div class="bg-white border-l-[4px] border-l-[#a855f7] border border-slate-200 rounded-lg p-3 shadow-sm task-card-deemphasized transition-opacity cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-slate-100 text-slate-500">T</div>
+<span class="text-[11px] font-mono text-slate-400">CKB-48</span>
+</div>
+</div>
+<h3 class="text-sm font-medium text-slate-900 mb-3 line-clamp-2 leading-snug">Color-blind safe palette implementation</h3>
+<div class="flex items-center justify-between">
+<img alt="Assignee" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyfHCXAjo5qPvF_-6-RiashtzgBaDx3XvlYHROTAbcdBDqwU21r0fyGlpyadHS3gfhaVNekgwYFHAyyfFxa0Yfx8f6hq3U-GkpT1viBrYbzvNGpUao5svrV0FW1gLXg1YuCvA83ehEw6kUx1l2JmMgflc9UxboyNawc-7ssazi2C8thwXryca2B_y04aMJds_mr1e7cPSin0WRC4p2uncnM6N7WVQVG1eVZSYoHsOYjIiiLXe9scD3wpECRul8nwWIox-8y9p69lON"/>
+<div class="flex items-center gap-3 text-slate-400 text-[11px]">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">attach_file</span> 2</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="kanban-column flex flex-col gap-4">
+<div class="flex items-center justify-between px-1 group">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">Todo</span>
+<div class="flex items-center gap-2">
+<span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-600">3</span>
+<div class="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[14px]">sort</span></button>
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[14px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<div class="bg-white border-l-[4px] border-l-[#ef4444] border border-[#ef4444] rounded-lg p-3 shadow-p0 scale-[1.02] relative z-10 transition-transform cursor-pointer" role="listitem" tabindex="0">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-red-100 text-red-700">B</div>
+<span class="text-[11px] font-mono text-red-600 font-bold">CKB-52</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-600 text-[10px] font-bold text-white shadow-sm ring-1 ring-red-700">CRITICAL P0</div>
+</div>
+<h3 class="text-sm font-bold text-slate-900 mb-3 line-clamp-2 leading-snug">Login throws 500 on Safari 17.4 stable</h3>
+<div class="flex items-center justify-between">
+<div class="avatar-stack flex items-center">
+<img alt="A1" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtXAG8Oq0bIgpJUUnUT3q84ZDIV22vnF3G0qsbwcQCmItK58gje43Vb1LTNHYyTHiEBKp6yAdWBj6JEmJ1IKA6bn94qttLICA_Ts818E3XkekK1zrMAighpv0U_jcrRiP4iXZOjWUy1MCZjATBVU5PsSDnn85xAIrfBHzNZF331T0LitX0AkdxszJ9WNxZTZ9U96pQvPSUoevuLJaJjrwqO40qNojC15Fv_3p6w6IYOcjQ4hhnn3oOQIQV0OW-h5eDeMp4MK8vIx4p"/>
+<div class="more h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+1</div>
+</div>
+<div class="flex items-center gap-3 text-red-600 text-[11px] font-medium">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">chat_bubble</span> 12</div>
+</div>
+</div>
+</div>
+<div class="bg-white border-l-[4px] border-l-[#ef4444] border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-red-50 text-red-600">B</div>
+<span class="text-[11px] font-mono text-slate-400">CKB-55</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-[10px] font-bold text-amber-600 border border-amber-100">P1</div>
+</div>
+<h3 class="text-sm font-medium text-slate-900 mb-3 line-clamp-2 leading-snug">Drag preview hidden on Firefox due to z-index context issue</h3>
+<div class="flex items-center justify-between">
+<div class="h-6 w-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-white">JD</div>
+<div class="flex items-center gap-3 text-slate-400 text-[11px]">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">chat_bubble</span> 2</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="kanban-column flex flex-col gap-4">
+<div class="flex items-center justify-between px-1 group">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">In Progress</span>
+<div class="flex items-center gap-2">
+<span class="bg-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-600">2</span>
+<div class="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[14px]">sort</span></button>
+<button class="p-1 hover:bg-slate-200 rounded transition-colors text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[14px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<div class="bg-white border-l-[4px] border-l-[#14b8a6] border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-slate-100 text-slate-500">T</div>
+<span class="text-[11px] font-mono text-slate-400">CKB-39</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-[10px] font-bold text-amber-600 border border-amber-100">P1</div>
+</div>
+<h3 class="text-sm font-medium text-slate-900 mb-3 line-clamp-2 leading-snug">Wire activity feed polling for real-time updates</h3>
+<div class="flex items-center justify-between">
+<img alt="Assignee" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-v_QtbdlIRhbJ-C_fY7wjXX4OGYR9gR07I--ynQbUfWhQJlfDsqwDPporRkDctUhr96CrYd9KzSG5UkyFXp2ikbXhxEOgEtB85WXlxjzqKDjvFlLwpmZDZjgWgrYyhxwCpgfHdMM1CmshataqRpbDnEyETBPzzV_BAX97HGTQ9G5CyldoCa11a5AwoU4UEqEl4i1vg0TXX7weqaQUvf4T0wvG6le9eIBHPeHeEYgJuJL9YgshQi33PP5sBuTxA7fMnxqOfVhyQq_r"/>
+<div class="flex items-center gap-3 text-slate-400 text-[11px]">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">chat_bubble</span> 3</div>
+</div>
+</div>
+</div>
+<div class="bg-white border-l-[4px] border-l-[#f59e0b] border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="kind-badge bg-blue-50 text-blue-700">P</div>
+<span class="text-[11px] font-mono text-slate-400">CKB-41</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-[10px] font-bold text-amber-600 border border-amber-100">P1</div>
+</div>
+<h3 class="text-sm font-medium text-slate-900 mb-3 line-clamp-2 leading-snug">Per-team color contrast checker for dynamic dashboard themes</h3>
+<div class="flex items-center justify-between">
+<div class="avatar-stack flex items-center">
+<img alt="U1" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQU7CybFvXybo_JDreSE-gyeqOO9tDuWRz-m0AiYlvtrBmD6z7zHjL8i8aALK_zSzWPihXS5kNSxfh7nFfEMzRx3EY2DVh-zU4ZCWus6pUhOkTUAcZ_XEjMmFuB635pw-F_-zEqkpCP6Nbp8kDTocDS8q_-lUBOjefgZiWol8fZRw0ZdTiZf2cvyMOy65_nOX-NeDm2pMNq4fQnEdzKR15QM97F5PgVVVmHZhmMcxKiz4b62QKllYsbINlWv1Pz_9__dCHxryifwEW"/>
+<img alt="U2" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyfHCXAjo5qPvF_-6-RiashtzgBaDx3XvlYHROTAbcdBDqwU21r0fyGlpyadHS3gfhaVNekgwYFHAyyfFxa0Yfx8f6hq3U-GkpT1viBrYbzvNGpUao5svrV0FW1gLXg1YuCvA83ehEw6kUx1l2JmMgflc9UxboyNawc-7ssazi2C8thwXryca2B_y04aMJds_mr1e7cPSin0WRC4p2uncnM6N7WVQVG1eVZSYoHsOYjIiiLXe9scD3wpECRul8nwWIox-8y9p69lON"/>
+<img alt="U3" class="h-6 w-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATd024RehvkZnp60Ek1pvX6IQGMGeLC71DfdpncBNP3QfmNxckbF0NNQOr9Q6ocxcka1kakJURs_VqILzNQa1fWkEGIh__c5EFwQCoeBkl55loU_bfWetFT7LE-g-V0gVgQeToc7PAG17EUOwI2dLL-c4CTJZFratYOALlET97aDhr1xCE5lj_fPcHDf0bMNM2TOliXD50XKZ2wCcEcpINBMtfNiU_Uy_NSUGRP4m9ujammC5APZPJMm2UsYKMo27DBFVLEbKYkDgo"/>
+<div class="more h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+3</div>
+</div>
+<div class="flex items-center gap-3 text-slate-400 text-[11px]">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">attach_file</span> 5</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="kanban-column-collapsed flex flex-col items-center py-1 gap-6 h-full border-l border-slate-200">
+<button class="p-1.5 hover:bg-slate-200 rounded text-slate-400 transition-colors" title="Expand Done column">
+<span class="material-symbols-outlined">unfold_more</span>
+</button>
+<div class="flex flex-col items-center gap-4">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter [writing-mode:vertical-lr] rotate-180">DONE</span>
+<span class="bg-slate-200 px-1 py-0.5 rounded text-[10px] font-bold text-slate-600">12</span>
+</div>
+<div class="flex-1 flex flex-col gap-2 w-full px-2 opacity-30 pointer-events-none">
+<div class="h-12 w-full bg-white border border-slate-200 rounded-sm"></div>
+<div class="h-12 w-full bg-white border border-slate-200 rounded-sm"></div>
+<div class="h-12 w-full bg-white border border-slate-200 rounded-sm"></div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

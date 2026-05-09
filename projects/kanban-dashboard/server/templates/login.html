@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Clawe Kanban{% endblock %}
+{% block body %}
+<main class="center-card" data-testid="login-page">
+  <div class="login-card">
+    <h1 class="brand"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</h1>
+    <p class="subtitle">Multi-tenant Kanban for Clawe and OpenClaw.</p>
+
+    {% if rejection %}
+      <div class="banner banner-warning" role="alert" data-testid="login-rejection">
+        This email isn&rsquo;t authorized for this deployment. Ask the admin to add you.
+      </div>
+    {% elif error %}
+      <div class="banner banner-error" role="alert" data-testid="login-error">
+        We couldn&rsquo;t sign you in. <a href="/login">Try again</a> or contact support.
+      </div>
+    {% endif %}
+
+    <a class="btn btn-primary btn-lg btn-block" href="/auth/google/start" data-testid="google-signin">
+      <span class="g-glyph" aria-hidden="true">G</span> Continue with Google
+    </a>
+
+    <p class="microcopy">
+      By continuing you agree to the
+      <a href="/terms">terms</a> and <a href="/privacy">privacy policy</a>.
+    </p>
+  </div>
+  <p class="footer-microcopy">Need help? open the issue tracker.</p>
+</main>
+{% endblock %}
