@@ -342,7 +342,34 @@ GitHub Actions does **not** allow `secrets.*` access in:
 **inspect at least the first one**. Run `gh workflow run <file>.yml` —
 GitHub's API gives a much clearer error message than the UI does.
 
-### 6.13 workflow_run trigger doesn't fire on initial deploy
+### 6.13 `defaults.run.working-directory` breaks jobs without checkout
+
+**Problem:** the deploy workflow declares `defaults.run.working-directory: projects/kanban-dashboard`
+at workflow level. The `guard` job is intentionally minimal (no `actions/checkout`,
+just an `echo`), so the runner has nothing in that subdirectory and bash refuses
+to start:
+
+```
+An error occurred trying to start process '/usr/bin/bash' with working directory
+'/home/runner/work/clawe-lab/clawe-lab/projects/kanban-dashboard'. No such file or directory
+```
+
+**Fix:** override `working-directory` to repo root (`.`) at the job level
+for any job that doesn't checkout:
+
+```yaml
+guard:
+  defaults:
+    run:
+      working-directory: .
+  steps:
+    - run: echo "..."
+```
+
+**Lesson:** when using `defaults.run.working-directory` at workflow level in a
+monorepo, every job must either checkout the repo or override the default.
+
+### 6.14 workflow_run trigger doesn't fire on initial deploy
 
 **Problem:** `kanban-deploy.yml` listens on `workflow_run` for `Kanban CI`
 completion on main. After merging PR #13, Kanban CI ran and passed on main,
