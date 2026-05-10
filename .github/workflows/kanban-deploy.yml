@@ -32,6 +32,11 @@ jobs:
   guard:
     name: Block if CI failed
     runs-on: ubuntu-latest
+    # Override the workflow-level working-directory: this job doesn't checkout
+    # the repo, so the projects/kanban-dashboard/ path doesn't exist.
+    defaults:
+      run:
+        working-directory: .
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
