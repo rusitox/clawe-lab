@@ -115,14 +115,7 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('projects/kanban-dashboard/package-lock.json') }}
       - run: npx playwright install --with-deps chromium
-      # Visual regression tests are excluded from CI runs because the golden
-      # snapshots in tests-e2e/visual.spec.ts-snapshots/ were captured on macOS
-      # (file suffix `-darwin.png`). Linux runners produce slightly different
-      # font rendering and would fail under the strict 0.001 maxDiffPixelRatio.
-      # Re-capture Linux snapshots locally via Docker before re-enabling:
-      #   docker run --rm -v "$PWD:/work" -w /work mcr.microsoft.com/playwright:v1.x \
-      #     npx playwright test visual.spec.ts --update-snapshots
-      - run: npx playwright test --reporter=line --grep-invert "Visual regression"
+      - run: npx playwright test --reporter=line
       - name: Upload diffs on failure
         if: failure()
         uses: actions/upload-artifact@v4
