@@ -1,97 +1,94 @@
-# Clawe Kanban Dashboard (v1)
+# Clawe Kanban Dashboard (v2)
 
-Dashboard web simple (tipo Kanban) para visualizar y gestionar tareas de Clawe por equipos/agentes.
+Multi-tenant Kanban dashboard for Clawe and OpenClaw users. FastAPI + Postgres
+backend, vanilla JS frontend, deployed via Docker on an Oracle Cloud VPS with
+GitHub Actions CI/CD.
+
+**Live:** https://136-248-107-132.nip.io
+**Sign in:** Google OAuth
+**API:** `/api/v2/*` (legacy `/api/{tasks,activity,teams}` is soft-cut behind a feature flag)
 
 ## Features
 
-- Columnas: Backlog / To‑do / In progress / Done
-- Drag & drop entre columnas
-- Persistencia **server-side**: `tasks.json`
-- Activity feed **auto-update**: `/api/activity`
-- Filtros globales: Equipo (General/Engineering) + Agente
-  - Los filtros aplican al feed y al Kanban
-- Colores por equipo configurables: `teams.json` (+ pickers en UI)
-- Export/Import JSON (cliente)
+- **Multi-tenant**: each user can be a member of multiple projects, with per-project roles (owner / member / viewer)
+- **Three task kinds**: task, bug, proposal — same kanban, different metadata
+- **Attachments**: per-task images with size + mime allow-listing
+- **Comments + activity feed** with audit trail
+- **Drag & drop** with keyboard fallback (a11y)
+- **Per-team color accents** picked from a fixed palette
+- **Stable v2 API** consumable by OpenClaw and other Clawe services
 
-## Run
-
-```bash
-cd projects/kanban-dashboard
-export KANBAN_TOKEN='(token largo)'
-python3 server.py
-```
-
-Abrí:
-
-- `http://<host>:8787`
-
-## API
-
-- `GET /api/tasks` / `PUT /api/tasks` (requiere `X-Kanban-Token`)
-- `GET /api/activity` / `POST /api/activity` (requiere `X-Kanban-Token`)
-- `GET /api/teams` / `PUT /api/teams` (requiere `X-Kanban-Token`)
-
-## Data files
-
-- `tasks.json` — estado del kanban
-- `activity.json` — feed de actividad (últimos ~500 eventos)
-- `teams.json` — colores por equipo
-
-> Nota: No commitear tokens/secretos. El token del server se pasa por env var `KANBAN_TOKEN`.
-
----
-
-## v2 dev setup (work in progress)
-
-v2 is the multi-tenant redesign. See `specs/sdd-kanban-v2.md` for the full spec.
-
-### Prereqs
-
-- Python ≥ 3.11
-- Docker (for the Postgres dev container)
-
-### Quick start
+## Quick start (local dev)
 
 ```bash
-# 1. Install Python deps (creates an editable install with dev extras)
-make install
+# 1. One-time setup
+make install        # editable Python install + dev deps into .venv
+make db-up          # starts Postgres 16 in Docker on :5433
+make migrate        # alembic upgrade head
+cp .env.example .env  # edit DATABASE_URL etc. as needed
 
-# 2. Start Postgres (localhost:5433, db=kanban, user=kanban)
-make db-up
+# 2. Run
+make dev            # uvicorn with reload on :8787
 
-# 3. Apply migrations
-make migrate
-
-# 4. Copy env defaults
-cp .env.example .env
-
-# 5. Run the dev server
-make dev          # uvicorn on http://127.0.0.1:8787
-
-# 6. Health check
-curl http://127.0.0.1:8787/api/health
-# {"ok": true, "version": "2.0.0a0", "db": "up"}
+# 3. Validate
+make test           # 76 pytest cases
+make lint           # ruff + eslint
+make typecheck      # mypy
+make e2e            # Playwright e2e + visual regression (slow)
 ```
 
-### Test suite
+The `Makefile` has the full target list — `make help` to see them all.
 
-```bash
-make test         # pytest, requires `make db-up` first
-make lint         # ruff (+ eslint if node_modules present)
-make typecheck    # mypy
+## Project structure
+
+```
+projects/kanban-dashboard/
+├── server/             # FastAPI app (api/, deps.py, db/, models/, schemas/, services/)
+├── server/migrations/  # Alembic
+├── static/             # Vanilla JS / CSS / HTML — no bundler
+├── tests/              # pytest (76 tests, includes multi-tenant isolation gate)
+├── tests-e2e/          # Playwright (smoke + visual regression)
+├── scripts/            # CLI utilities (import_v1.py, etc.)
+├── deploy/             # env.production, remote-deploy.sh, SECRETS.md, nginx.conf.example
+├── docker/             # Dockerfile entrypoint
+├── docs/               # ops.md (runbook), ci-cd.md (architecture + lessons)
+├── specs/              # SDD — single source of truth for design decisions
+├── Dockerfile          # multi-stage prod image
+├── docker-compose.dev.yml  # local Postgres only
+└── docker-compose.prod.yml # full prod stack (db + app)
 ```
 
-The pytest suite creates a separate database (`kanban_test`) on first run.
+## Deploy
 
-### Migrations
+Push to `main` → `Kanban CI` runs (lint + types + pytest + Playwright + Docker
+build) → on green, `Kanban Deploy (Oracle VPS)` builds the multi-arch image,
+pushes to GHCR, SSHs to the VPS, and runs the atomic `remote-deploy.sh`.
 
-```bash
-make migrate                                  # apply all pending
-make migrate-new msg="add tasks table"        # create a new revision
-```
+**For step-by-step deploy commands:** [`docs/ops.md`](./docs/ops.md)
+**For architecture, decisions, and lessons learned:** [`docs/ci-cd.md`](./docs/ci-cd.md)
+**For GitHub Secrets setup:** [`deploy/SECRETS.md`](./deploy/SECRETS.md)
 
-### v1 still works
+## Specs
 
-The legacy `python3 server.py` flow (single-tenant JSON) continues to work for
-OpenClaw scripts during the soft cut. v2 lives at `/api/v2/*` and reuses the same
-host port behind the reverse proxy in production.
+Feature design lives in [`specs/sdd-kanban-v2.md`](./specs/sdd-kanban-v2.md).
+**Always read the SDD before implementing** — it's the source of truth for
+multi-tenant model, API surface, UI design picks (Stitch), and migration plan.
+
+## Multi-tenant constraints
+
+These are load-bearing and apply to every change:
+
+- Every tenant-owned table carries `project_id NOT NULL`.
+- Every API endpoint resolves `(user, project)` and scopes its queries to that tenant.
+- Every new endpoint ships with a multi-tenant isolation test on day one.
+- Cross-tenant leaks are always 🔴 Critical bugs — see `tests/test_isolation_gate.py`.
+
+## Legacy v1
+
+The `/api/{tasks,activity,teams}` surface stays behind `LEGACY_KANBAN_TOKEN`
+until OpenClaw migrates to `/api/v2/*`. Currently disabled (env var empty →
+endpoints return 503). See `docs/ops.md §8` for the cutover procedure.
+
+The original v1 prototype (`server.py` + JSON files + vanilla JS) lives in
+git history; nothing v1 runs in production. To browse it:
+`git log --all --oneline -- server.py app.js | head`.

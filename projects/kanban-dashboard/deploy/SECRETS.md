@@ -47,6 +47,19 @@ Authorized redirect URI in GCP **must match** `OAUTH_REDIRECT_URI` in
 `deploy/env.production` byte-for-byte (currently
 `https://136-248-107-132.nip.io/auth/google/callback`).
 
+### Note on GHCR pull authentication
+
+The deploy workflow pulls a **private** image from GHCR. You don't need to
+create a PAT or add a `GHCR_TOKEN` secret — the workflow uses the per-run
+`GITHUB_TOKEN` (with `packages:read` permission set explicitly on the deploy
+job) and forwards it via SSH to the VPS as `GHCR_TOKEN`. The token expires
+when the workflow run ends.
+
+If you ever want to pull the image **outside** the workflow (e.g., manually
+`docker pull` from your laptop), generate a Personal Access Token with
+`read:packages` and `docker login ghcr.io --username <you>` interactively.
+This is one-off and doesn't go in the deploy flow.
+
 ## 3. First-time bootstrap on the VPS
 
 Once. The deploy user (`ubuntu` by default) needs:

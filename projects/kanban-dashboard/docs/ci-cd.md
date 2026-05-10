@@ -106,6 +106,10 @@ workflow_dispatch brings the app back.
 **Inputs (env vars passed via SSH inline):**
 - `APP_IMAGE` — full image ref (e.g. `ghcr.io/rusitox/openclaw-kanban-v2:abc1234`)
 - `POSTGRES_PASSWORD`, `SESSION_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+- `GHCR_USER` (= `github.actor`) + `GHCR_TOKEN` (= `secrets.GITHUB_TOKEN`) — used
+  by `remote-deploy.sh` to `docker login ghcr.io` so the (private) image can be
+  pulled on the VPS. The `GITHUB_TOKEN` is per-run, scoped to `packages:read`,
+  and expires when the workflow ends — no long-lived PAT to manage. See §6.15.
 
 **Steps:**
 
@@ -389,6 +393,50 @@ gh workflow run kanban-deploy.yml --repo rusitox/clawe-lab --ref main
 Once a successful deploy exists in history, subsequent `workflow_run`
 triggers fire normally.
 
+### 6.15 GHCR image stayed private after UI "make public" attempt
+
+**Problem:** the `Build + push image` job was pushing to
+`ghcr.io/rusitox/openclaw-kanban-v2` which defaults to **private** (inherited
+from the parent repo's defaults). The deploy then failed at `docker compose
+pull` on the VPS with:
+
+```
+Error response from daemon: Head "https://ghcr.io/v2/rusitox/openclaw-kanban-v2/manifests/<sha>": denied: denied
+```
+
+We tried changing visibility to public via the GHCR package settings UI — it
+didn't take effect (`curl -sI https://ghcr.io/v2/.../manifests/latest` kept
+returning `HTTP/2 401`).
+
+**Fix:** instead of fighting the visibility flow, pass the per-run
+`GITHUB_TOKEN` to the VPS as `GHCR_TOKEN`. The token automatically has
+`packages:read` scope (we set it explicitly on the deploy job for clarity)
+and lives only as long as the workflow run, so there's no long-lived PAT to
+manage:
+
+```yaml
+deploy:
+  permissions:
+    contents: read
+    packages: read
+  steps:
+    - name: Run remote-deploy.sh
+      env:
+        GHCR_USER: ${{ github.actor }}
+        GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ssh ... "GHCR_USER='...' GHCR_TOKEN='...' bash /tmp/remote-deploy.sh"
+```
+
+`remote-deploy.sh` already had the `docker login ghcr.io` flow gated on
+`GHCR_USER + GHCR_TOKEN` being set — passing them from the workflow was the
+only change needed.
+
+**Lesson:** prefer per-run `GITHUB_TOKEN` over PATs when GHCR access is
+needed only during the workflow. Image visibility can stay private — there's
+nothing in the image that isn't already in the public repo, but private is
+also a fine default.
+
 ---
 
 ## 7. Operational gotchas (NOT bugs)
@@ -422,19 +470,21 @@ see §6.12 for when this masks a real error.
 
 ---
 
-## 8. Repository state snapshot (post-merge, 2026-05-09)
+## 8. Repository state snapshot (post-first-deploy, 2026-05-10)
 
 | Element | Value |
 |---|---|
 | Monorepo | `rusitox/clawe-lab` |
 | Default branch | `main` |
-| Branch protection | only status checks required (no review gate after PR #13 merge) |
-| Image registry | `ghcr.io/rusitox/openclaw-kanban-v2` (multi-arch: `:latest` + `:<short-sha>`) |
+| Branch protection | review gate removed (solo dev); status checks **not yet required** — see §9 |
+| Image registry | `ghcr.io/rusitox/openclaw-kanban-v2` (private, multi-arch `linux/amd64,linux/arm64`, tags `:latest` + `:<short-sha>`) |
+| Image pull auth | per-run `GITHUB_TOKEN` passed via SSH (no manual PAT) |
 | Production URL | https://136-248-107-132.nip.io (nip.io wildcard, no real domain) |
 | TLS | Let's Encrypt via certbot, auto-renew via systemd timer |
-| nginx | host-level reverse proxy, binds `10.0.0.49:443` (eth0 IP) |
+| nginx | host-level reverse proxy, binds `10.0.0.49:443` (eth0 IP, **not** `0.0.0.0`) |
 | Compose dir | `/home/ubuntu/openclaw-kanban-v2/` on the VPS |
 | Host port | `8788` (familyhub on 8787, future apps allocate above) |
+| First successful deploy | 2026-05-10 12:21 UTC, image tag `1c4aad3`, `/api/health` returned `{"ok":true,"version":"2.0.0","db":"up"}` |
 
 ### Coexisting apps on the VPS
 
@@ -448,26 +498,41 @@ see §6.12 for when this masks a real error.
 
 ## 9. Pending work
 
+### Functional
+- [ ] **Smoke-test the OAuth login flow end-to-end.** Click "Sign in with
+      Google" on https://136-248-107-132.nip.io/login, confirm the consent
+      screen, return to the app, land on the empty board. If the redirect
+      fails with `redirect_uri_mismatch`, verify the GCP-side redirect URI
+      matches `OAUTH_REDIRECT_URI` byte-for-byte.
+- [ ] **v1 → v2 data migration.** `scripts/import_v1.py` is ready and tested
+      but not yet run against real data on the VPS. See `docs/ops.md §7`.
+
+### CI/CD hardening
 - [ ] **Linux Playwright snapshots** (§6.9). Regenerate via Docker, commit
       `*-linux.png` files, drop the `--grep-invert` flag.
-- [ ] **Postgres backups.** No cron/timer running yet. Add a daily
-      `pg_dump --format=custom` to off-host storage (Oracle Object Storage or
-      rclone to S3).
-- [ ] **v1 → v2 data migration.** `scripts/import_v1.py` is ready and tested
-      but not yet run against real data on the VPS.
-- [ ] **Real domain.** Move from `nip.io` to a proper domain (e.g.,
-      `kanban.clawe.app`) once Workspace is set up. Update `OAUTH_REDIRECT_URI`
-      in `env.production` + GCP redirect URI in tandem.
 - [ ] **Required status checks** on the `main` branch protection rule —
       status checks aren't enforced yet. Add `Kanban CI / pytest`,
       `Kanban CI / lint-and-typecheck`, etc. as required so direct pushes to
       main can't bypass tests.
-- [ ] **Rotate the leaked Google OAuth client secret** (was pasted in a chat
-      log during setup). Tracked but not urgent — the app is unlikely to be
-      probed at this URL.
 - [ ] **Sunset the placeholder root `.github/workflows/ci.yml`** — it's a
       "smoke" stub that adds noise. Either remove it or repurpose it as a
       monorepo gate.
+- [ ] **Re-enable the `workflow_run` auto-deploy** by triggering a no-op
+      change on `main` after this first manual deploy succeeded; subsequent
+      auto-deploys should fire (see §6.14).
+
+### Operations
+- [ ] **Postgres backups.** No cron/timer running yet. Add a daily
+      `pg_dump --format=custom` to off-host storage (Oracle Object Storage or
+      rclone to S3). Procedure in `docs/ops.md §6`.
+- [ ] **Rotate the Google OAuth client secret** that was visible in a chat
+      log during setup. GCP Credentials → click client → RESET SECRET → update
+      GH secret → redeploy. Procedure in `docs/ops.md §9`.
+
+### Future
+- [ ] **Real domain** (e.g., `kanban.clawe.app`) once Workspace is set up.
+      Update `OAUTH_REDIRECT_URI` in `env.production` + GCP redirect URI +
+      re-issue Let's Encrypt cert in tandem.
 
 ---
 
