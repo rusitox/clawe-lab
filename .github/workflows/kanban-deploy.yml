@@ -101,7 +101,10 @@ jobs:
     needs: build-and-push
     environment:
       name: production
-      url: ${{ secrets.DEPLOY_PUBLIC_URL }}
+      # Note: GitHub Actions does not allow `secrets.*` in the `environment.url`
+      # context (it's evaluated before secrets are loaded). Hardcoding the URL
+      # here is fine — it's just for display in the GH UI and is not sensitive.
+      url: https://136-248-107-132.nip.io
     steps:
       - uses: actions/checkout@v4
         with:
@@ -163,10 +166,15 @@ jobs:
              bash /tmp/remote-deploy.sh && rm -f /tmp/remote-deploy.sh"
 
       - name: Public health check
-        if: ${{ secrets.DEPLOY_PUBLIC_URL != '' }}
         env:
           DEPLOY_PUBLIC_URL: ${{ secrets.DEPLOY_PUBLIC_URL }}
         run: |
+          # Note: GitHub Actions does NOT allow `secrets.*` access in step-level
+          # `if:` expressions, so we do the empty check inside the run script.
+          if [ -z "${DEPLOY_PUBLIC_URL:-}" ]; then
+            echo "DEPLOY_PUBLIC_URL not set — skipping public health probe."
+            exit 0
+          fi
           for i in $(seq 1 20); do
             if curl -fsS --max-time 3 "$DEPLOY_PUBLIC_URL/api/health" | tee /dev/stderr | grep -q '"db":"up"'; then
               echo "✓ public health OK"
