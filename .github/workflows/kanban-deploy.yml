@@ -130,7 +130,7 @@ jobs:
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
 
-      - name: Upload remote-deploy.sh + env.production + compose file
+      - name: Upload remote-deploy.sh + env.production + compose file + backup.sh
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -138,6 +138,7 @@ jobs:
           scp -o StrictHostKeyChecking=yes \
             deploy/remote-deploy.sh \
             deploy/env.production \
+            deploy/backup.sh \
             docker-compose.prod.yml \
             "$DEPLOY_USER@$DEPLOY_HOST:/tmp/"
           ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" '
@@ -147,6 +148,8 @@ jobs:
             chmod 0644 /home/ubuntu/openclaw-kanban-v2/deploy/env.production
             mv /tmp/docker-compose.prod.yml /home/ubuntu/openclaw-kanban-v2/docker-compose.prod.yml
             chmod 0644 /home/ubuntu/openclaw-kanban-v2/docker-compose.prod.yml
+            mv /tmp/backup.sh /home/ubuntu/openclaw-kanban-v2/backup.sh
+            chmod 0755 /home/ubuntu/openclaw-kanban-v2/backup.sh
           '
 
       - name: Run remote-deploy.sh
