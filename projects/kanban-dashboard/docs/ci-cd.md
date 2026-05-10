@@ -517,9 +517,9 @@ see §6.12 for when this masks a real error.
 - [ ] **Sunset the placeholder root `.github/workflows/ci.yml`** — it's a
       "smoke" stub that adds noise. Either remove it or repurpose it as a
       monorepo gate.
-- [ ] **Re-enable the `workflow_run` auto-deploy** by triggering a no-op
-      change on `main` after this first manual deploy succeeded; subsequent
-      auto-deploys should fire (see §6.14).
+- [x] ~~**Re-enable the `workflow_run` auto-deploy**~~ — confirmed working on
+      2026-05-10 12:49 UTC. After a successful manual deploy was in history,
+      the next push to main fired CI → Deploy automatically end-to-end.
 
 ### Operations
 - [ ] **Postgres backups.** No cron/timer running yet. Add a daily
