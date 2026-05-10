@@ -545,4 +545,5 @@ see §6.12 for when this masks a real error.
 | Add a new GitHub Secret | `deploy/SECRETS.md` |
 | Rotate a secret | `docs/ops.md §9` |
 | Set up a fresh VPS | `docs/ops.md §1` |
+| Wire OpenClaw to the kanban | `docs/openclaw-skill.md` |
 | See what's already deployed | https://github.com/rusitox/clawe-lab/pkgs/container/openclaw-kanban-v2 |

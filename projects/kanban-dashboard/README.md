@@ -68,6 +68,13 @@ pushes to GHCR, SSHs to the VPS, and runs the atomic `remote-deploy.sh`.
 **For architecture, decisions, and lessons learned:** [`docs/ci-cd.md`](./docs/ci-cd.md)
 **For GitHub Secrets setup:** [`deploy/SECRETS.md`](./deploy/SECRETS.md)
 
+## Integrations
+
+- **OpenClaw → Kanban:** see [`docs/openclaw-skill.md`](./docs/openclaw-skill.md)
+  for the full integration skill (v2 API auth, multi-tenant model, endpoint
+  catalog, 8 ready-to-paste curl recipes, error model). OpenClaw operates as
+  a regular user (`clawe.bot@gmail.com`) with its own per-user API token.
+
 ## Specs
 
 Feature design lives in [`specs/sdd-kanban-v2.md`](./specs/sdd-kanban-v2.md).
