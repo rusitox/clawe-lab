@@ -437,6 +437,50 @@ needed only during the workflow. Image visibility can stay private — there's
 nothing in the image that isn't already in the public repo, but private is
 also a fine default.
 
+### 6.16 Required status check context names are bare job names
+
+**Problem:** when setting required status checks via the GitHub API, we used
+`"Kanban CI / ruff + mypy + eslint"` (the "Workflow / Job" format shown in the
+GH Actions UI). The branch protection rule was saved but PRs showed as
+unmergeable even after all CI jobs passed.
+
+**Fix:** the context name stored by GitHub Actions is just the job's `name:`
+field — no workflow prefix:
+
+```
+ruff + mypy + eslint
+pytest (Postgres 16)
+Playwright (e2e + visual)
+Validate Dockerfile builds
+```
+
+Verify the exact names before setting protection:
+```bash
+gh api "repos/rusitox/clawe-lab/commits/$(gh pr view <n> --json headRefOid -q .headRefOid)/check-runs" \
+  --jq '.check_runs[].name'
+```
+
+**Lesson:** never guess check context names — query the API from an actual run.
+
+### 6.17 Visual regression baselines must be regenerated after any UI change
+
+**Problem:** after merging a feature that added a topbar link, the
+`projects-empty` visual regression test failed in CI with 14% pixel difference
+(43 k pixels on mobile). The Linux baselines had been captured before the UI
+change, so they showed the old topbar.
+
+**Fix:** re-run `kanban-update-snapshots.yml` (workflow_dispatch on main) after
+every PR that changes visible UI. The workflow regenerates all `*-linux.png`
+baselines and commits them automatically.
+
+```bash
+gh workflow run kanban-update-snapshots.yml --repo rusitox/clawe-lab --ref main
+```
+
+**Lesson:** treat visual baselines like golden files — they're part of the code
+review. Any PR that touches templates/CSS should include a baseline update or
+explicitly note "visuals unchanged."
+
 ---
 
 ## 7. Operational gotchas (NOT bugs)
@@ -476,7 +520,7 @@ see §6.12 for when this masks a real error.
 |---|---|
 | Monorepo | `rusitox/clawe-lab` |
 | Default branch | `main` |
-| Branch protection | review gate removed (solo dev); status checks **not yet required** — see §9 |
+| Branch protection | review gate removed (solo dev); **4 required status checks** enforced: `ruff + mypy + eslint`, `pytest (Postgres 16)`, `Playwright (e2e + visual)`, `Validate Dockerfile builds` |
 | Image registry | `ghcr.io/rusitox/openclaw-kanban-v2` (private, multi-arch `linux/amd64,linux/arm64`, tags `:latest` + `:<short-sha>`) |
 | Image pull auth | per-run `GITHUB_TOKEN` passed via SSH (no manual PAT) |
 | Production URL | https://136-248-107-132.nip.io (nip.io wildcard, no real domain) |
@@ -498,41 +542,20 @@ see §6.12 for when this masks a real error.
 
 ## 9. Pending work
 
-### Functional
-- [ ] **Smoke-test the OAuth login flow end-to-end.** Click "Sign in with
-      Google" on https://136-248-107-132.nip.io/login, confirm the consent
-      screen, return to the app, land on the empty board. If the redirect
-      fails with `redirect_uri_mismatch`, verify the GCP-side redirect URI
-      matches `OAUTH_REDIRECT_URI` byte-for-byte.
-- [ ] **v1 → v2 data migration.** `scripts/import_v1.py` is ready and tested
-      but not yet run against real data on the VPS. See `docs/ops.md §7`.
-
-### CI/CD hardening
-- [ ] **Linux Playwright snapshots** (§6.9). Regenerate via Docker, commit
-      `*-linux.png` files, drop the `--grep-invert` flag.
-- [ ] **Required status checks** on the `main` branch protection rule —
-      status checks aren't enforced yet. Add `Kanban CI / pytest`,
-      `Kanban CI / lint-and-typecheck`, etc. as required so direct pushes to
-      main can't bypass tests.
-- [ ] **Sunset the placeholder root `.github/workflows/ci.yml`** — it's a
-      "smoke" stub that adds noise. Either remove it or repurpose it as a
-      monorepo gate.
-- [x] ~~**Re-enable the `workflow_run` auto-deploy**~~ — confirmed working on
-      2026-05-10 12:49 UTC. After a successful manual deploy was in history,
-      the next push to main fired CI → Deploy automatically end-to-end.
-
-### Operations
-- [ ] **Postgres backups.** No cron/timer running yet. Add a daily
-      `pg_dump --format=custom` to off-host storage (Oracle Object Storage or
-      rclone to S3). Procedure in `docs/ops.md §6`.
-- [ ] **Rotate the Google OAuth client secret** that was visible in a chat
-      log during setup. GCP Credentials → click client → RESET SECRET → update
-      GH secret → redeploy. Procedure in `docs/ops.md §9`.
-
 ### Future
 - [ ] **Real domain** (e.g., `kanban.clawe.app`) once Workspace is set up.
       Update `OAUTH_REDIRECT_URI` in `env.production` + GCP redirect URI +
       re-issue Let's Encrypt cert in tandem.
+
+### Done (2026-05-10 / 2026-05-11)
+- [x] **OAuth login flow** — validated end-to-end on 2026-05-10.
+- [x] **v1 → v2 data migration** — discarded; v1 data was stale, v2 started fresh.
+- [x] **Linux Playwright snapshots** — regenerated 2026-05-11 via `kanban-update-snapshots.yml` workflow. `--grep-invert` removed; visual regression now runs on every CI pass. Must re-run the workflow after any UI change that affects a visual baseline. See §6.16.
+- [x] **Required status checks** — enforced on `main` (2026-05-10). Context names are the bare job names, not "Workflow / Job". See §6.16.
+- [x] **Sunset `ci.yml`** — deleted in PR#14 (2026-05-10).
+- [x] **Postgres backups** — `deploy/backup.sh` in repo; cron `0 2 * * *` installed on VPS; output to `/var/log/openclaw-kanban-backup.log`; 14-day local retention. Off-host backup (Oracle Object Storage / rclone) still TODO.
+- [x] **Rotate Google OAuth client secret** — rotated 2026-05-10.
+- [x] **Re-enable `workflow_run` auto-deploy** — confirmed working 2026-05-10 12:49 UTC.
 
 ---
 
