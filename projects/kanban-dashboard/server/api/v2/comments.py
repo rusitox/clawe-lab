@@ -95,6 +95,7 @@ def create_comment(
     db: Session = Depends(get_db),
 ) -> CommentPublic:
     task = _task_or_404(db, project_id, task_id)
+    task.updated_at = _now()
     row = Comment(
         task_id=task.id,
         project_id=task.project_id,
