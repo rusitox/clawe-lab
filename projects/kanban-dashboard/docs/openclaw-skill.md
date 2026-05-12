@@ -37,6 +37,12 @@ one-time bootstrap is:
    the plaintext value. **Shown once.** Format: `kbn_<43-char-base64url>`.
 5. Store it in OpenClaw's secret store (env var `KANBAN_API_TOKEN` or equivalent).
 
+**Production VPS paths (Oracle Cloud, as of 2026-05-11):**
+- Token: `~/.openclaw/workspace/.secrets/kanban_api_token_v2`
+- Project ID: `~/.openclaw/workspace/.secrets/kanban_project_id`
+  - Value: `229e03ef-df43-409b-84bf-684ab9d1d757` ("Clawe HQ")
+- Skill copy: `~/.openclaw/workspace/skills/kanban/SKILL.md`
+
 If the token is ever leaked or rotated, repeat steps 3–5 and revoke the old
 token in the UI. The token has the same permissions as the user — it is
 NOT scoped to a single project.
@@ -422,6 +428,99 @@ Network/timeout: treat as transient. Use ≤3 retries with backoff, then alert.
 | CI/CD architecture | `projects/kanban-dashboard/docs/ci-cd.md` |
 | Multi-tenant gate test | `projects/kanban-dashboard/tests/test_isolation_gate.py` |
 | OpenClaw account | `clawe.bot@gmail.com` (whitelisted in `deploy/env.production`) |
+| OpenClaw project | "Clawe HQ" — UUID `229e03ef-df43-409b-84bf-684ab9d1d757` |
+| VPS token path | `~/.openclaw/workspace/.secrets/kanban_api_token_v2` |
+| VPS project_id path | `~/.openclaw/workspace/.secrets/kanban_project_id` |
 
 If something in this skill drifts from runtime behavior, the **OpenAPI spec
 at `/openapi.json`** is authoritative — fetch it and reconcile.
+
+---
+
+## 9. Task execution workflow
+
+### 9.1 Task lifecycle
+
+```
+todo → inprogress → done
+```
+
+To move a task between columns:
+```bash
+PATCH /api/v2/projects/{project_id}/tasks/{task_id}
+{"column": "inprogress"}   # start working
+{"column": "done"}          # mark complete
+```
+
+### 9.2 How to execute a task (step-by-step)
+
+Every time the smart trigger fires, follow this loop:
+
+1. **Read the last 2-3 comments** — that's the current state. Don't redo work already done.
+2. **Pick the next concrete step** from the description's "Próximos pasos" section.
+3. **Do that one step** — research, write, implement, or verify. One step per trigger.
+4. **Post a comment** with the result:
+   ```
+   POST /api/v2/projects/{project_id}/tasks/{task_id}/comments
+   {
+     "body_md": "**Avance:** <what you completed>\n\n**Próximo paso:** <what comes next>"
+   }
+   ```
+5. **Check done criteria** — if all steps in the description are done, move to `done`.
+
+Never ask for permission. Never wait. Execute and report.
+
+### 9.3 Task structure guidelines (how to create good tasks)
+
+Tasks must be small enough to complete in one session (≤45 min of work).
+
+**Required sections in every task description:**
+
+```markdown
+## Objetivo
+One sentence: what does "done" look like.
+
+## Done when
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+## Próximos pasos
+1. Step A (30 min)
+2. Step B (20 min)
+3. Step C (15 min)
+```
+
+**If a task is too big** (more than 3-4 steps, or any step takes >45 min):
+- Break it into subtasks, one card per step.
+- Create subtasks via POST /api/v2/projects/{project_id}/tasks.
+- Put the parent task in `todo` until all subtasks are done.
+- Move each subtask through todo → inprogress → done independently.
+
+**Bad task** (too vague, no done criteria):
+> "Investigar modelos de negocio con IA"
+
+**Good tasks** (small, concrete, completable):
+> "Listar 10 casos de agentes IA con revenue conocido (fuentes primarias)" — Done when: lista en comentario con fuentes.
+> "Sintetizar 5 patrones de pricing de agentes IA" — Done when: tabla en comentario.
+> "Redactar sección Argentina del informe" — Done when: texto en comentario ≤500 palabras.
+> "Exportar informe final a PDF y adjuntarlo" — Done when: PDF adjunto en la card.
+
+### 9.4 Reporting format (§5 del RUNBOOK)
+
+After each step, post a comment using this format:
+```
+**Avance:** <what you completed in 1-2 sentences>
+
+**Estado:** <% complete estimate>
+
+**Próximo paso:** <next concrete action>
+
+**Bloqueante:** <only if blocked — describe and propose solution>
+```
+
+If the task is done:
+```
+**✅ Completado:** <summary of what was delivered>
+
+**Entregable:** <link, file, or inline content>
+```
