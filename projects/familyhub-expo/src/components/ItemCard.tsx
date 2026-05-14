@@ -3,59 +3,74 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
 
-export type ItemType = 'Evento' | 'Tarea' | 'Actividad';
-
-export type ItemCardProps = {
-  accent: string;
+type Props = {
+  type: 'Evento' | 'Tarea' | 'Actividad';
   title: string;
-  type: ItemType;
+  person: string;
+  personColor: string;
   time?: string;
-  people?: string[];
-  leadingIcon?: 'calendar-outline' | 'checkmark-circle-outline' | 'barbell-outline';
+  location?: string;
+  pill?: string;
+  pillColor?: string;
+  pillBg?: string;
+  completed?: boolean;
 };
 
-function pillColors(type: ItemType) {
-  if (type === 'Tarea') return { bg: theme.colors.pillBlueBg, text: theme.colors.pillBlueText };
-  if (type === 'Actividad') return { bg: theme.colors.pillOrangeBg, text: theme.colors.pillOrangeText };
-  // Evento (Stitch uses purple)
-  return { bg: theme.colors.pillPurpleBg, text: theme.colors.pillPurpleText };
-}
+export function ItemCard({
+  type,
+  title,
+  person,
+  personColor,
+  time,
+  location,
+  pill,
+  pillColor,
+  pillBg,
+  completed = false,
+}: Props) {
+  const accentColor = completed ? theme.colors.muted : personColor;
+  const iconName = completed
+    ? 'checkmark-circle'
+    : type === 'Evento'
+    ? 'calendar'
+    : type === 'Actividad'
+    ? 'football'
+    : 'checkmark-circle-outline';
 
-export function ItemCard({ accent, title, type, time, people, leadingIcon = 'calendar-outline' }: ItemCardProps) {
-  const pill = pillColors(type);
-  const startTime = time ? time.split('-')[0].trim() : undefined;
-  const peopleLabel = people?.length ? (people.length === 1 ? people[0] : `${people[0]} +${people.length - 1}`) : undefined;
+  const resolvedPill = completed ? 'COMPLETADO' : pill;
+  const resolvedPillBg = completed ? theme.colors.pillGreenBg : pillBg;
+  const resolvedPillColor = completed ? theme.colors.pillGreenText : pillColor;
 
   return (
-    <View style={styles.card}>
-      <View style={[styles.cardAccent, { backgroundColor: accent }]} />
-
-      <View style={styles.cardBody}>
-        <View style={styles.leftCol}>
-          {startTime ? <Text style={styles.timeText}>{startTime}</Text> : <View style={{ height: 16 }} />}
-          <Ionicons name={leadingIcon as any} size={18} color={theme.colors.textSecondary} />
-        </View>
-
-        <View style={styles.contentCol}>
-          <View style={styles.titleRow}>
-            <Text style={styles.title} numberOfLines={1}>
-              {title}
-            </Text>
-            <View style={[styles.pill, { backgroundColor: pill.bg }]}>
-              <Text style={[styles.pillText, { color: pill.text }]}>{type}</Text>
-            </View>
-          </View>
-
-          {peopleLabel ? (
-            <View style={styles.peopleRow}>
-              <View style={[styles.dot, { backgroundColor: accent }]} />
-              <Text style={styles.peopleText} numberOfLines={1}>
-                {peopleLabel}
-              </Text>
-            </View>
+    <View style={[styles.card, completed && styles.cardCompleted]}>
+      <View style={[styles.accent, { backgroundColor: accentColor }]} />
+      <View style={styles.icon}>
+        <Ionicons name={iconName as any} size={18} color={accentColor} />
+      </View>
+      <View style={styles.body}>
+        <Text style={[styles.title, completed && styles.titleCompleted]}>{title}</Text>
+        <View style={styles.meta}>
+          <View style={[styles.personDot, { backgroundColor: personColor }]} />
+          <Text style={styles.metaText}>{person}</Text>
+          {location ? (
+            <>
+              <Text style={styles.bullet}> • </Text>
+              <Text style={styles.metaText}>{location}</Text>
+            </>
+          ) : null}
+          {time ? (
+            <>
+              <Text style={styles.bullet}> • </Text>
+              <Text style={styles.metaText}>{time}</Text>
+            </>
           ) : null}
         </View>
       </View>
+      {resolvedPill ? (
+        <View style={[styles.pill, { backgroundColor: resolvedPillBg }]}>
+          <Text style={[styles.pillText, { color: resolvedPillColor }]}>{resolvedPill}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -63,89 +78,69 @@ export function ItemCard({ accent, title, type, time, people, leadingIcon = 'cal
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.xl,
-    borderColor: theme.colors.border,
+    borderRadius: theme.radius.lg,
     borderWidth: 1,
+    borderColor: theme.colors.border,
+    marginBottom: 8,
     overflow: 'hidden',
-    marginBottom: 12,
     ...theme.shadow.card,
   },
-  cardAccent: {
-    width: 8,
-    borderTopLeftRadius: theme.radius.xl,
-    borderBottomLeftRadius: theme.radius.xl,
+  cardCompleted: {
+    opacity: 0.7,
   },
-  cardBody: {
+  accent: {
+    width: 4,
+    alignSelf: 'stretch',
+  },
+  icon: {
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+  },
+  body: {
     flex: 1,
-    flexDirection: 'row',
-    paddingVertical: 16,
-    paddingHorizontal: 14,
-    gap: 12,
-  },
-  leftCol: {
-    width: 44,
-    alignItems: 'center',
-    paddingTop: 2,
-    gap: 6,
-  },
-  timeText: {
-    color: theme.colors.textSecondary,
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  contentCol: {
-    flex: 1,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    marginBottom: 8,
+    paddingVertical: 12,
+    paddingRight: 8,
   },
   title: {
-    flex: 1,
     color: theme.colors.textPrimary,
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: theme.typography.title.fontWeight,
-    lineHeight: 22,
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
   },
-  pill: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 999,
+  titleCompleted: {
+    textDecorationLine: 'line-through',
+    color: theme.colors.textSecondary,
   },
-  pillText: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    lineHeight: 12,
-  },
-  metaRow: {
+  meta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 10,
+    flexWrap: 'wrap',
+  },
+  personDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 5,
   },
   metaText: {
     color: theme.colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
   },
-  peopleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  peopleText: {
+  bullet: {
     color: theme.colors.textSecondary,
     fontSize: 12,
-    fontWeight: '600',
+  },
+  pill: {
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 12,
+  },
+  pillText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
 });
