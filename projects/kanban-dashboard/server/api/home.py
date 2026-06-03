@@ -69,13 +69,14 @@ def project_board(
 ) -> Response:
     if user is None:
         return RedirectResponse(f"/login?next=/p/{slug}", status_code=302)
-    project, _ = _resolve_membership(db, slug, user)
+    project, membership = _resolve_membership(db, slug, user)
     return templates.TemplateResponse(
         request,
         "board.html",
         {
             "user_initials": _initials(user),
             "project": {"id": str(project.id), "slug": project.slug, "name": project.name},
+            "your_role": membership.role,
         },
     )
 
@@ -98,6 +99,51 @@ def project_members(
             "project": {"id": str(project.id), "slug": project.slug, "name": project.name},
             "your_role": membership.role,
             "your_user_id": str(user.id),
+        },
+    )
+
+
+@router.get("/p/{slug}/archive", response_class=HTMLResponse)
+def project_archive(
+    request: Request,
+    slug: str,
+    user: User | None = Depends(get_optional_user),
+    db: Session = Depends(get_db),
+) -> Response:
+    if user is None:
+        return RedirectResponse(f"/login?next=/p/{slug}/archive", status_code=302)
+    project, membership = _resolve_membership(db, slug, user)
+    return templates.TemplateResponse(
+        request,
+        "archive.html",
+        {
+            "user_initials": _initials(user),
+            "project": {"id": str(project.id), "slug": project.slug, "name": project.name},
+            "your_role": membership.role,
+        },
+    )
+
+
+@router.get("/p/{slug}/settings", response_class=HTMLResponse)
+def project_settings(
+    request: Request,
+    slug: str,
+    user: User | None = Depends(get_optional_user),
+    db: Session = Depends(get_db),
+) -> Response:
+    if user is None:
+        return RedirectResponse(f"/login?next=/p/{slug}/settings", status_code=302)
+    project, membership = _resolve_membership(db, slug, user)
+    if membership.role != "owner":
+        return RedirectResponse(f"/p/{slug}", status_code=302)
+    return templates.TemplateResponse(
+        request,
+        "settings.html",
+        {
+            "user_initials": _initials(user),
+            "project": {"id": str(project.id), "slug": project.slug, "name": project.name},
+            "your_role": membership.role,
+            "auto_archive_days": project.auto_archive_days,
         },
     )
 

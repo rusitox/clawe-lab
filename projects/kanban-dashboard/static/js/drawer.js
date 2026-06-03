@@ -4,19 +4,22 @@
 // thumbnails, comments composer.
 
 import { ApiError, api } from "./api.js";
+import { showToast } from "./toast.js";
 
 const KIND_LETTER = { task: "T", bug: "B", proposal: "P" };
 const NEXT_COLUMN = {
-  backlog: "todo",
-  todo: "inprogress",
-  inprogress: "done",
-  done: null,
+  backlog:      "todo",
+  todo:         "inprogress",
+  inprogress:   "verification",
+  verification: null,   // handled by custom two-button footer
+  done:         null,
 };
 const COLUMN_LABEL = {
-  backlog: "Backlog",
-  todo: "Todo",
-  inprogress: "In progress",
-  done: "Done",
+  backlog:      "Backlog",
+  todo:         "Todo",
+  inprogress:   "In progress",
+  verification: "Verification",
+  done:         "Done",
 };
 
 const state = {
@@ -24,6 +27,7 @@ const state = {
   task: null,
   onChange: null,
   prevFocus: null,
+  context: null,   // "archive" | null
 };
 
 function escapeHtml(s) {
@@ -62,11 +66,12 @@ function ensureRoot() {
   return scrim;
 }
 
-export async function open({ projectId, task, onChange }) {
+export async function open({ projectId, task, onChange, context = null }) {
   state.projectId = projectId;
   state.task = task;
   state.onChange = onChange;
   state.prevFocus = document.activeElement;
+  state.context = context;
 
   ensureRoot();
   const scrim = document.getElementById("drawer-scrim");
@@ -98,7 +103,6 @@ async function render() {
   if (!t) return;
 
   const next = NEXT_COLUMN[t.column];
-  const moveLabel = next ? `Move to ${COLUMN_LABEL[next]}` : "Already done";
 
   aside.innerHTML = `
     <header class="drawer-header" data-testid="drawer-header">
@@ -144,17 +148,32 @@ async function render() {
       </section>
     </div>
     <footer class="drawer-footer">
-      <button class="btn" data-action="delete" data-testid="task-delete">Delete</button>
-      <span class="spacer"></span>
-      ${next
-        ? `<button class="btn btn-primary" id="move-next" data-testid="move-next">${escapeHtml(moveLabel)}</button>`
-        : `<span class="muted" style="font-size: var(--font-sm)">${escapeHtml(moveLabel)}</span>`}
+      ${state.context === "archive"
+        ? `<button class="btn btn-ghost" id="drawer-restore" aria-label="Restore this archived task">Restore…</button>`
+        : `<button class="btn" data-action="delete" data-testid="task-delete">Delete</button>
+           <span class="spacer"></span>
+           ${t.column === "verification"
+             ? `<button class="btn btn-ghost" id="back-to-inprogress" aria-label="Move task back to In progress">Back to In progress</button>
+                <span class="spacer"></span>
+                <button class="btn btn-primary" id="mark-as-done" aria-label="Mark task as done">Mark as Done</button>`
+             : t.column === "done"
+               ? `<button class="btn btn-ghost" id="drawer-archive" aria-label="Archive this task">Archive</button>`
+               : next
+                 ? `<button class="btn btn-primary" id="move-next" data-testid="move-next">Move to ${escapeHtml(COLUMN_LABEL[next])}</button>`
+                 : ""}`}
     </footer>
   `;
 
   aside.querySelector('[data-action="close"]').addEventListener("click", close);
   aside.querySelector('[data-action="delete"]')?.addEventListener("click", deleteTask);
   aside.querySelector("#move-next")?.addEventListener("click", () => moveTo(next));
+  aside.querySelector("#back-to-inprogress")?.addEventListener("click", () => moveTo("inprogress"));
+  aside.querySelector("#mark-as-done")?.addEventListener("click", () => moveTo("done"));
+  aside.querySelector("#drawer-archive")?.addEventListener("click", archiveFromDrawer);
+  aside.querySelector("#drawer-restore")?.addEventListener("click", () => {
+    state.onChange?.({ restore: state.task });
+    close();
+  });
   aside.querySelector("#att-file").addEventListener("change", uploadAttachment);
   aside.querySelector("#comment-send").addEventListener("click", postComment);
 
@@ -182,6 +201,18 @@ async function deleteTask() {
     close();
   } catch (err) {
     console.error("delete failed", err);
+  }
+}
+
+async function archiveFromDrawer() {
+  if (!state.task) return;
+  const taskId = state.task.id;
+  try {
+    await api.tasks.archive(state.projectId, taskId);
+    state.onChange?.({ archived: taskId });
+    close();
+  } catch {
+    showToast("Could not archive task. Try again.");
   }
 }
 

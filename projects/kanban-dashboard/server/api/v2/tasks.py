@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 from uuid import UUID
 
@@ -23,8 +24,11 @@ from server.schemas.task import (
     TaskMove,
     TaskPublic,
     TaskUpdate,
+    UnarchiveRequest,
 )
 from server.services import activity, ordering
+
+logger = logging.getLogger("kanban")
 
 router = APIRouter(
     prefix="/api/v2/projects/{project_id}/tasks",
@@ -74,6 +78,7 @@ def _public(db: Session, task: Task) -> TaskPublic:
         assignees=assignees,
         created_at=task.created_at,
         updated_at=task.updated_at,
+        archived_at=task.archived_at,
     )
 
 
@@ -84,6 +89,31 @@ def _set_assignees(db: Session, task_id: UUID, user_ids: list[UUID]) -> None:
     db.flush()
 
 
+def _parse_cursor(cursor: str) -> tuple[datetime, UUID]:
+    """Parse cursor string of the form '{iso_datetime}_{uuid}'.
+
+    Splits on the last underscore so the UUID (which contains hyphens, not
+    underscores) is cleanly separated from the ISO datetime portion.
+    """
+    sep = cursor.rfind("_")
+    if sep == -1:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail={"error": {"code": "validation_error", "message": "Invalid cursor format."}},
+        )
+    dt_str = cursor[:sep]
+    id_str = cursor[sep + 1:]
+    try:
+        cursor_dt = datetime.fromisoformat(dt_str)
+        cursor_id = UUID(id_str)
+    except (ValueError, AttributeError) as exc:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail={"error": {"code": "validation_error", "message": "Invalid cursor format."}},
+        ) from exc
+    return cursor_dt, cursor_id
+
+
 @router.get("", response_model=TaskListResponse)
 def list_tasks(
     project_id: UUID,
@@ -91,17 +121,58 @@ def list_tasks(
     kind: str | None = Query(default=None),
     assignee: UUID | None = Query(default=None),
     label: str | None = Query(default=None),
+    archived: bool = Query(default=False),
+    limit: int = Query(default=50, ge=1, le=200),
+    cursor: str | None = Query(default=None),
     membership: ProjectMember = Depends(get_project_member),
     db: Session = Depends(get_db),
 ) -> TaskListResponse:
+    if archived and column is not None:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail={"error": {"code": "validation_error", "message": "cannot filter by column in archive view"}},
+        )
     if column is not None and column not in TASK_COLUMNS:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": {"code": "validation_error", "message": "Invalid column."}})
     if kind is not None and kind not in TASK_KINDS:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": {"code": "validation_error", "message": "Invalid kind."}})
 
+    if archived:
+        stmt = (
+            select(Task)
+            .where(Task.project_id == project_id, Task.deleted_at.is_(None), Task.archived_at.is_not(None))
+            .order_by(Task.archived_at.desc(), Task.id.desc())
+        )
+        if cursor is not None:
+            cursor_dt, cursor_id = _parse_cursor(cursor)
+            stmt = stmt.where(
+                (Task.archived_at < cursor_dt)
+                | ((Task.archived_at == cursor_dt) & (Task.id < cursor_id))
+            )
+        if kind is not None:
+            stmt = stmt.where(Task.kind == kind)
+        if label is not None:
+            stmt = stmt.where(Task.labels.contains([label]))
+        if assignee is not None:
+            stmt = stmt.join(TaskAssignee, TaskAssignee.task_id == Task.id).where(
+                TaskAssignee.user_id == assignee
+            )
+
+        rows = list(db.execute(stmt.limit(limit + 1)).scalars().unique())
+        next_cursor: str | None = None
+        if len(rows) > limit:
+            rows = rows[:limit]
+            last = rows[-1]
+            assert last.archived_at is not None
+            next_cursor = f"{last.archived_at.isoformat()}_{last.id}"
+
+        items = [_public(db, t) for t in rows]
+        return TaskListResponse(items=items, next_cursor=next_cursor)
+
+    # Default (active) board view — exclude archived tasks.
     stmt = (
         select(Task)
-        .where(Task.project_id == project_id, Task.deleted_at.is_(None))
+        .where(Task.project_id == project_id, Task.deleted_at.is_(None), Task.archived_at.is_(None))
         .order_by(Task.column.asc(), Task.position.asc())
     )
     if column is not None:
@@ -271,3 +342,75 @@ def delete_task(
         target_id=task.id,
     )
     db.commit()
+
+
+@router.post("/{task_id}/archive", response_model=TaskPublic)
+def archive_task(
+    project_id: UUID,
+    task_id: UUID,
+    membership: ProjectMember = Depends(require_writer),
+    db: Session = Depends(get_db),
+) -> TaskPublic:
+    """Archive a task (move it out of the active board).
+
+    Requires owner or editor role. Returns 409 if the task is already archived.
+    The task must not be soft-deleted.
+    """
+    task = _task_or_404(db, project_id, task_id)
+    if task.archived_at is not None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            detail={"error": {"code": "conflict", "message": "Task is already archived."}},
+        )
+    now = _now()
+    task.archived_at = now
+    task.updated_at = now
+    activity.emit(
+        db,
+        project_id=project_id,
+        user_id=membership.user_id,
+        kind="task.archived",
+        target_type="task",
+        target_id=task.id,
+        payload={"auto": False},
+    )
+    db.commit()
+    db.refresh(task)
+    return _public(db, task)
+
+
+@router.post("/{task_id}/unarchive", response_model=TaskPublic)
+def unarchive_task(
+    project_id: UUID,
+    task_id: UUID,
+    body: UnarchiveRequest,
+    membership: ProjectMember = Depends(require_writer),
+    db: Session = Depends(get_db),
+) -> TaskPublic:
+    """Restore an archived task to an active column.
+
+    Requires owner or editor role. Returns 409 if the task is not archived.
+    The destination column must be one of the valid TASK_COLUMNS values.
+    """
+    task = _task_or_404(db, project_id, task_id)
+    if task.archived_at is None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            detail={"error": {"code": "conflict", "message": "Task is not archived."}},
+        )
+    now = _now()
+    task.archived_at = None
+    task.column = body.column
+    task.updated_at = now
+    activity.emit(
+        db,
+        project_id=project_id,
+        user_id=membership.user_id,
+        kind="task.unarchived",
+        target_type="task",
+        target_id=task.id,
+        payload={"restored_to": body.column},
+    )
+    db.commit()
+    db.refresh(task)
+    return _public(db, task)

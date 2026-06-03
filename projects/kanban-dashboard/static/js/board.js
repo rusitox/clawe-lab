@@ -6,15 +6,25 @@ import { ApiError, api } from "./api.js";
 import * as activity from "./activity.js";
 import * as dnd from "./dnd.js";
 import * as drawer from "./drawer.js";
+import { showToast } from "./toast.js";
 
 const COLUMNS = [
-  { id: "backlog", name: "Backlog" },
-  { id: "todo", name: "Todo" },
-  { id: "inprogress", name: "In progress" },
-  { id: "done", name: "Done" },
+  { id: "backlog",      name: "Backlog" },
+  { id: "todo",         name: "Todo" },
+  { id: "inprogress",   name: "In progress" },
+  { id: "verification", name: "Verification" },
+  { id: "done",         name: "Done" },
 ];
 
 const KIND_LETTER = { task: "T", bug: "B", proposal: "P" };
+
+// PREFILL GUARD: tracks the last template string injected by the kind-radio
+// handler. Pre-fill is only applied when the textarea is empty or still holds
+// the previous template — never when the user has typed something custom.
+let lastPrefill = "";
+
+const BUG_PREFILL = "## Steps to reproduce\n\n## Expected\n\n## Actual\n";
+const PROPOSAL_PREFILL = "## Why\n\n## What\n";
 
 const main = document.getElementById("board-main");
 const projectId = main.dataset.projectId;
@@ -99,6 +109,21 @@ function renderTask(task) {
     "aria-label",
     `${task.kind} ${task.priority || ""} ${task.title}`.trim(),
   );
+
+  // Archive button — only on Done cards.
+  if (task.column === "done") {
+    const footer = card.querySelector(".task-card__footer");
+    const archiveBtn = document.createElement("button");
+    archiveBtn.className = "btn btn-ghost btn-sm task-card__archive";
+    archiveBtn.setAttribute("aria-label", `Archive task: ${escapeHtml(task.title)}`);
+    archiveBtn.textContent = "Archive";
+    archiveBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      archiveTask(task);
+    });
+    footer.appendChild(archiveBtn);
+  }
+
   dnd.decorateCard(card);
   card.addEventListener("click", () => openTaskDrawer(task));
   card.addEventListener("keydown", (e) => {
@@ -115,12 +140,40 @@ function openTaskDrawer(task) {
   drawer.open({
     projectId,
     task,
-    onChange: ({ moved, deleted }) => {
-      if (deleted) state.tasks = state.tasks.filter((t) => t.id !== deleted);
-      if (moved) state.tasks = state.tasks.map((t) => (t.id === moved.id ? moved : t));
+    onChange: ({ moved, deleted, archived }) => {
+      if (deleted)  state.tasks = state.tasks.filter((t) => t.id !== deleted);
+      if (moved)    state.tasks = state.tasks.map((t) => (t.id === moved.id ? moved : t));
+      if (archived) {
+        state.tasks = state.tasks.filter((t) => t.id !== archived);
+        showToast("Task archived.");
+      }
       renderBoard();
     },
   });
+}
+
+async function archiveTask(task) {
+  try {
+    await api.tasks.archive(projectId, task.id);
+    state.tasks = state.tasks.filter((t) => t.id !== task.id);
+    renderBoard();
+    showToast("Task archived.", {
+      undoCallback: () => unarchiveTask(task),
+    });
+  } catch {
+    showToast("Could not archive task. Try again.");
+  }
+}
+
+async function unarchiveTask(task) {
+  try {
+    await api.tasks.unarchive(projectId, task.id, "done");
+    state.tasks.push({ ...task, archived_at: null });
+    renderBoard();
+    showToast("Task restored to Done.");
+  } catch {
+    showToast("Could not restore task. Try again.");
+  }
 }
 
 function dimUnassigned(card, task) {
@@ -196,6 +249,13 @@ function openCreateDialog(columnPreset) {
   document.getElementById("nt-column").value = columnPreset || "backlog";
   document.getElementById("nt-priority").value = "P2";
   document.getElementById("nt-task").checked = true;
+
+  const ntDescription = document.getElementById("nt-description");
+  const ntDescCounter = document.getElementById("nt-desc-counter");
+  if (ntDescription) ntDescription.value = "";
+  if (ntDescCounter) ntDescCounter.textContent = "0 / 10 000";
+  lastPrefill = "";
+
   if (typeof dlg.showModal === "function") dlg.showModal();
   else dlg.setAttribute("open", "");
   setTimeout(() => document.getElementById("nt-title").focus(), 10);
@@ -219,11 +279,12 @@ async function submitCreate() {
   const kind = document.querySelector('input[name="nt-kind"]:checked').value;
   const column = document.getElementById("nt-column").value;
   const priority = document.getElementById("nt-priority").value || null;
+  const description_md = document.getElementById("nt-description")?.value.trim() ?? "";
 
   try {
     const created = await api.request(`/projects/${projectId}/tasks`, {
       method: "POST",
-      body: { title, kind, column, priority },
+      body: { title, kind, column, priority, description_md },
     });
     state.tasks = [...state.tasks, created];
     renderBoard();
@@ -233,6 +294,21 @@ async function submitCreate() {
     errEl.textContent = err.message || "Couldn't create task.";
     errEl.hidden = false;
   }
+}
+
+// ---------- New-task description helpers ----------
+
+function applyKindPrefill(kind) {
+  const desc = document.getElementById("nt-description");
+  if (!desc) return;
+  const current = desc.value;
+  // Only apply if the textarea is empty or still holds the previous template.
+  if (current !== "" && current !== lastPrefill) return;
+  const prefill = kind === "bug" ? BUG_PREFILL : kind === "proposal" ? PROPOSAL_PREFILL : "";
+  desc.value = prefill;
+  lastPrefill = prefill;
+  const counter = document.getElementById("nt-desc-counter");
+  if (counter) counter.textContent = `${prefill.length} / 10 000`;
 }
 
 // ---------- Filters ----------
@@ -259,6 +335,24 @@ function init() {
 
   document.getElementById("filter-mine").addEventListener("click", toggleMine);
   document.getElementById("activity-toggle").addEventListener("click", activity.toggle);
+
+  // Kind radio: apply description pre-fill template when kind changes.
+  document.querySelectorAll('[name="nt-kind"]').forEach((radio) => {
+    radio.addEventListener("change", () => applyKindPrefill(radio.value));
+  });
+
+  // Description character counter.
+  const ntDescription = document.getElementById("nt-description");
+  if (ntDescription) {
+    ntDescription.addEventListener("input", () => {
+      const len = ntDescription.value.length;
+      const counter = document.getElementById("nt-desc-counter");
+      if (counter) {
+        counter.textContent = `${len} / 10 000`;
+        counter.style.color = len >= 9500 ? "var(--color-danger-500)" : "";
+      }
+    });
+  }
 
   const board = document.getElementById("board");
   dnd.attach({

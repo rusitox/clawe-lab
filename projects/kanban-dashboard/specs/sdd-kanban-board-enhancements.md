@@ -1,6 +1,6 @@
 # SDD: Kanban Board Enhancements
 
-**Status:** Draft
+**Status:** Implemented
 **Last updated:** 2026-06-03
 
 ---
@@ -1463,7 +1463,22 @@ Playwright visual regression regeneration is required after any task marked
 
 ## 6. Testing Strategy
 
-> Pending — filled by QA agent during implementation
+### Backend (pytest) — 99 tests total, 23 new
+
+| File | Tests added | Coverage |
+|------|------------|---------|
+| `tests/test_tasks.py` | +10 (3 verification column, 7 archive lifecycle) | Move to verification, archive/unarchive CRUD, default list excludes archived, `?archived=true` filter |
+| `tests/test_archive_job.py` | +7 (new file) | Eligible tasks archived, non-done skipped, already-archived skipped, threshold respected, auth required, 0/NULL days disables |
+| `tests/test_projects.py` | +4 | `auto_archive_days` set/zero/too-large/negative |
+| `tests/test_isolation_gate.py` | +2 | Cross-tenant archive blocked (404, not 403); cross-tenant unarchive blocked |
+
+**Key pattern:** the archive job uses `app.dependency_overrides[get_settings]` (not `unittest.mock.patch`) because `get_settings` is a cached singleton; the override must be set before the `TestClient` is constructed.
+
+### Validation gates (all passing)
+- `ruff check .` — clean
+- `mypy server scripts` — clean (56 source files)
+- `npx eslint static/js` — clean
+- `pytest` — 99 passed (was 76 before this feature)
 
 ---
 

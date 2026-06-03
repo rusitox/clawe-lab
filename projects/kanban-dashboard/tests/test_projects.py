@@ -154,3 +154,46 @@ def test_soft_delete_hides_from_list(signed_in_user) -> None:
     assert all(r["slug"] != "doomed" for r in client.get("/api/v2/projects").json())
     # And the soft-deleted project is 404 to detail too:
     assert client.get(f"/api/v2/projects/{pid}").status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# P6.4 — auto_archive_days tests
+# ---------------------------------------------------------------------------
+
+
+def test_project_auto_archive_days_set(signed_in_user) -> None:
+    """PATCH auto_archive_days=14 persists and is returned in the response."""
+    _, client = signed_in_user
+    pid = client.post("/api/v2/projects", json={"name": "Archive config"}).json()["id"]
+
+    r = client.patch(f"/api/v2/projects/{pid}", json={"auto_archive_days": 14})
+    assert r.status_code == 200
+    assert r.json()["auto_archive_days"] == 14
+
+
+def test_project_auto_archive_days_zero(signed_in_user) -> None:
+    """PATCH auto_archive_days=0 is accepted (means disabled) and returned."""
+    _, client = signed_in_user
+    pid = client.post("/api/v2/projects", json={"name": "Disable archive"}).json()["id"]
+
+    r = client.patch(f"/api/v2/projects/{pid}", json={"auto_archive_days": 0})
+    assert r.status_code == 200
+    assert r.json()["auto_archive_days"] == 0
+
+
+def test_project_auto_archive_days_too_large(signed_in_user) -> None:
+    """PATCH auto_archive_days=366 is rejected with 422 (max is 365)."""
+    _, client = signed_in_user
+    pid = client.post("/api/v2/projects", json={"name": "Too large"}).json()["id"]
+
+    r = client.patch(f"/api/v2/projects/{pid}", json={"auto_archive_days": 366})
+    assert r.status_code == 422
+
+
+def test_project_auto_archive_days_negative(signed_in_user) -> None:
+    """PATCH auto_archive_days=-1 is rejected with 422."""
+    _, client = signed_in_user
+    pid = client.post("/api/v2/projects", json={"name": "Negative"}).json()["id"]
+
+    r = client.patch(f"/api/v2/projects/{pid}", json={"auto_archive_days": -1})
+    assert r.status_code == 422

@@ -120,7 +120,20 @@ class TaskPublic(BaseModel):
     assignees: list[UUID]
     created_at: datetime
     updated_at: datetime
+    archived_at: datetime | None = None
 
 
 class TaskListResponse(BaseModel):
     items: list[TaskPublic]
+    next_cursor: str | None = None
+
+
+class UnarchiveRequest(BaseModel):
+    column: str
+
+    @field_validator("column")
+    @classmethod
+    def _check_column(cls, v: str) -> str:
+        if v not in TASK_COLUMNS:
+            raise ValueError(f"column must be one of {TASK_COLUMNS!r}")
+        return v

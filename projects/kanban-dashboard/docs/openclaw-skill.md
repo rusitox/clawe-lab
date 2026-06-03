@@ -168,6 +168,10 @@ All paths nested under `/api/v2/projects/{project_id}`.
 - `q=<text>` — full-text search title + body
 - `limit=50&cursor=<opaque>` — pagination
 
+> **Note:** the task list excludes archived tasks by default (`archived_at IS NULL`).
+> To retrieve archived tasks, pass `?archived=true`. Archived tasks are not intended
+> for automation workflows — use the archive view at `/p/{slug}/archive` for human review.
+
 `TaskCreate` body:
 ```json
 {

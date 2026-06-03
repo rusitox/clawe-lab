@@ -366,7 +366,50 @@ read [`docs/ci-cd.md`](./ci-cd.md).
 
 ---
 
-## 11. OpenClaw integration
+## 11. Cron jobs
+
+### Archive job (auto-archive Done tasks)
+
+A weekly cron entry runs every Sunday at 03:00 UTC. It calls the internal
+`/api/v2/internal/archive-done` endpoint, which archives Done tasks older than
+each project's `auto_archive_days` threshold. The endpoint is protected by a
+shared `INTERNAL_SECRET` (Bearer token, not user auth).
+
+**One-time setup — generate the secret file:**
+
+```bash
+echo -n "$(openssl rand -hex 32)" > /home/ubuntu/openclaw-kanban-v2/internal-secret && chmod 600 /home/ubuntu/openclaw-kanban-v2/internal-secret
+```
+
+**Add to crontab (as the ubuntu user):**
+
+```bash
+crontab -e
+```
+
+Paste this line:
+
+```
+0 3 * * 0 curl -s -X POST -H "Authorization: Bearer $(cat /home/ubuntu/openclaw-kanban-v2/internal-secret)" http://127.0.0.1:8788/api/v2/internal/archive-done >> /var/log/openclaw-kanban-archive.log 2>&1
+```
+
+The endpoint is idempotent — running it manually is safe and will not
+double-archive tasks. Verify with:
+
+```bash
+curl -s -X POST -H "Authorization: Bearer $(cat /home/ubuntu/openclaw-kanban-v2/internal-secret)" http://127.0.0.1:8788/api/v2/internal/archive-done
+# {"archived": N}
+```
+
+Also set `INTERNAL_SECRET` in GitHub Secrets so the deploy pipeline injects it:
+
+```bash
+cat /home/ubuntu/openclaw-kanban-v2/internal-secret | gh secret set INTERNAL_SECRET --repo rusitox/clawe-lab
+```
+
+---
+
+## 12. OpenClaw integration
 
 OpenClaw (`clawe.bot@gmail.com`) operates the kanban as a first-class user.
 The full skill doc is at [`docs/openclaw-skill.md`](./openclaw-skill.md).
