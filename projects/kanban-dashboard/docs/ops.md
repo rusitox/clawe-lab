@@ -310,9 +310,11 @@ Re-runs are idempotent — see `specs/sdd-kanban-v2.md §5`.
 
 ## 8. Sunsetting the legacy v1 API
 
-`/api/{tasks,activity,teams}` stays online behind `LEGACY_KANBAN_TOKEN`
-until OpenClaw is migrated to `/api/v2/*`. Currently empty (= disabled,
-returns 503). To re-enable temporarily:
+`/api/{tasks,activity,teams}` returns 503 (`LEGACY_KANBAN_TOKEN` empty in
+production). OpenClaw was fully migrated to `/api/v2/*` on 2026-05-11 —
+the legacy endpoints are no longer needed.
+
+To re-enable temporarily (e.g., debugging):
 
 1. Set `LEGACY_KANBAN_TOKEN` in `deploy/env.production` (PR + merge).
 2. Redeploy.
@@ -361,3 +363,51 @@ bump it via PR if the deprecation window slips.
 
 For deeper architecture/context (why these issues exist, decisions taken),
 read [`docs/ci-cd.md`](./ci-cd.md).
+
+---
+
+## 11. OpenClaw integration
+
+OpenClaw (`clawe.bot@gmail.com`) operates the kanban as a first-class user.
+The full skill doc is at [`docs/openclaw-skill.md`](./openclaw-skill.md).
+
+**VPS secret locations (Oracle Cloud):**
+```
+~/.openclaw/workspace/.secrets/kanban_api_token_v2   # Bearer token (chmod 600)
+~/.openclaw/workspace/.secrets/kanban_project_id     # UUID: 229e03ef-df43-409b-84bf-684ab9d1d757
+~/.openclaw/workspace/skills/kanban/SKILL.md          # Full skill copy
+```
+
+**Project:** "Clawe HQ" — `229e03ef-df43-409b-84bf-684ab9d1d757`
+
+**Verify integration:**
+```bash
+ssh -i ~/.ssh/openclaw_deploy ubuntu@136.248.107.132 \
+  'TOKEN=$(cat ~/.openclaw/workspace/.secrets/kanban_api_token_v2) && PROJECT=$(cat ~/.openclaw/workspace/.secrets/kanban_project_id) && curl -sS -H "Authorization: Bearer $TOKEN" "https://136-248-107-132.nip.io/api/v2/projects/$PROJECT/tasks"'
+```
+
+**If kanban API token expires or is rotated:**
+1. Sign in at https://136-248-107-132.nip.io with `clawe.bot@gmail.com`
+2. Go to `/settings/tokens` → revoke old → Generate new
+3. On VPS: `echo -n "kbn_NEW_TOKEN" > ~/.openclaw/workspace/.secrets/kanban_api_token_v2`
+4. Update RUNBOOK.md and TOOLS.md on VPS if token prefix changed
+
+**If OpenAI OAuth token expires** (error: `OAuth token refresh failed for openai-codex`):
+
+The gateway reads from `auth-profiles.json`, not `auth.json` — update the right file.
+
+```bash
+# 1. Stop gateway
+~/.npm-global/bin/openclaw gateway stop
+
+# 2. Fresh login — open the printed URL in browser and authorize
+cd ~ && node ~/.npm-global/lib/node_modules/openclaw/node_modules/@mariozechner/pi-ai/dist/cli.js login openai-codex
+
+# 3. Copy tokens to the file the gateway actually reads
+python3 -c "import json; n=json.load(open('/home/ubuntu/auth.json')); p='/home/ubuntu/.openclaw/agents/main/agent/auth-profiles.json'; d=json.load(open(p)); d['profiles']['openai-codex:default']={**d['profiles']['openai-codex:default'], **{k:v for k,v in n['openai-codex'].items() if k!='type'}}; json.dump(d,open(p,'w'),indent=2); print('ok')"
+
+# 4. Restart
+~/.npm-global/bin/openclaw gateway start
+```
+
+Token expires every ~10 days (ChatGPT Plus). Stop the gateway before login to avoid `refresh_token_reused` race condition.

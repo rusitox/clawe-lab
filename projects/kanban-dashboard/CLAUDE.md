@@ -1,62 +1,84 @@
 # Clawe Kanban Dashboard
 
 Multi-tenant Kanban dashboard for Clawe and external users. Supports multiple
-projects, multiple users, persistent database storage, and rich task data
+projects, multiple users, PostgreSQL persistence, and rich task data
 (improvement proposals, bug reports, image attachments, etc.). Used as input
 for downstream Clawe / OpenClaw projects.
 
-**v1** is a single-tenant prototype with JSON-file persistence (`tasks.json`,
-`activity.json`, `teams.json`) behind a Python `http.server` and a vanilla JS
-frontend. **v2** is a redesign toward a real database, per-user auth, and
-multi-tenant scoping. New features should be designed with v2 architecture in
-mind even before the migration lands.
+**v2 is live in production** at https://136-248-107-132.nip.io (Google OAuth,
+FastAPI + Postgres, Docker deploy on Oracle VPS via GitHub Actions).
+
+The old v1 files (`server.py`, `app.js`, `index.html`, `styles.css`,
+`tasks.json`, `activity.json`, `teams.json`) still exist in the repo root but
+are not served — cleanup is the remaining Phase 8 task.
 
 ## Stack
 
-- **Language**: Python 3 (backend) + Vanilla JavaScript (frontend)
-- **Framework**: Python `http.server` (`ThreadingHTTPServer` + custom routing) — no web framework
-- **Frontend**: vanilla JS / HTML / CSS — no React/Vue, no bundler
-- **Package Manager**: `pip` for Python, `npm` only for `eslint` (dev tool)
+- **Language**: Python 3.13 (backend) + Vanilla JavaScript (frontend)
+- **Framework**: FastAPI + uvicorn (ASGI, behind nginx reverse proxy)
+- **Frontend**: vanilla JS / HTML / CSS — ES modules, no bundler, Jinja2 templates
+- **Package Manager**: `pip` via `.venv`; `npm` only for `eslint` + `@playwright/test`
 - **Linter**: `ruff` (Python) + `eslint` (JS)
 - **Type checker**: `mypy` (Python)
-- **Testing**: `pytest`
-- **Database**: JSON files today — moving to SQLite (dev) / Postgres (prod) via SQLAlchemy + Alembic
-- **Deploy**: systemd unit running `python3 server.py` (see `systemd/openclaw-kanban.service.example`)
+- **Testing**: `pytest` (76 backend tests) + `@playwright/test` (e2e + visual regression)
+- **Database**: PostgreSQL 16 via SQLAlchemy 2.0 + Alembic (Docker Compose locally, Docker on prod)
+- **Deploy**: Docker Compose on Oracle VPS, managed by GitHub Actions (`kanban-ci.yml` + `kanban-deploy.yml`)
 
 ## Commands
 
 ```bash
-# Run locally (v1)
-export KANBAN_TOKEN='...'
-python3 server.py                  # serves on :8787
+# One-time setup
+make install        # editable Python install + dev deps into .venv
+make db-up          # start Postgres 16 on :5433 (Docker Compose)
+make migrate        # alembic upgrade head
+cp .env.example .env
+
+# Run
+make dev            # uvicorn with --reload on :8787
 
 # Validation (matches /project:validate)
-ruff check .                       # lint Python
-npx eslint app.js                  # lint JS
-mypy server.py                     # type check
-pytest                             # run tests
-bash scripts/build.sh              # build dist/ artifact (TBD — see SDD)
+make lint           # ruff check . && npx eslint static/js
+make typecheck      # mypy server scripts
+make test           # pytest (76 tests)
+make e2e            # Playwright e2e + visual regression (needs uvicorn running)
 ```
+
+> `ruff`, `mypy`, and `pytest` are installed in `.venv` — they are not on
+> the system PATH. Always activate `.venv` or use `make` targets.
 
 ## Key Files
 
-- `server.py` — HTTP handler, JSON persistence, token auth, locking
-- `app.js` — DOM rendering, drag & drop, filters, activity feed
-- `index.html` / `styles.css` — UI structure and tokens (CSS custom properties)
-- `tasks.json` / `activity.json` / `teams.json` — v1 persistence (will migrate)
-- `scripts/reconcile_kanban.py` — data reconciliation utility
-- `systemd/openclaw-kanban.service.example` — deployment unit
+- `server/` — FastAPI app (`main.py`, `config.py`, `db.py`, `deps.py`, `markdown.py`)
+  - `server/auth/` — Google OAuth, cookie sessions, API tokens
+  - `server/api/v2/` — all v2 endpoints (projects, tasks, teams, attachments, comments, activity, tokens, me)
+  - `server/api/v1_legacy.py` — soft-cut v1 router (Deprecation/Sunset headers)
+  - `server/models/` — SQLAlchemy models
+  - `server/schemas/` — Pydantic v2 schemas
+  - `server/services/` — activity writer, fractional ordering
+  - `server/storage/` — StorageBackend protocol + filesystem impl
+  - `server/migrations/` — Alembic versions
+  - `server/templates/` — Jinja2 HTML shells
+- `static/` — vanilla JS modules (`api.js`, `board.js`, `dnd.js`, `activity.js`, …) + CSS tokens
+- `tests/` — pytest suite (multi-tenant isolation gate, auth, tasks, attachments, comments)
+- `tests-e2e/` — Playwright behavioral + visual regression tests
+- `deploy/` — `env.production`, `remote-deploy.sh`, `backup.sh`, nginx/secrets examples
+- `Dockerfile` — multi-stage production image (pushed to `ghcr.io/rusitox/openclaw-kanban-v2`)
+- `docker-compose.dev.yml` — local Postgres only
+- `docker-compose.prod.yml` — full prod stack (db + app)
+- `docs/ops.md` — operational runbook (deploy, rollback, backups, secrets rotation)
+- `docs/ci-cd.md` — CI/CD architecture, decisions, lessons learned
+- `docs/openclaw-skill.md` — integration guide for OpenClaw consumers
 - `.claude/agents/` — specialized agents (planner, code-reviewer, qa, frontend, design, backend, database, devops)
 - `.claude/rules/` — file-pattern conventions enforced by reviewers
 
-## Multi-tenant constraints (v2)
+## Multi-tenant constraints
 
-These constraints are load-bearing and apply to every change once v2 lands:
+These are load-bearing and enforced in production:
 
 - Every tenant-owned table carries `project_id NOT NULL`.
-- Every API endpoint resolves `(user, project)` and scopes its queries to that tenant.
+- Every API endpoint resolves `(user, project)` via `get_project_member` and scopes its queries.
 - Every new endpoint ships with a multi-tenant isolation test on day one.
-- Cross-tenant leaks are always 🔴 Critical bugs.
+- Cross-tenant leaks are always 🔴 Critical bugs — `get_project_member` returns 404 (not 403).
 
 ## Specs
 
@@ -64,12 +86,13 @@ Feature design documents live in `specs/sdd-[feature-name].md`.
 Each SDD is the single source of truth for a feature: requirements, UI/UX design,
 architecture, and implementation plan. **Always read the relevant SDD before implementing.**
 
+The active SDD is `specs/sdd-kanban-v2.md` (Status: Implemented). Phases 0–7
+are complete; Phase 8 (v1 file cleanup) is the only remaining task.
+
 Commands that contribute to an SDD:
 - `/project:prd` — sections 1 & 2 (Overview + Requirements)
 - `/project:design` — section 3 (UI/UX Design)
 - `/project:plan` — sections 4 & 5 (Architecture + Implementation Plan)
-
-The v2 multi-tenant redesign is the first SDD to write — start there with `/project:prd kanban-v2`.
 
 ---
 

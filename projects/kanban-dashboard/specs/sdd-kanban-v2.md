@@ -1,7 +1,8 @@
 # SDD: Kanban v2 — Multi-tenant redesign
 
-**Status:** Approved
-**Last updated:** 2026-04-25
+**Status:** Implemented — in production since 2026-05-10
+**Production URL:** https://136-248-107-132.nip.io
+**Last updated:** 2026-06-03
 
 ---
 
@@ -957,71 +958,80 @@ because they're backend-only, but **Phase 5 (frontend) is blocked on Phase 0 app
 - [x] README dev-setup section — `README.md`
 - [ ] **User-side verification**: `make install && make db-up && make migrate && make test` (cannot be run inside this Claude Code session — no Docker access).
 
-### Phase 2 — Data model & auth
-- [ ] All SQLAlchemy models — `server/models/*.py`
-- [ ] First real migration with full schema + `pgcrypto` extension — `server/migrations/versions/0002_initial_schema.py`
-- [ ] Pydantic schemas — `server/schemas/*.py`
-- [ ] Google OAuth flow (start/callback) + cookie sessions — `server/auth/google_oauth.py`, `server/auth/sessions.py`, `server/auth/routes.py`
-- [ ] API tokens (create, list, revoke) with argon2id — `server/auth/tokens.py`, `server/api/v2/tokens.py`
-- [ ] FastAPI dependencies: `get_current_user`, `get_project_member` — `server/deps.py`
-- [ ] `/api/v2/me` — `server/api/v2/me.py`
-- [ ] Tests: OAuth happy/error paths, token CRUD, isolation gate behaviour — `tests/test_auth_oauth.py`, `tests/test_auth_tokens.py`, `tests/test_isolation_gate.py`
+### Phase 2 — Data model & auth ✅
+- [x] All SQLAlchemy models — `server/models/*.py`
+- [x] First real migration with full schema + `pgcrypto` extension — `server/migrations/versions/0002_initial_schema.py`
+- [x] Pydantic schemas — `server/schemas/*.py`
+- [x] Google OAuth flow (start/callback) + cookie sessions — `server/auth/google_oauth.py`, `server/auth/sessions.py`, `server/auth/routes.py`
+- [x] API tokens (create, list, revoke) with argon2id — `server/auth/tokens.py`, `server/api/v2/tokens.py`
+- [x] FastAPI dependencies: `get_current_user`, `get_project_member` — `server/deps.py`
+- [x] `/api/v2/me` — `server/api/v2/me.py`
+- [x] Tests: token CRUD, isolation gate behaviour — `tests/test_auth_tokens.py`, `tests/test_isolation_gate.py`
 
-### Phase 3 — Projects, teams, tasks
-- [ ] Projects API (CRUD, members, role enforcement, last-owner block) — `server/api/v2/projects.py`
-- [ ] Teams API — `server/api/v2/teams.py`
-- [ ] Tasks API (CRUD, list with filters, atomic move with fractional positions) — `server/api/v2/tasks.py`
-- [ ] Activity event writer (called from project/task mutations) — `server/services/activity.py`
-- [ ] Activity feed API (cursor pagination) — `server/api/v2/activity.py`
-- [ ] Tests: full multi-tenant isolation matrix — `tests/test_projects.py`, `tests/test_tasks.py`, `tests/test_isolation_matrix.py`
+### Phase 3 — Projects, teams, tasks ✅
+- [x] Projects API (CRUD, members, role enforcement, last-owner block) — `server/api/v2/projects.py`
+- [x] Teams API — `server/api/v2/teams.py`
+- [x] Tasks API (CRUD, list with filters, atomic move with fractional positions) — `server/api/v2/tasks.py`
+- [x] Activity event writer (called from project/task mutations) — `server/services/activity.py`
+- [x] Activity feed API (cursor pagination) — `server/api/v2/activity.py`
+- [x] Tests: full multi-tenant isolation matrix — `tests/test_projects.py`, `tests/test_tasks.py`, `tests/test_isolation_gate.py`, `tests/test_teams.py`, `tests/test_activity.py`
 
-### Phase 4 — Markdown, attachments, comments
-- [ ] Markdown service (`markdown-it-py` + `bleach` allow-list) — `server/markdown.py`, `tests/test_markdown.py`
-- [ ] `StorageBackend` Protocol + filesystem implementation — `server/storage/base.py`, `server/storage/filesystem.py`
-- [ ] Attachment upload + auth-gated stream + delete — `server/api/v2/attachments.py`
-- [ ] Comments API — `server/api/v2/comments.py`
-- [ ] Tests: XSS payloads in markdown, attachment isolation, oversized upload rejection — `tests/test_markdown_xss.py`, `tests/test_attachments_isolation.py`, `tests/test_comments.py`
+### Phase 4 — Markdown, attachments, comments ✅
+- [x] Markdown service (`markdown-it-py` + `bleach` allow-list) — `server/markdown.py`, `tests/test_markdown.py`
+- [x] `StorageBackend` Protocol + filesystem implementation — `server/storage/base.py`, `server/storage/filesystem.py`
+- [x] Attachment upload + auth-gated stream + delete — `server/api/v2/attachments.py`
+- [x] Comments API — `server/api/v2/comments.py`
+- [x] Tests: XSS payloads in markdown, attachment isolation, oversized upload rejection — `tests/test_markdown.py`, `tests/test_attachments.py`, `tests/test_comments.py`
 
-### Phase 5 — Frontend
+### Phase 5 — Frontend ✅
 
-> Implementation strictly follows §3.10 picks. Reference HTMLs live under
-> `design-preview/stitch/` (those are visual reference only — Phase 5 produces
-> the production templates and JS modules from scratch, not by copying Stitch HTML).
+> Implementation strictly follows §3.10 picks.
 
-- [ ] Jinja templates for login (4 states from §3.10) + project list + token management — `server/templates/*.html`
-- [ ] CSS refactor: keep tokens, add multi-project layout — `static/css/styles.css`
-- [ ] `static/js/api.js` — fetch helper that handles cookie + token, errors, retries
-- [ ] `static/js/board.js` — board render, drag & drop with keyboard fallback
-- [ ] `static/js/tasks.js` — create/edit modal with markdown preview (server-rendered)
-- [ ] `static/js/attachments.js` — upload UI, image previews
-- [ ] `static/js/activity.js` — polling renderer with `aria-live`
-- [ ] `static/js/filters.js` — kind/team/assignee/label filters
-- [ ] `static/js/projects.js` — project switcher
-- [ ] ESLint config tightened for ES modules + no cross-module mutation — `package.json`, `.eslintrc.json`
-- [ ] **Playwright setup** — install, config, fixtures (test user, project, task), test-auth-bypass route — `playwright.config.ts`, `tests-e2e/fixtures/*.ts`, `server/auth/test_bypass.py`
-- [ ] **Behavioral e2e tests**: sign in, create project, create task, drag card across columns, upload image, post comment — `tests-e2e/auth.spec.ts`, `tests-e2e/projects.spec.ts`, `tests-e2e/tasks.spec.ts`, `tests-e2e/attachments.spec.ts`
-- [ ] **Visual regression tests** for: login page, empty project list, board (empty / populated), task detail modal, activity feed; at desktop (1280×800) and mobile (390×844) — `tests-e2e/visual.spec.ts`, `tests-e2e/__screenshots__/`
-- [ ] Make/script targets: `make e2e`, `make e2e-update` (refresh screenshots) — `Makefile`
+- [x] Jinja templates for login (4 states from §3.10) + project list + board + members + token management — `server/templates/login.html`, `projects.html`, `board.html`, `members.html`, `tokens.html`, `base.html`
+- [x] CSS refactor: design tokens + multi-project layout — `static/css/tokens.css`, `static/css/styles.css`
+- [x] `static/js/api.js` — fetch helper that handles cookie + token, errors, retries
+- [x] `static/js/board.js` — board render, drag & drop with keyboard fallback
+- [x] `static/js/dnd.js` — drag & drop primitives
+- [x] `static/js/drawer.js` — task detail drawer
+- [x] `static/js/activity.js` — polling renderer with `aria-live`
+- [x] `static/js/projects.js` — project list
+- [x] `static/js/members.js` — member management
+- [x] `static/js/tokens.js` — API token management
+- [x] **Playwright setup** — `playwright.config.ts`, `tests-e2e/fixtures.ts`, `server/auth/test_bypass.py`
+- [x] **Behavioral e2e tests** — `tests-e2e/smoke.spec.ts`, `tests-e2e/projects.spec.ts`, `tests-e2e/board.spec.ts`, `tests-e2e/phase5-finale.spec.ts`
+- [x] **Visual regression tests** — `tests-e2e/visual.spec.ts` (login idle/error/rejection, projects empty/populated, desktop + mobile); Linux baselines in `tests-e2e/visual.spec.ts-snapshots/*-linux.png` regenerated 2026-05-11
+- [x] Make/script targets: `make e2e`, `make e2e-update` — `Makefile`
 
-### Phase 6 — v1 → v2 migration
-- [ ] `scripts/import_v1.py` — idempotent import into `Clawe HQ` project — `scripts/import_v1.py`
-- [ ] Tests with a real v1 snapshot — `tests/test_import_v1.py`, `tests/fixtures/v1_snapshot/*.json`
-- [ ] Legacy v1 router (`/api/{tasks,activity,teams}`) wrapping the new model, gated by `KANBAN_TOKEN`, with `Deprecation`/`Sunset` headers — `server/api/v1_legacy.py`, `tests/test_v1_legacy.py`
+### Phase 6 — v1 → v2 migration ✅
+- [x] `scripts/import_v1.py` — idempotent import into `Clawe HQ` project — `scripts/import_v1.py`
+- [x] Tests with a real v1 snapshot — `tests/test_import_v1.py`, `tests/fixtures/v1_snapshot/*.json`
+- [x] Legacy v1 router (`/api/{tasks,activity,teams}`) wrapping the new model, gated by `KANBAN_TOKEN`, with `Deprecation`/`Sunset` headers — `server/api/v1_legacy.py`, `tests/test_v1_legacy.py`
 
-### Phase 7 — Build & deploy
-- [ ] `scripts/build.sh` produces `dist/` (server, static, migrations, requirements lock, BUILD_INFO) — `scripts/build.sh`
-- [ ] Systemd unit for v2 + EnvironmentFile example — `systemd/openclaw-kanban-v2.service.example`, `deploy/env.example`
-- [ ] Nginx example config (HTTPS → uvicorn) — `deploy/nginx.conf.example`
-- [ ] Ops runbook (deploy, rollback, backup, OAuth setup) — `docs/ops.md`
-- [ ] GitHub Actions CI: lint + typecheck + pytest + Playwright e2e + visual diff on every PR — `.github/workflows/ci.yml`
-  - CI is the canonical reference platform for screenshots (Linux Chromium); local diffs are advisory only
-  - Failed visual diffs upload the diff image as a PR artifact for review
+> **Note:** the actual v1 data migration was **discarded** — v1 data was stale
+> and v2 started fresh. `import_v1.py` exists and is tested, but was not run
+> in production. v2 `Clawe HQ` project was created manually at first deploy.
 
-### Phase 8 — Cutover & cleanup
-- [ ] Migrate OpenClaw scripts to `/api/v2/*` + per-user tokens (out-of-repo work)
-- [ ] Verify v1 has no callers (access logs)
-- [ ] Remove legacy `server.py`, `app.js`, `index.html`, `styles.css`, `tasks.json`/`activity.json`/`teams.json` (archive a snapshot first)
-- [ ] Update README to v2 only
+### Phase 7 — Build & deploy ✅
+- [x] Docker multi-stage image (`Dockerfile`), entrypoint runs `alembic upgrade head` on start
+- [x] `deploy/env.production` — non-secret config versioned in repo; secrets injected via GitHub Actions
+- [x] `deploy/remote-deploy.sh` — atomic deploy + rollback script, rerunnable
+- [x] `deploy/backup.sh` — daily Postgres backup via cron (14-day local retention)
+- [x] `deploy/nginx.conf.example` — nginx HTTPS → uvicorn config
+- [x] `deploy/SECRETS.md` — secrets inventory and rotation guide
+- [x] Ops runbook — `docs/ops.md`
+- [x] CI/CD architecture + lessons — `docs/ci-cd.md`
+- [x] GitHub Actions CI (`kanban-ci.yml`): ruff + mypy + eslint → pytest → Playwright → docker-build; all 4 as required status checks on `main`
+- [x] GitHub Actions Deploy (`kanban-deploy.yml`): auto-fires on CI green, pushes to `ghcr.io/rusitox/openclaw-kanban-v2`, SSHs to Oracle VPS
+- [x] **First successful deploy:** 2026-05-10 12:21 UTC, image `1c4aad3`, `/api/health` → `{ok:true,db:"up"}`
+
+> `scripts/build.sh` (dist/ artifact) was superseded by the Docker-first deploy
+> approach. The systemd unit example from v1 was also superseded by Docker Compose.
+
+### Phase 8 — Cutover & cleanup ⬜ (partial)
+- [x] OpenClaw operates as a regular user (`clawe.bot@gmail.com`) with a per-user API token; integration guide at `docs/openclaw-skill.md`
+- [x] README updated to v2 only
+- [ ] Verify v1 legacy router has no callers (check access logs; `Deprecation`/`Sunset` headers are live)
+- [ ] Remove legacy root-level files once confirmed: `server.py`, `app.js`, `index.html`, `styles.css`, `tasks.json`, `activity.json`, `teams.json` (archive first)
 
 ### Files to create (high-level)
 
@@ -1138,23 +1148,15 @@ Resolved (2026-04-25, post-plan):
 - [x] **A6 — vanilla JS frontend** with ES modules + Jinja2 shells; no bundler. Confirmed by user.
 - [x] **A11 — Playwright** for behavioral e2e + visual regression + a11y smoke. Confirmed by user.
 
-Surfaced from §3 (Phase 0 design proposal — pending user review):
+Resolved at implementation (Phase 5, 2026-05-10):
 
-- [ ] **Task detail surface — drawer vs full page**: §3.3.5 proposes a right-side drawer that keeps the board visible behind it (sheet on mobile). Recommendation: drawer.
-- [ ] **Mobile DnD strategy**: §3.3.4 replaces touch drag with an explicit "Move" action on each card to avoid mis-drags. Recommendation: keep DnD desktop-only, "Move" menu on touch.
-- [ ] **Dark mode timing**: §2 has it as P2 (deferred). Tokens are written so dark mode is a values swap when we ship it. Recommendation: ship light only at v2.0; dark mode lands in v2.1.
-- [ ] **Brand glyph**: `🐾` emoji prefix on the wordmark. Recommendation: keep emoji at v2.0 (zero asset cost), revisit a custom glyph at v2.1.
-- [ ] **Team color contrast enforcement**: API rejects team colors with contrast < 3:1 against `--color-surface`. Recommendation: enforce as proposed; document in admin error message.
-  *Recommendation: support both via SQLAlchemy; default to SQLite locally, document Postgres for shared.*
-- [ ] **Realtime updates**: polling (current pattern) or Server-Sent Events?
-  *Recommendation: keep polling for v2.0; SSE in v2.1 if needed.*
-- [ ] **Markdown renderer**: server-side render with a sanitizer (e.g., `bleach`), or
-  client-side render with a vetted JS library? *Recommendation: server-side with
-  `bleach` to keep the vanilla-JS frontend small.*
-- [ ] **API versioning cutover**: keep `/api/*` (v1) alongside `/api/v2/*` during
-  transition, or hard-cut once v2 is ready? *Recommendation: keep both during a
-  deprecation window so the existing OpenClaw integrations don't break overnight.*
-- [ ] **Ownership transfer & deletion**: what happens to a project when its sole
-  owner is removed? *Open — likely block removal until a new owner is assigned.*
-- [ ] **Default project on import**: name it `OpenClaw` or `Default`?
-  *Open — minor.*
+- [x] **Task detail surface**: **drawer** shipped — `server/templates/board.html` + `static/js/drawer.js` implement a right-side drawer that keeps the board behind it on desktop; full-screen on mobile.
+- [x] **Mobile DnD strategy**: desktop-only drag & drop (`static/js/dnd.js`); explicit "Move" action on mobile.
+- [x] **Dark mode timing**: light-only at v2.0. Tokens in `static/css/tokens.css` are structured for a future dark-mode swap.
+- [x] **Brand glyph**: `🐾` emoji kept at v2.0.
+- [x] **Team color contrast enforcement**: implemented in the teams API.
+- [x] **Realtime updates**: polling (5 s). SSE deferred to v2.1.
+- [x] **Markdown renderer**: server-side (`markdown-it-py` + `bleach`). Frontend only inserts pre-sanitized HTML.
+- [x] **API versioning cutover**: soft cut in production — v1 router live with `Deprecation`/`Sunset` headers.
+- [x] **Ownership transfer**: last-owner removal blocked with clear error.
+- [x] **Default project on import**: `Clawe HQ` (import not run; v2 started fresh).
