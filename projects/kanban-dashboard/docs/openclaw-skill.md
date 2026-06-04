@@ -141,23 +141,31 @@ Base URL throughout: `https://136-248-107-132.nip.io`
 `ProjectCreate` body: `{ "name": "OpenClaw Tasks", "slug": "openclaw" }`
 (slug optional — auto-derived from name).
 
+`ProjectUpdate` body (PATCH): accepts `auto_archive_days: int | null`.
+- `null` or `0` → auto-archive disabled.
+- `7` → tasks in `done` with `updated_at` older than 7 days are archived automatically every Sunday at 03:00 UTC.
+
+`ProjectPublic` response includes `auto_archive_days: int | null`.
+
 ### 4.3 Tasks (the kanban itself)
 
 All paths nested under `/api/v2/projects/{project_id}`.
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/tasks` | List/filter tasks in the project |
+| GET | `/tasks` | List/filter active tasks (excludes archived by default) |
 | POST | `/tasks` | Create a task |
 | GET | `/tasks/{task_id}` | Single task + comments + attachments |
 | PATCH | `/tasks/{task_id}` | Update title, body, kind, priority, team |
 | POST | `/tasks/{task_id}/move` | Move to another column or reorder |
+| POST | `/tasks/{task_id}/archive` | Archive a Done task (editor+). Sets `archived_at`. |
+| POST | `/tasks/{task_id}/unarchive` | Restore archived task. Body: `{"column": "backlog"}` |
 | DELETE | `/tasks/{task_id}` | Soft-delete |
 
 **Enums (validated server-side; bad value → HTTP 422):**
 
 - `kind`: `"task"` | `"bug"` | `"proposal"`
-- `column`: `"backlog"` | `"todo"` | `"inprogress"` | `"done"`
+- `column`: `"backlog"` | `"todo"` | `"inprogress"` | `"verification"` | `"done"`
 - `priority`: `"P0"` | `"P1"` | `"P2"` | `"P3"` | `null`
 
 **Filter query params on `GET /tasks`:**
@@ -167,10 +175,12 @@ All paths nested under `/api/v2/projects/{project_id}`.
 - `team_id=<uuid>`
 - `q=<text>` — full-text search title + body
 - `limit=50&cursor=<opaque>` — pagination
+- `archived=true` — return only archived tasks (default: excluded). Supports cursor pagination; response includes `next_cursor`.
 
-> **Note:** the task list excludes archived tasks by default (`archived_at IS NULL`).
-> To retrieve archived tasks, pass `?archived=true`. Archived tasks are not intended
-> for automation workflows — use the archive view at `/p/{slug}/archive` for human review.
+> **Important:** `GET /tasks` excludes archived tasks by default (`archived_at IS NULL`).
+> A task in `done` that was archived will NOT appear in the standard list.
+> Use `?archived=true` to query historical completed tasks. Archived tasks are
+> not intended for active automation — they're a human-facing archive.
 
 `TaskCreate` body:
 ```json
@@ -446,15 +456,39 @@ at `/openapi.json`** is authoritative — fetch it and reconcile.
 ### 9.1 Task lifecycle
 
 ```
-todo → inprogress → done
+backlog → todo → inprogress → verification → done → (archived)
 ```
+
+`verification` is a human checkpoint before closing. OpenClaw's own tasks
+can skip it — move directly `inprogress → done`. Use `verification` only
+when the task explicitly requires human sign-off before closing.
 
 To move a task between columns:
 ```bash
-PATCH /api/v2/projects/{project_id}/tasks/{task_id}
-{"column": "inprogress"}   # start working
-{"column": "done"}          # mark complete
+# Start working
+curl -sS -X POST -H "Authorization: Bearer $KANBAN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"column": "inprogress", "after_task_id": null}' \
+  "https://136-248-107-132.nip.io/api/v2/projects/$KANBAN_PROJECT_ID/tasks/$TASK_ID/move"
+
+# Send to verification (optional — for human review before closing)
+curl -sS -X POST -H "Authorization: Bearer $KANBAN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"column": "verification", "after_task_id": null}' \
+  "https://136-248-107-132.nip.io/api/v2/projects/$KANBAN_PROJECT_ID/tasks/$TASK_ID/move"
+
+# Mark complete
+curl -sS -X POST -H "Authorization: Bearer $KANBAN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"column": "done", "after_task_id": null}' \
+  "https://136-248-107-132.nip.io/api/v2/projects/$KANBAN_PROJECT_ID/tasks/$TASK_ID/move"
 ```
+
+**Note on archived tasks:** tasks in `done` are auto-archived after
+`auto_archive_days` (configurable per project, default 7). Once archived,
+they disappear from `GET /tasks` (default list) but remain queryable via
+`?archived=true`. Never assume `done` count == total completed — archived
+tasks aren't included.
 
 ### 9.2 How to execute a task (step-by-step)
 
