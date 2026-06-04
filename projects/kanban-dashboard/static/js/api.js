@@ -56,6 +56,8 @@ export const api = {
     list: () => request("/projects"),
     create: (name) => request("/projects", { method: "POST", body: { name } }),
     detail: (id) => request(`/projects/${id}`),
+    update: (projectId, body) =>
+      request(`/projects/${projectId}`, { method: "PATCH", body }),
   },
   tasks: {
     list: (projectId, params) => {
@@ -70,6 +72,18 @@ export const api = {
       request(`/projects/${projectId}/tasks/${taskId}`, { method: "PATCH", body }),
     remove: (projectId, taskId) =>
       request(`/projects/${projectId}/tasks/${taskId}`, { method: "DELETE" }),
+    archive: (projectId, taskId) =>
+      request(`/projects/${projectId}/tasks/${taskId}/archive`, { method: "POST" }),
+    unarchive: (projectId, taskId, column) =>
+      request(`/projects/${projectId}/tasks/${taskId}/unarchive`, { method: "POST", body: { column } }),
+    listArchived: (projectId, { limit = 50, cursor, kind, priority, q } = {}) => {
+      const params = new URLSearchParams({ archived: "true", limit });
+      if (cursor)   params.set("cursor", cursor);
+      if (kind)     params.set("kind", kind);
+      if (priority) params.set("priority", priority);
+      if (q)        params.set("q", q);
+      return request(`/projects/${projectId}/tasks?${params}`);
+    },
   },
   comments: {
     list: (projectId, taskId) =>

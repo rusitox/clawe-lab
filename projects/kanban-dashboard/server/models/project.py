@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, String
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from server.db import Base
@@ -23,6 +23,7 @@ class Project(Base):
     created_at: Mapped[datetime] = created_at()
     updated_at: Mapped[datetime] = updated_at()
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    auto_archive_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     @property
     def is_active(self) -> bool:

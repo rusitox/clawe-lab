@@ -143,6 +143,8 @@ def update_project(
     project = _project_or_404(db, project_id)
     if body.name is not None:
         project.name = body.name
+    if "auto_archive_days" in body.model_fields_set:
+        project.auto_archive_days = body.auto_archive_days
     project.updated_at = _now()
     activity.emit(
         db,

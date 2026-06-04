@@ -86,3 +86,64 @@ def test_unauthenticated_gets_401_not_404(client) -> None:
 
     r = client.get(f"/api/v2/projects/{uuid4()}/_probe")
     assert r.status_code == 401
+
+
+# ---------------------------------------------------------------------------
+# P6.5 — Archive isolation tests
+# ---------------------------------------------------------------------------
+
+
+def _create_user_and_project(db: DbSession, email: str, slug: str) -> tuple:
+    from server.auth.test_bypass import upsert_user_by_email
+
+    user = upsert_user_by_email(db, email, email.split("@")[0].capitalize())
+    project = _make_project(db, user.id, slug)
+    return user, project
+
+
+def test_archive_task_cross_tenant_blocked(signed_in_user, second_user, db_session, client_factory) -> None:
+    """user_a cannot archive a task in project_b where user_a is not a member — returns 404."""
+    user_a, client_a = signed_in_user
+
+    # user_b creates a project with a task
+    project_b = _make_project(db_session, second_user.id, "project-b-archive")
+    client_b = client_factory()
+    client_b.get(
+        f"/auth/test-login?email={second_user.email}&name=Juan",
+        follow_redirects=False,
+    )
+    task = client_b.post(
+        f"/api/v2/projects/{project_b.id}/tasks",
+        json={"title": "Juan's task", "column": "done"},
+    ).json()
+
+    # user_a attempts to archive user_b's task via user_b's project endpoint
+    r = client_a.post(f"/api/v2/projects/{project_b.id}/tasks/{task['id']}/archive")
+    assert r.status_code == 404
+    assert r.json()["detail"]["error"]["code"] == "not_found"
+
+
+def test_unarchive_task_cross_tenant_blocked(signed_in_user, second_user, db_session, client_factory) -> None:
+    """user_a cannot unarchive a task in project_b where user_a is not a member — returns 404."""
+    user_a, client_a = signed_in_user
+
+    project_b = _make_project(db_session, second_user.id, "project-b-unarchive")
+    client_b = client_factory()
+    client_b.get(
+        f"/auth/test-login?email={second_user.email}&name=Juan",
+        follow_redirects=False,
+    )
+    task = client_b.post(
+        f"/api/v2/projects/{project_b.id}/tasks",
+        json={"title": "Juan's task", "column": "done"},
+    ).json()
+    # Archive the task as user_b
+    client_b.post(f"/api/v2/projects/{project_b.id}/tasks/{task['id']}/archive")
+
+    # user_a attempts to unarchive user_b's task
+    r = client_a.post(
+        f"/api/v2/projects/{project_b.id}/tasks/{task['id']}/unarchive",
+        json={"column": "backlog"},
+    )
+    assert r.status_code == 404
+    assert r.json()["detail"]["error"]["code"] == "not_found"

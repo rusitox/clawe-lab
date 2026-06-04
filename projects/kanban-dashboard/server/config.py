@@ -37,6 +37,8 @@ class Settings(BaseSettings):
 
     legacy_kanban_token: str = Field(default="")
 
+    internal_secret: str = Field(default="")
+
 
 _settings: Settings | None = None
 

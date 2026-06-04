@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Settings — {{ project.name }} — Clawe Kanban{% endblock %}
+{% block body %}
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐾</span> Clawe Kanban</a>
+    <span class="breadcrumb">
+      <span class="sep">/</span>
+      <a href="/">Projects</a>
+      <span class="sep">/</span>
+      <a href="/p/{{ project.slug }}">{{ project.name }}</a>
+      <span class="sep">/</span>
+      <strong>Settings</strong>
+    </span>
+    <span class="spacer"></span>
+    <span class="avatar" aria-hidden="true">{{ user_initials }}</span>
+    <a class="btn btn-ghost btn-sm" href="/settings/tokens">API tokens</a>
+  </header>
+
+  <main id="settings-main" data-project-id="{{ project.id }}">
+    <div class="page-header">
+      <h1 class="page-title">Project settings</h1>
+    </div>
+
+    <div class="settings-card">
+      <h2 class="settings-card__title">Auto-archive</h2>
+      <p class="muted" style="font-size:var(--font-sm);margin-bottom:var(--space-4)">
+        Automatically archive Done tasks after this many days. Set to 0 to disable.
+      </p>
+      <div class="field" style="max-width:240px">
+        <label for="auto-archive-days">Days until auto-archive</label>
+        <input
+          id="auto-archive-days"
+          class="input"
+          type="number"
+          min="0"
+          max="365"
+          step="1"
+          value="{{ auto_archive_days or 0 }}"
+          data-original="{{ auto_archive_days or 0 }}"
+          aria-describedby="auto-archive-hint"
+          style="width:80px"
+        />
+        <span id="auto-archive-hint" class="muted" style="font-size:var(--font-xs)">0 = disabled, default 7</span>
+      </div>
+      <div style="margin-top:var(--space-4);display:flex;gap:var(--space-3);align-items:center">
+        <button id="settings-save" class="btn btn-primary">Save</button>
+        <p id="settings-success" class="banner-success" hidden>Settings saved.</p>
+        <p id="settings-error" class="banner banner-error" role="alert" hidden></p>
+      </div>
+    </div>
+
+    <fieldset disabled style="border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6)">
+      <legend style="font-size:var(--font-md);font-weight:var(--weight-semibold);padding:0 var(--space-2)">
+        General <span class="muted" style="font-size:var(--font-xs)">(coming soon)</span>
+      </legend>
+      <div class="field">
+        <label for="project-name">Project name</label>
+        <input id="project-name" class="input" type="text" value="{{ project.name }}" />
+      </div>
+    </fieldset>
+  </main>
+</div>
+
+<script type="module" src="/static/js/settings.js"></script>
+{% endblock %}

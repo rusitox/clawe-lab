@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from server.api import home as home_router
 from server.api import v1_legacy as v1_legacy_router
 from server.api.v2 import activity as activity_router
+from server.api.v2 import archive_job as archive_job_router
 from server.api.v2 import attachments as attachments_router
 from server.api.v2 import comments as comments_router
 from server.api.v2 import me as me_router
@@ -63,6 +64,7 @@ def create_app() -> FastAPI:
     app.include_router(attachments_router.flat_router)
     app.include_router(comments_router.per_task_router)
     app.include_router(comments_router.flat_router)
+    app.include_router(archive_job_router.router)
     app.include_router(v1_legacy_router.router)
 
     try:

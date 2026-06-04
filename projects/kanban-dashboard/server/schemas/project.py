@@ -46,6 +46,7 @@ class ProjectCreate(BaseModel):
 
 class ProjectUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=255)
+    auto_archive_days: int | None = None
 
     @field_validator("name")
     @classmethod
@@ -57,6 +58,15 @@ class ProjectUpdate(BaseModel):
             raise ValueError("Name cannot be empty.")
         return v
 
+    @field_validator("auto_archive_days")
+    @classmethod
+    def _check_auto_archive_days(cls, v: int | None) -> int | None:
+        if v is None:
+            return v
+        if not (0 <= v <= 365):
+            raise ValueError("auto_archive_days must be between 0 and 365.")
+        return v
+
 
 class ProjectPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -66,6 +76,7 @@ class ProjectPublic(BaseModel):
     name: str
     created_at: datetime
     updated_at: datetime
+    auto_archive_days: int | None = None
 
 
 class MemberPublic(BaseModel):

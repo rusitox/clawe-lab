@@ -19,7 +19,7 @@ from server.db import Base
 from server.models._types import created_at, updated_at, uuid_pk
 
 TASK_KINDS = ("task", "bug", "proposal")
-TASK_COLUMNS = ("backlog", "todo", "inprogress", "done")
+TASK_COLUMNS = ("backlog", "todo", "inprogress", "verification", "done")
 TASK_PRIORITIES = ("P0", "P1", "P2", "P3")
 
 
@@ -58,6 +58,7 @@ class Task(Base):
     created_at: Mapped[datetime] = created_at()
     updated_at: Mapped[datetime] = updated_at()
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class TaskAssignee(Base):

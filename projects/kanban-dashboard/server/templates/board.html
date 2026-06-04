@@ -14,6 +14,10 @@
     <button class="btn btn-sm" id="filter-mine" aria-pressed="false" data-testid="filter-mine">Mine</button>
     <button class="btn btn-sm" id="filter-all" disabled>All kinds ▾</button>
     <a class="btn btn-sm" href="/p/{{ project.slug }}/members" data-testid="members-link">Members</a>
+    <a class="btn btn-ghost btn-sm" href="/p/{{ project.slug }}/archive">Archive</a>
+    {% if your_role == "owner" %}
+    <a class="btn btn-ghost btn-sm" href="/p/{{ project.slug }}/settings">Settings</a>
+    {% endif %}
     <button class="btn btn-sm" id="activity-toggle" data-testid="activity-toggle">Activity</button>
     <span class="avatar" aria-hidden="true">{{ user_initials }}</span>
     <a class="btn btn-ghost btn-sm" href="/settings/tokens">API tokens</a>
@@ -26,9 +30,11 @@
     data-project-slug="{{ project.slug }}"
     data-current-user-initials="{{ user_initials }}"
   >
-    <section class="board" id="board" data-testid="board" aria-label="Kanban board" aria-busy="true">
-      <!-- Columns rendered by static/js/board.js -->
-    </section>
+    <div class="board-wrap">
+      <section class="board" id="board" data-testid="board" aria-label="Kanban board" aria-busy="true">
+        <!-- Columns rendered by static/js/board.js -->
+      </section>
+    </div>
     <div id="kbd-live" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
   </main>
 
@@ -73,6 +79,11 @@
         <label for="nt-title">Title</label>
         <input id="nt-title" class="input" type="text" required minlength="1" maxlength="255" autocomplete="off" />
       </div>
+      <div class="field">
+        <label for="nt-description">Description <span class="muted">(markdown, optional)</span></label>
+        <textarea id="nt-description" class="textarea" rows="4" maxlength="10000" aria-describedby="nt-desc-counter"></textarea>
+        <span id="nt-desc-counter" class="muted" style="font-size:var(--font-xs)">0 / 10 000</span>
+      </div>
       <div class="field-row">
         <div class="field">
           <label for="nt-column">Column</label>
@@ -80,6 +91,8 @@
             <option value="backlog">Backlog</option>
             <option value="todo">Todo</option>
             <option value="inprogress">In progress</option>
+            <option value="verification">Verification</option>
+            <option value="done">Done</option>
           </select>
         </div>
         <div class="field">

@@ -42,6 +42,7 @@ lives in `deploy/env.production` — version controlled.
 | `SESSION_SECRET` | `openssl rand -hex 32` | Rotating logs out everyone — only during planned windows |
 | `GOOGLE_CLIENT_ID` | GCP Console → APIs & Services → Credentials → OAuth client ID (Web application) | Application type: Web application. Public-ish but treat as secret |
 | `GOOGLE_CLIENT_SECRET` | Same place as `GOOGLE_CLIENT_ID` | Rotation: regenerate in GCP, update secret, redeploy |
+| `INTERNAL_SECRET` | `openssl rand -hex 32` | Bearer token for the internal archive-done job endpoint. Rotation: update VPS `/home/ubuntu/openclaw-kanban-v2/internal-secret` file and restart the cron entry |
 
 Authorized redirect URI in GCP **must match** `OAUTH_REDIRECT_URI` in
 `deploy/env.production` byte-for-byte (currently

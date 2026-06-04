@@ -4,7 +4,7 @@
 
 import { ApiError, api } from "./api.js";
 
-const COLUMN_KEYS = ["backlog", "todo", "inprogress", "done"];
+const COLUMN_KEYS = ["backlog", "todo", "inprogress", "verification", "done"];
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({
