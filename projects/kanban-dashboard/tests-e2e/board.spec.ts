@@ -12,7 +12,7 @@ test.describe("Phase 5 — board", () => {
     expect(r.status()).toBe(404);
   });
 
-  test("renders 4 columns + breadcrumb", async ({ signedInPage: page }) => {
+  test("renders 5 columns + breadcrumb", async ({ signedInPage: page }) => {
     const tag = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const project = await makeProject(page, `Board Test ${tag}`);
     await page.goto(`/p/${project.slug}`);
@@ -20,7 +20,7 @@ test.describe("Phase 5 — board", () => {
     await expect(page.getByTestId("project-name")).toHaveText(project.name);
     await page.getByTestId("board").waitFor();
     const columns = page.getByTestId("column-list");
-    await expect(columns).toHaveCount(4);
+    await expect(columns).toHaveCount(5); // Backlog, Todo, In progress, Verification, Done
   });
 
   test("create task via dialog renders the new card", async ({ signedInPage: page }) => {
