@@ -339,6 +339,7 @@ dialog#new-project-dialog footer {
 }
 
 .board-wrap {
+  width: 100%;
   overflow-x: auto;
 }
 .board {
@@ -353,6 +354,7 @@ dialog#new-project-dialog footer {
 .column {
   display: flex; flex-direction: column;
   gap: var(--space-3);
+  min-width: 0;
 }
 .column-header {
   display: flex; align-items: center; justify-content: space-between;
