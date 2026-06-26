@@ -1,100 +1,121 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Pressable,
   ScrollView,
+  Pressable,
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme';
 import { stitchTokens } from '../theme.stitchTokens';
-import { DayTimeline, DayTimelineItem } from '../components/DayTimeline';
-import { ItemCard, type ItemType } from '../components/ItemCard';
+import { ItemCard } from '../components/ItemCard';
 
-type Mode = 'Semana' | 'Mes' | 'Día';
-
-type WeekItem = {
+type DayItem = {
   id: string;
-  day: string;
+  type: 'Evento' | 'Tarea' | 'Actividad';
   title: string;
+  person: string;
+  personColor: string;
   time?: string;
-  type: ItemType;
-  accent: string;
-  people?: string[];
+  location?: string;
+  pill?: string;
+  pillColor?: string;
+  pillBg?: string;
+  completed?: boolean;
 };
 
-export function WeekScreen() {
-  const [mode, setMode] = useState<Mode>('Semana');
-  const [filterOpen, setFilterOpen] = useState(false);
+type DayBlock = {
+  iso: string;
+  label: string;
+  dayNum: number;
+  isToday?: boolean;
+  items: DayItem[];
+};
 
-  const items: WeekItem[] = useMemo(
-    () => [
+const DAYS: DayBlock[] = [
+  {
+    iso: '2023-10-12',
+    label: 'Lunes',
+    dayNum: 12,
+    isToday: true,
+    items: [
       {
         id: '1',
-        day: '9  Lunes',
-        title: 'Reunión padres de familia',
-        time: '09:00 - 10:00',
         type: 'Evento',
-        accent: '#3B82F6',
-        people: ['Carlos', 'Ana'],
+        title: 'Colegio',
+        person: 'Mateo',
+        personColor: stitchTokens.colors.memberMateo,
+        time: '08:00',
+        pill: 'EVENTO',
+        pillBg: theme.colors.pillBlueBg,
+        pillColor: theme.colors.pillBlueText,
       },
       {
         id: '2',
-        day: '9  Lunes',
-        title: 'Comprar material escolar',
         type: 'Tarea',
-        accent: theme.colors.primary,
-        people: ['Ana'],
+        title: 'Comprar útiles',
+        person: 'Mamá',
+        personColor: stitchTokens.colors.memberMama,
+        location: 'Librería Central',
+        pill: 'TAREA',
+        pillBg: theme.colors.pillOrangeBg,
+        pillColor: theme.colors.pillOrangeText,
       },
+    ],
+  },
+  {
+    iso: '2023-10-13',
+    label: 'Martes',
+    dayNum: 13,
+    items: [
       {
         id: '3',
-        day: '9  Lunes',
-        title: 'Fútbol - Entrenamiento',
-        time: '16:00 - 17:30',
         type: 'Actividad',
-        accent: '#F59E0B',
-        people: ['Lucas'],
+        title: 'Fútbol',
+        person: 'Sofía',
+        personColor: stitchTokens.colors.memberSofia,
+        time: '17:30',
+        location: 'Club Deportivo',
+        pill: 'ACTIVIDAD',
+        pillBg: theme.colors.pillGreenBg,
+        pillColor: theme.colors.pillGreenText,
       },
     ],
-    []
-  );
-
-  const dayItems: DayTimelineItem[] = useMemo(
-    () => [
+  },
+  {
+    iso: '2023-10-14',
+    label: 'Miércoles',
+    dayNum: 14,
+    items: [
       {
-        id: 'd1',
-        title: 'Reunión padres de familia',
-        start: '09:00',
-        end: '10:00',
+        id: '4',
         type: 'Evento',
-        accent: '#3B82F6',
-        location: 'Colegio',
-        people: ['Carlos', 'Ana'],
+        title: 'Cena con Abuelos',
+        person: 'Familia',
+        personColor: theme.colors.primary,
+        time: '20:00',
+        pill: 'EVENTO',
+        pillBg: theme.colors.pillBlueBg,
+        pillColor: theme.colors.pillBlueText,
       },
       {
-        id: 'd2',
-        title: 'Comprar material escolar',
-        start: '12:30',
-        end: '13:00',
+        id: '5',
         type: 'Tarea',
-        accent: theme.colors.primary,
-        people: ['Ana'],
-      },
-      {
-        id: 'd3',
-        title: 'Natación (Mateo)',
-        start: '17:00',
-        end: '18:00',
-        type: 'Evento',
-        accent: '#F59E0B',
-        location: 'Club',
-        people: ['Mateo'],
+        title: 'Pagar Luz',
+        person: 'Papá',
+        personColor: stitchTokens.colors.memberPapa,
+        completed: true,
       },
     ],
-    []
-  );
+  },
+];
+
+export function WeekScreen() {
+  const [activeDay, setActiveDay] = useState('2023-10-12');
+
+  const activeBlock = DAYS.find(d => d.iso === activeDay) ?? DAYS[0];
 
   return (
     <View style={styles.container}>
@@ -102,118 +123,72 @@ export function WeekScreen() {
         style={[
           styles.header,
           Platform.OS === 'web'
-            ? ({ position: 'sticky', top: 0, zIndex: 20, backdropFilter: 'blur(12px)' } as any)
+            ? ({ position: 'sticky', top: 0, zIndex: 20 } as any)
             : null,
         ]}
       >
-        <Text style={styles.headerTitle}>Family Hub</Text>
-
-        <View style={styles.controlsRow}>
-          <View style={styles.segmented}>
-            {(['Semana', 'Mes', 'Día'] as Mode[]).map((m) => {
-              const active = mode === m;
-              return (
-                <Pressable
-                  key={m}
-                  onPress={() => setMode(m)}
-                  style={[styles.segmentBtn, active && styles.segmentBtnActive]}
-                >
-                  <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{m}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          <View style={{ position: 'relative' }}>
-            <View style={styles.filterRow}>
-              <Pressable
-                onPress={() => setFilterOpen((v) => !v)}
-                style={styles.filterBtn}
-              >
-                <Ionicons name="people" size={18} color={theme.colors.chipDarkText} />
-                <Text style={styles.filterText}>Todos</Text>
-                <Ionicons
-                  name={filterOpen ? 'chevron-up' : 'chevron-down'}
-                  size={18}
-                  color={theme.colors.chipDarkText}
-                />
-              </Pressable>
-
-              <View style={styles.avatarsRow}>
-                {[
-                  { label: 'M', bg: stitchTokens.colors.memberMama, fg: '#FFFFFF' },
-                  { label: 'P', bg: stitchTokens.colors.memberPapa, fg: theme.colors.textPrimary },
-                  { label: 'S', bg: stitchTokens.colors.memberSofia, fg: theme.colors.textPrimary },
-                  { label: 'M', bg: stitchTokens.colors.memberMateo, fg: theme.colors.textPrimary },
-                ].map((a, idx) => (
-                  <View key={idx} style={[styles.avatarChip, { backgroundColor: a.bg }]}
-                    >
-                    <Text style={[styles.avatarChipText, { color: a.fg }]}>{a.label}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-
-            {filterOpen && (
-              <View style={styles.dropdown}>
-                {['Todos', 'Eventos', 'Tareas'].map((opt) => (
-                  <Pressable
-                    key={opt}
-                    onPress={() => {
-                      setFilterOpen(false);
-                    }}
-                    style={styles.dropdownItem}
-                  >
-                    <Text style={styles.dropdownText}>{opt}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </View>
+        <View>
+          <Text style={styles.kicker}>SEMANA DEL 12–18 OCT</Text>
+          <Text style={styles.title}>Esta Semana</Text>
         </View>
+        <Pressable style={styles.bellBtn}>
+          <Ionicons name="notifications-outline" size={22} color={theme.colors.textPrimary} />
+        </Pressable>
       </View>
 
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.dayStrip}
+        contentContainerStyle={styles.dayStripContent}
+      >
+        {DAYS.map(day => {
+          const active = day.iso === activeDay;
+          return (
+            <Pressable
+              key={day.iso}
+              onPress={() => setActiveDay(day.iso)}
+              style={[styles.dayBtn, active && styles.dayBtnActive]}
+            >
+              <Text style={[styles.dayLabel, active && styles.dayLabelActive]}>
+                {day.label.slice(0, 3)}
+              </Text>
+              <Text style={[styles.dayNum, active && styles.dayNumActive]}>{day.dayNum}</Text>
+              {day.isToday && <View style={[styles.todayDot, active && styles.todayDotActive]} />}
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
       <ScrollView contentContainerStyle={styles.scroll}>
-        {mode === 'Día' ? (
-          <DayTimeline datePill="9" dayName="Lunes" items={dayItems} />
-        ) : mode === 'Mes' ? (
-          <View style={styles.monthPlaceholder}>
-            <Ionicons name="grid-outline" size={20} color={theme.colors.textSecondary} />
-            <Text style={styles.monthPlaceholderTitle}>Vista mensual</Text>
-            <Text style={styles.monthPlaceholderText}>
-              Por ahora la vista “Mes” está en la pestaña Calendario.
-            </Text>
-          </View>
-        ) : (
-          <>
-            <View style={styles.dayRow}>
-              <View style={styles.dayPill}>
-                <Text style={styles.dayPillText}>9</Text>
-              </View>
-              <Text style={styles.dayText}>Lunes</Text>
+        <View style={styles.dayHeader}>
+          <Text style={styles.dayTitle}>
+            {activeBlock.label} {activeBlock.dayNum}
+          </Text>
+          {activeBlock.isToday && (
+            <View style={styles.todayPill}>
+              <Text style={styles.todayPillText}>Hoy</Text>
             </View>
+          )}
+        </View>
 
-            {items.map((it) => (
-              <ItemCard
-                key={it.id}
-                accent={it.accent}
-                title={it.title}
-                type={it.type}
-                time={it.time}
-                people={it.people}
-                leadingIcon={
-                  it.type === 'Evento'
-                    ? 'calendar-outline'
-                    : it.type === 'Tarea'
-                      ? 'checkmark-circle-outline'
-                      : 'barbell-outline'
-                }
-              />
-            ))}
-          </>
-        )}
+        {activeBlock.items.map(item => (
+          <ItemCard
+            key={item.id}
+            type={item.type}
+            title={item.title}
+            person={item.person}
+            personColor={item.personColor}
+            time={item.time}
+            location={item.location}
+            pill={item.pill}
+            pillColor={item.pillColor}
+            pillBg={item.pillBg}
+            completed={item.completed}
+          />
+        ))}
 
-        <View style={{ height: 120 }} />
+        <View style={{ height: 40 }} />
       </ScrollView>
     </View>
   );
@@ -225,237 +200,105 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bg,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.lg,
     paddingTop: Platform.OS === 'web' ? 24 : 18,
     paddingBottom: 14,
-    // Match Stitch: header blends into the light background instead of a hard white bar
     backgroundColor: theme.colors.bg,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
   },
-  headerTitle: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.typography.h1.fontSize,
-    // Slightly less heavy than before; closer to Stitch exports
-    fontWeight: '800',
-    marginBottom: theme.spacing.md,
-  },
-  controlsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  segmented: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.muted,
-    borderRadius: 18,
-    padding: 3,
-  },
-  segmentBtn: {
-    paddingVertical: 7,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-  },
-  segmentBtnActive: {
-    backgroundColor: theme.colors.card,
-    ...theme.shadow.card,
-  },
-  segmentText: {
-    color: theme.colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  segmentTextActive: {
+  kicker: {
     color: theme.colors.primary,
-    fontWeight: '700',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    marginBottom: 2,
   },
-  filterBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: theme.colors.chipDarkBg,
-    borderRadius: 999,
-    paddingVertical: 9,
-    paddingHorizontal: 14,
-    ...theme.shadow.card,
+  title: {
+    color: theme.colors.textPrimary,
+    fontSize: 30,
+    fontWeight: '900',
   },
-  filterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  avatarsRow: {
-    flexDirection: 'row',
-    marginLeft: 2,
-  },
-  avatarChip: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: theme.colors.card,
+  bellBtn: {
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: -10,
-    ...theme.shadow.card,
   },
-  avatarChipText: {
-    fontSize: 10,
-    fontWeight: '800',
+  dayStrip: {
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    backgroundColor: theme.colors.bg,
   },
-  filterText: {
-    color: theme.colors.chipDarkText,
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  dropdown: {
-    position: 'absolute',
-    right: 0,
-    top: 46,
-    width: 160,
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.xl,
-    borderColor: 'rgba(15, 23, 42, 0.06)',
-    borderWidth: 1,
-    overflow: 'hidden',
-    ...theme.shadow.card,
-    zIndex: 20,
-  },
-  dropdownItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-  },
-  dropdownText: {
-    color: theme.colors.textPrimary,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-
-  scroll: {
+  dayStripContent: {
     paddingHorizontal: theme.spacing.lg,
-    paddingTop: 6,
+    paddingVertical: 12,
+    gap: 8,
   },
-  dayRow: {
-    flexDirection: 'row',
+  dayBtn: {
     alignItems: 'center',
-    gap: 10,
-    marginBottom: theme.spacing.lg,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: theme.radius.lg,
+    minWidth: 52,
   },
-  dayPill: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: theme.colors.card,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...theme.shadow.card,
+  dayBtnActive: {
+    backgroundColor: theme.colors.primary,
   },
-  dayPillText: {
-    color: theme.colors.textPrimary,
-    fontSize: 14,
-    fontWeight: '800',
+  dayLabel: {
+    color: theme.colors.textSecondary,
+    fontSize: 11,
+    fontWeight: '700',
+    marginBottom: 4,
   },
-  dayText: {
+  dayLabelActive: {
+    color: '#FFFFFF',
+  },
+  dayNum: {
     color: theme.colors.textPrimary,
     fontSize: 18,
     fontWeight: '800',
   },
-
-  monthPlaceholder: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.xl,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: 18,
-    gap: 8,
+  dayNumActive: {
+    color: '#FFFFFF',
   },
-  monthPlaceholderTitle: {
-    color: theme.colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '900',
+  todayDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: theme.colors.primary,
+    marginTop: 3,
   },
-  monthPlaceholderText: {
-    color: theme.colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
-    lineHeight: 18,
+  todayDotActive: {
+    backgroundColor: '#FFFFFF',
   },
-
-  card: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.card,
-    borderRadius: 22,
-    borderColor: theme.colors.border,
-    borderWidth: 1,
-    overflow: 'hidden',
-    marginBottom: 12,
+  scroll: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: 20,
   },
-  cardAccent: {
-    width: 6,
-  },
-  cardBody: {
-    flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-  },
-  cardTitleRow: {
+  dayHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    marginBottom: 8,
+    marginBottom: 16,
   },
-  cardTitle: {
-    flex: 1,
+  dayTitle: {
     color: theme.colors.textPrimary,
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '800',
   },
-  typePill: {
-    backgroundColor: 'rgba(59,130,246,0.12)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-  },
-  typePillText: {
-    color: '#2563EB',
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 10,
-  },
-  metaText: {
-    color: theme.colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  peopleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  avatar: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+  todayPill: {
     backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
   },
-  avatarText: {
+  todayPillText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '800',
-  },
-  peopleText: {
-    color: theme.colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
